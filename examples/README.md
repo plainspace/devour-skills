@@ -1,68 +1,116 @@
 # Examples
 
-This folder will hold annotated before/after diffs from real codebases that ran devour.
+Real before/after pairs from real codebases that ran devour. Each example is a self-contained folder with the original code, the devour finding that drove the change, the resulting code, and a writeup explaining why the change matters.
 
-**For the v0.1 release, this folder is intentionally empty.** Examples come from real PRs, not made-up scenarios.
-
----
-
-## Why deferred
-
-Fabricated examples are worse than no examples. A made-up before/after diff can demonstrate a principle in isolation, but it cannot demonstrate the judgment calls that arise when principles conflict, when context changes the severity, or when the right fix is not the obvious one. That judgment only shows up in real code, under real constraints.
-
-The examples folder will be populated as the skill is used in production work. The first entries will come from the author's own codebases, with identifying details removed.
+**No synthetic examples.** Everything here came from a working codebase. If devour didn't find it, it doesn't belong here.
 
 ---
 
-## Planned format
+## Why examples matter
 
-Each example will be a single `.md` file. The format:
+Principles in the abstract are easy to nod along with. The hard work is recognizing them in real code, applying them under real constraints, and noticing where the tactic doesn't fit perfectly and you have to make a judgment call.
+
+These examples exist to:
+
+1. **Show what devour findings look like in practice.** Verbatim output, not cleaned-up.
+2. **Show that the principle catches a thing the developer wouldn't have caught otherwise.** If the change was obvious, it's a bad example.
+3. **Show where the tactic needed to be adapted.** Real engineering involves taste, not formula.
+
+---
+
+## Format
+
+Each example is a numbered folder: `NNNN-<codebase>-<short-title>/`
+
+```
+0001-fifthset-event-card-hover/
+├── README.md             ← the writeup (template below)
+├── before.tsx            ← file snapshot before the change
+├── after.tsx             ← file snapshot after the change
+├── devour-finding.md     ← verbatim devour output that drove the change
+└── screenshot-before.png ← optional, only for visual or motion findings
+```
+
+Numbers are sequential, never reused, never reordered. They are sort keys, not priority indicators.
+
+### Writeup template
+
+Each example's `README.md` follows this structure. Copy this template when adding a new example.
 
 ```markdown
-# [Component or feature name]
+# Example NNNN: <short title>
 
-**Product type:** [from Devour Context]
-**Principles engaged:** #N, #N
-**Severity:** 🔴 BREAKS | 🟡 DRIFTS | 🟢 OPPORTUNITY
+**Codebase:** <name and one-line tech description>
+**Date:** <YYYY-MM-DD>
+**Devour skill used:** <devour | devour:motion | devour:micro | devour:state>
+**Principle(s) engaged:** <#N (name), #N (name)>
+**Severity:** <🔴 BREAKS | 🟡 DRIFTS | 🟢 OPPORTUNITY>
 
-## Context
+## The before
 
-[One paragraph: what the component does, what the product is, why this finding matters]
+<Two or three sentences describing what the code did, with file:line references where relevant.>
 
-## Finding
+## The devour finding
 
-[The finding block from the devour output, verbatim]
+<Verbatim copy of the devour output for this finding. Include the principle citation, the tactic, and the reference. Do not edit it for clarity ... if it was unclear, that is information.>
 
-## Before
+## The after
 
-```tsx
-// The original code
-```
+<Two or three sentences describing what changed and why. Reference the new file structure if non-obvious.>
 
-## After
+## What this example demonstrates
 
-```tsx
-// The fixed code
-```
+<One paragraph. What about this finding is generalizable. Why this is a useful exemplar for someone learning the principle. What pattern this case represents.>
 
 ## Notes
 
-[Any judgment calls made in the fix, trade-offs acknowledged, things that were considered and
-rejected]
+<Optional. Judgment calls made. Places where the recommendation did not fit perfectly. Where you departed from the tactic and why. Honest engineering notes.>
 ```
 
 ---
 
-## Contributing examples
+## What makes a good example
 
-If you run devour on a real codebase and have a finding worth sharing, a pull request to this folder is welcome. Requirements:
+Good examples have at least three of:
 
-1. Real code, real product (with permission and identifying details removed if needed).
-2. The before/after must be a real change that was made, not a hypothetical.
-3. Follow the format above.
-4. The finding must cite a principle from the spine.
+- **A finding the developer wouldn't have caught otherwise.** Devour earned its keep.
+- **A clean before/after diff.** The change is small enough to reason about in one sitting.
+- **A principle that wasn't obvious from the symptom.** "Pulse animation on a static badge" is a good case for #1; "this button is too small" is too obvious to teach.
+- **A judgment call worth explaining.** Where you adapted the tactic to the specific context.
+- **A reference to the lineage.** The exemplar (Sonner, Vaul, Linear, etc.) made the fix obvious.
 
-One good real example is worth more than ten made-up ones.
+Bad examples:
+
+- Renaming a variable
+- A pure refactor with no devour finding
+- Following the recommendation literally with no thinking applied
+- "Made it look better" without principle citation
+- Anything that could have been caught by `polish`, ESLint, or a linter
+
+---
+
+## Numbering and authorship
+
+The first authored example will be `0001`. Examples are added by the author (initially Jared Volpe) as the skill is used in production work. Outside contributions are welcome but require following the template above and citing the lineage explicitly.
+
+If an example turns out to be wrong (the principle didn't apply, the fix was bad, the lineage citation was misleading), don't delete it. Add a `RETROSPECTIVE.md` to the folder explaining what was wrong. Mistakes are useful.
+
+---
+
+## Visual and motion examples
+
+For findings that are primarily visual or motion-related, capture artifacts:
+
+- **Visual** ... PNG screenshot before, PNG after. Keep small (under 500KB each).
+- **Motion** ... 3-5 second `.gif` or `.mp4` capture. Compress aggressively. Note in the writeup that motion examples require running the code to fully appreciate.
+
+These are optional but strongly preferred for any finding under principles #1, #2, or #5.
+
+---
+
+## Status
+
+**v0.1:** intentionally empty. Examples are added as devour gets used in production work, not invented for the launch. The first example is expected to come from a fifthset (Next.js events directory) test pass.
 
 ---
 
