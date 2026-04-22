@@ -113,7 +113,18 @@ Reference:
 - **🟡 DRIFTS** ... the principle is not catastrophically violated but the surface is drifting toward sloppiness. Hover commits too fast. Type scale has crept to four sizes. Decoration is creeping.
 - **🟢 OPPORTUNITY** ... the principle is not violated but there's a higher-craft move available. Spring physics where you have eased duration. Stagger where current motion is simultaneous (or vice versa).
 
-### Step 4 ... Output format
+### Step 4 ... Look for inter-finding conflicts
+
+Before writing the final output, scan the findings for interactions. Two findings can be in tension when:
+
+- **Fixing one weakens the other** (e.g., extending a stagger ceiling fixes the cutoff but leaves the broader re-animation problem unresolved)
+- **Both have the same root cause** and a single structural change resolves both, but it's bigger than either finding individually
+- **Tactics conflict** (one says "add motion here," another says "remove motion there")
+- **Findings cluster around an architectural pattern** (multiple violations from the same misuse)
+
+When you find an interaction, surface it explicitly in a dedicated block (see Step 5 output format). Don't quietly apply structural changes at apply-time without the user knowing they were the only path. Honest review names trade-offs before they happen.
+
+### Step 5 ... Output format
 
 ```
 ═══════════════════════════════════════════════════
@@ -134,6 +145,14 @@ Context: <project context summary in one line>
 🟢 OPPORTUNITIES (N findings)
 ─────────────────────────────
 <finding 4>
+
+═══════════════════════════════════════════════════
+INTERACTIONS BETWEEN FINDINGS (only if any)
+───────────────────────────────────────────────────
+- Finding N and Finding M are partially in tension. <Brief explanation
+  of how fixing one affects the other, and what structural change
+  resolves both at once if applicable.>
+═══════════════════════════════════════════════════
 
 ═══════════════════════════════════════════════════
 SUMMARY

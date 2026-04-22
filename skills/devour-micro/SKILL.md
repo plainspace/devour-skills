@@ -336,6 +336,14 @@ Context: <primary surface + principle weighting from Devour Context>
 <findings>
 
 ═══════════════════════════════════════════════════
+INTERACTIONS BETWEEN FINDINGS (only if any)
+───────────────────────────────────────────────────
+- Finding N and Finding M are partially in tension. <Brief explanation
+  of how fixing one affects the other, and what structural change
+  resolves both at once if applicable.>
+═══════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════
 MICRO SUMMARY
 N breaks · N drifts · N opportunities
 Principles reviewed: #3 (intent), #6 (ergonomics), #11 (metaphor)
@@ -353,6 +361,8 @@ APPLY?
 ```
 
 After printing the review, **always print the APPLY? block as the final lines of output.** Do not skip it.
+
+**Before printing the SUMMARY block, check for inter-finding conflicts.** Two findings can be in tension when fixing one weakens the other, or when both share a root cause that requires a single structural change to resolve. If any conflicts exist, name them in the INTERACTIONS BETWEEN FINDINGS block (between the findings and the SUMMARY). If none, skip the block entirely.
 
 When applying:
 

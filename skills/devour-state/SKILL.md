@@ -338,6 +338,14 @@ Context: <principle weighting from Devour Context>
 <findings>
 
 ═══════════════════════════════════════════════════
+INTERACTIONS BETWEEN FINDINGS (only if any)
+───────────────────────────────────────────────────
+- Finding N and Finding M are partially in tension. <Brief explanation
+  of how fixing one affects the other, and what structural change
+  resolves both at once if applicable.>
+═══════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════
 STATE SUMMARY
 N breaks · N drifts · N opportunities
 Principles reviewed: #4 (reversibility), #7 (state preservation)
@@ -355,6 +363,8 @@ APPLY?
 ```
 
 After printing the review, **always print the APPLY? block as the final lines of output.** Do not skip it. State findings often involve the highest-value fixes in a devour pass; do not bury the apply prompt.
+
+**Before printing the SUMMARY block, check for inter-finding conflicts.** Two findings can be in tension when fixing one weakens the other, or when both share a root cause that requires a single structural change to resolve (e.g., one finding asks for optimistic UI and another asks for state preservation across navigation; both might point at adopting TanStack Query for the surface). If any conflicts exist, name them in the INTERACTIONS BETWEEN FINDINGS block (between the findings and the SUMMARY). If none, skip the block entirely.
 
 When applying:
 
