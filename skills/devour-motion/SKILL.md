@@ -54,16 +54,60 @@ If `$ARGUMENTS` is empty:
 - Default to changed files in the current branch (`git diff main..HEAD --name-only`, filtered to `.tsx`, `.jsx`, `.css`, `.scss`).
 - If no changes, ask the user what to review.
 
-**Motion can't be fully reviewed from static code.** After reading the code, check:
+**Motion cannot be fully reviewed from static code.** A 200ms `ease-in-out` looks fine in source but may feel hesitant on real hardware. A spring config that math-checks may overshoot at 60Hz. The skill must drive the actual UI when possible.
 
-- Is there a running dev server? If yes, use the `chrome-devtools` MCP to observe actual behavior. Open the target in the browser. Look for motion by hovering elements, triggering dialogs, toggling list items, dragging if applicable.
-- If no dev server: proceed with code review, and note in the output that motion findings are code-inferred and should be verified against running behavior.
+#### Step 1a ... Detect a browser-driving MCP
 
-Specific patterns to look for immediately:
+Before reading any code, check whether any browser-driving MCP is available in your tool set. Devour does not require a specific browser MCP; any tool family that lets you open pages, navigate, evaluate scripts, and (ideally) take screenshots will work.
+
+Common browser MCPs to look for, by tool-name prefix:
+
+- `mcp__chrome-devtools__*` (chrome-devtools-mcp ... most common)
+- `mcp__playwright__*` (Playwright MCP)
+- `mcp__browser__*` or `mcp__browser-mcp__*` (BrowserMCP)
+- `mcp__browserbase__*` (Browserbase)
+- `mcp__puppeteer__*` (Puppeteer MCP)
+
+The minimum capabilities devour needs are: open a URL, evaluate JavaScript on the page, and (preferably) take a screenshot or DOM snapshot. Different MCPs name these differently. Identify the relevant tools by capability, not by exact name.
+
+**If NO browser-driving MCP is available:**
+
+Tell the user once, plainly: "I don't have a browser-driving MCP available in this session, so this will be a code-only review. Motion findings about felt timing and runtime behavior need browser verification. To enable that, install any browser MCP (chrome-devtools, Playwright, BrowserMCP, etc.) and re-run."
+
+Then proceed with code-only review. Mark the output `Reviewed: code only`.
+
+**If a browser MCP IS available:**
+
+Try the equivalent of `list_pages` first. Three cases:
+
+1. **A page matching the dev server is already open** (look for `localhost`, `127.0.0.1`, or a known dev URL from `package.json`'s `dev` script): use it. Select/focus it.
+2. **No matching page is open, but you can find the dev server URL** (read `package.json`, look for `next dev`, `vite`, `pnpm dev`, port hints; default to `http://localhost:3000` for Next/Vite, `http://localhost:5173` for Vite, `http://localhost:5174` for Astro): open it.
+3. **No dev server detectable**: ask the user once: "What URL is your dev server on?" If the user doesn't have one running, fall back to code-only and mark accordingly.
+
+Mark the output `Reviewed: code + browser (<MCP name>)` once you have a live page.
+
+#### Step 1b ... Read the code
+
+After environment is established, read the target file(s) in full. Specific patterns to look for immediately:
+
 - Any `transition:` or `animation:` in CSS or inline styles
 - Any Framer Motion imports (`motion`, `AnimatePresence`, `useSpring`, `useMotion*`)
 - Any react-spring imports (`useSpring`, `useTransition`, `useTrail`, `animated.*`)
 - Any `@property` or `linear()` easing in CSS
+- Any keyframes definitions in `globals.css` or equivalent
+- Any `nth-child` patterns (often hardcoded stagger ceilings)
+
+#### Step 1c ... Drive the UI for findings that need it
+
+For each finding that depends on felt experience rather than code structure, drive the page. Examples:
+
+- **Sheet timing or dialog entry feel** ... navigate to the page that triggers it, click the trigger, observe. Use a screenshot tool if available to capture intermediate frames, or evaluate JavaScript to inspect computed timing functions.
+- **Hover commit delays** ... evaluate JavaScript to dispatch `mouseenter`/`mouseleave` events on target elements, measure response.
+- **Stagger sequences** ... navigate to the relevant grid, capture screenshots at multiple timestamps, look at whether all items animate or only the first N.
+- **Filter-change re-animation** (the bug devour catches): apply a filter, watch whether existing cards re-trigger their entrance animation. This is the canonical case for browser-required verification.
+- **Reduced-motion behavior** ... evaluate JavaScript to set `prefers-reduced-motion: reduce` via CSS or media-query emulation, re-trigger interactions.
+
+Annotate findings with `[code-confirmed]` or `[browser-confirmed]` so the user knows which findings have been verified at runtime.
 
 ---
 
@@ -275,11 +319,29 @@ Context: <motion appetite + principle weighting from Devour Context>
 MOTION SUMMARY
 N breaks · N drifts · N opportunities
 Principles reviewed: #1 (honest motion), #2 (physics), #5 (sequence)
-Reviewed: code only | code + live behavior
+Reviewed: code only | code + browser (<MCP name>)
+═══════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════
+APPLY?
+  1. Apply all 🔴 BREAKS (N findings)
+  2. Apply all 🔴 + 🟡 (N findings)
+  3. Apply everything (N findings)
+  4. Cherry-pick ... tell me which (e.g., "1, 3, and 5" or "the featured badge fix")
+  5. Review only ... apply nothing
 ═══════════════════════════════════════════════════
 ```
 
-If code-only, append: "Recommend re-running with dev server for motion findings. Spring feel cannot be fully confirmed from code."
+After printing the review, **always print the APPLY? block as the final lines of output.** Do not skip it.
+
+If code-only (no browser MCP found or no dev server), append above the APPLY? block: "Recommend re-running with a browser MCP and dev server for full verification. Spring feel and felt timing cannot be fully confirmed from code."
+
+When applying:
+
+- **Show the diff** before each file change. Brief, just the hunks.
+- **Apply 🔴 BREAKS without further confirmation** if the user picked option 1, 2, or 3.
+- **Ask once per 🟡 DRIFT or 🟢 OPPORTUNITY** that involves a real taste call (e.g., "extending stagger ceiling to 20 ... is this the right max for your grids?"). Skip the ask if the fix is mechanical.
+- **After all fixes are applied, ask if the user wants to commit.** Do not auto-commit.
 
 ---
 

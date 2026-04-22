@@ -67,6 +67,6 @@ This skill is a working designer's reference, not a replacement for the source m
 
 ## Author
 
-Devour is authored and maintained by **Jared Volpe** ([jaredvolpe.com](https://jaredvolpe.com), [Plainspace](https://plainspace.design)). Co-Founder of Sleeve. Founding designer at Oxide Computer Company. Previously led design teams at Microsoft and CircleCI.
+Devour is authored and maintained by [Jared Volpe](https://jaredvolpe.com).
 
 Copyright 2026 Jared Volpe. Licensed under Apache 2.0.

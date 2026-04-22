@@ -67,6 +67,30 @@ Or clone into your project's `.claude/skills/` directly.
 
 The first time you run devour in a repo, you will be prompted to invoke `devour:teach` to establish project context. Different products live in different parts of the spine; a marketing page values different principles than a productivity app.
 
+Every review ends with an explicit `APPLY?` prompt: apply only breaks, breaks + drifts, everything, cherry-pick, or review-only. You stay in control of what lands.
+
+### Browser-driving MCP (recommended)
+
+Devour runs in two modes: **code-only** (always works) and **code + browser** (better, especially for motion review). The browser mode requires any browser-driving MCP installed in your Claude Code session.
+
+Devour is not tied to any specific browser MCP. It works with whichever you have:
+
+- [`chrome-devtools-mcp`](https://github.com/cyrilluce/chrome-devtools-mcp) ... most common
+- [Playwright MCP](https://github.com/microsoft/playwright-mcp)
+- [BrowserMCP](https://browsermcp.io/)
+- [Browserbase MCP](https://github.com/browserbase/mcp-server-browserbase)
+- Puppeteer MCP
+
+Install any one of these per the project's instructions, then restart Claude Code. Devour will detect it automatically and use it to verify motion timing, hover behavior, state transitions, and other findings that need to be observed at runtime, not just in code.
+
+If no browser MCP is available, devour proceeds with code-only review and tells you what it couldn't verify. Code-only is still useful; it just produces fewer browser-confirmed findings on motion-heavy surfaces.
+
+### Verbosity as a feature
+
+Devour's output is verbose by design. Every finding has four parts: symptom (what's in the code), principle (why it matters, with the lineage source named), tactic (the specific fix), and reference (the exemplar to study). Strip any of those out and you have a checklist; keep all four and every review is a small lesson in design engineering.
+
+If you already know the principles cold and just want the punch list, this is on the v0.2 roadmap (`--terse` flag). For v0.1, the verbose path is the only path. Read the prose; it's where the learning lives.
+
 ---
 
 ## The spine
@@ -140,6 +164,6 @@ This means you can use, modify, and redistribute devour ... including for commer
 
 ## Author
 
-Built by [Jared Volpe](https://jaredvolpe.com) at [Plainspace](https://plainspace.design). Devour grew out of a working practice of designing in code across multiple products, and a recurring need to articulate *why* a particular polish move was right or wrong in a way that transferred between projects.
+Built by [Jared Volpe](https://jaredvolpe.com). Devour grew out of a working practice of designing in code across multiple products, and a recurring need to articulate *why* a particular polish move was right or wrong in a way that transferred between projects.
 
 Open issues at [github.com/plainspace/devour-skills](https://github.com/plainspace/devour-skills/issues).

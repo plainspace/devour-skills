@@ -339,9 +339,27 @@ Context: <primary surface + principle weighting from Devour Context>
 MICRO SUMMARY
 N breaks · N drifts · N opportunities
 Principles reviewed: #3 (intent), #6 (ergonomics), #11 (metaphor)
-Reviewed: code only | code + live behavior
+Reviewed: code only | code + browser (<MCP name>)
+═══════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════
+APPLY?
+  1. Apply all 🔴 BREAKS (N findings)
+  2. Apply all 🔴 + 🟡 (N findings)
+  3. Apply everything (N findings)
+  4. Cherry-pick ... tell me which (e.g., "1, 3, and 5" or specific finding name)
+  5. Review only ... apply nothing
 ═══════════════════════════════════════════════════
 ```
+
+After printing the review, **always print the APPLY? block as the final lines of output.** Do not skip it.
+
+When applying:
+
+- **Show the diff** before each file change. Brief, just the hunks.
+- **Apply 🔴 BREAKS without further confirmation** if the user picked option 1, 2, or 3.
+- **Ask once per 🟡 DRIFT or 🟢 OPPORTUNITY** that involves a real taste call. Skip the ask if the fix is mechanical.
+- **After all fixes are applied, ask if the user wants to commit.** Do not auto-commit.
 
 ---
 

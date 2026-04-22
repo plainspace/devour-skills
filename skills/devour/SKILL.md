@@ -142,9 +142,25 @@ Principles most engaged: <#1, #4, #8>
 Principles checked but clean: <#2, #3, #6, #7, #9, #10, #11, #12>
 Principles not applicable to this surface: <#5>
 ═══════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════
+APPLY?
+  1. Apply all 🔴 BREAKS (N findings)
+  2. Apply all 🔴 + 🟡 (N findings)
+  3. Apply everything (N findings)
+  4. Cherry-pick ... tell me which (e.g., "1, 3, and 5" or "the featured badge fix")
+  5. Review only ... apply nothing
+═══════════════════════════════════════════════════
 ```
 
-If asked, offer to apply fixes directly. Apply only the 🔴 BREAKS without explicit further confirmation; ask before applying 🟡 DRIFTS or 🟢 OPPORTUNITIES, since those involve taste calls the user should make.
+After printing the review, **always print the APPLY? block as the final lines of output.** Do not skip it. The block names the user's options explicitly so they don't have to guess what's possible.
+
+When applying:
+
+- **Show the diff** before each file change. Brief, just the hunks.
+- **Apply 🔴 BREAKS without further confirmation** if the user picked option 1, 2, or 3. The principle violation was named; the tactic was specific; the user opted in.
+- **Ask once per 🟡 DRIFT or 🟢 OPPORTUNITY** that involves a real taste call (e.g., "the stagger ceiling extends to 20 ... is this the right max for your grids?"). Don't ask if the fix is mechanical.
+- **After all fixes are applied, ask if the user wants to commit.** Do not auto-commit.
 
 ---
 

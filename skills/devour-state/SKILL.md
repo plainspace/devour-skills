@@ -341,8 +341,27 @@ Context: <principle weighting from Devour Context>
 STATE SUMMARY
 N breaks · N drifts · N opportunities
 Principles reviewed: #4 (reversibility), #7 (state preservation)
+Reviewed: code only | code + browser (<MCP name>)
+═══════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════
+APPLY?
+  1. Apply all 🔴 BREAKS (N findings)
+  2. Apply all 🔴 + 🟡 (N findings)
+  3. Apply everything (N findings)
+  4. Cherry-pick ... tell me which (e.g., "1, 3, and 5" or specific finding name)
+  5. Review only ... apply nothing
 ═══════════════════════════════════════════════════
 ```
+
+After printing the review, **always print the APPLY? block as the final lines of output.** Do not skip it. State findings often involve the highest-value fixes in a devour pass; do not bury the apply prompt.
+
+When applying:
+
+- **Show the diff** before each file change. Brief, just the hunks.
+- **Apply 🔴 BREAKS without further confirmation** if the user picked option 1, 2, or 3. State breaks (missing error paths, lost user state) almost always need the named fix.
+- **Ask once per 🟡 DRIFT or 🟢 OPPORTUNITY** that involves a real taste call (e.g., "persisting filter state to URL ... is this navigable enough to want it deep-linkable?"). Skip the ask if the fix is mechanical.
+- **After all fixes are applied, ask if the user wants to commit.** Do not auto-commit.
 
 ---
 
