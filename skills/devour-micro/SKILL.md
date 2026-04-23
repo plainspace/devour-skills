@@ -70,6 +70,39 @@ If `$REPO` is not a git repository (no `.git/` directory inside), warn the user 
 `Note: $REPO is not a git repo. Skipping diff-based default. Provide a target file or pattern.`
 Then proceed with code review, but do not attempt `git diff` defaults.
 
+### Step 0b ... Check for in-progress run (resume)
+
+Scan `$REPO/.devour/runs/` for any `.md` file with a YAML frontmatter field `status: in-progress`. Filter to files where BOTH:
+
+- `skill` frontmatter matches the current skill (e.g., `devour-micro`).
+- `target` frontmatter matches the current target argument (after stripping `--repo` and `--terse`). If the current invocation has no target (diff-based default), match against the `diff-main-HEAD` slug or equivalent.
+
+**Match count handling:**
+
+- **Zero matches:** proceed with new run. No prompt.
+- **One match:** print this prompt and wait for user response:
+
+  ```
+  Found in-progress run from <started ISO timestamp>
+  with <N> findings already saved.
+
+    R: Resume this run (append new findings/sections to the existing file)
+    F: Start fresh (leave the old file; create a new run file)
+    C: Cancel
+
+  Choose [R/F/C]:
+  ```
+
+- **Multiple matches:** print a numbered list of all matches with their timestamp and finding count, then offer Resume N / Fresh / Cancel.
+
+**Resume semantics:**
+
+- If user chooses R: read the matched file. Preserve its frontmatter except update `started` field (leave as-is; do not overwrite). Find the first empty section. Continue the review from the equivalent step in this skill's Process. When appending new findings, continue from the next number (if 3 findings are saved, new findings start at Finding 4).
+- If user chooses F: leave the matched file untouched. Create a new run file per Step 4. The old in-progress file stays on disk; the user can delete it manually.
+- If user chooses C: stop. No new file created.
+
+This step runs once per invocation, before Step 1 (establish target). If resume is chosen, Step 1 and Step 1a may be skipped or truncated depending on what the in-progress file already has.
+
 ### Step 0 ... Check for --terse flag
 
 Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` before passing arguments to Step 1. Terse mode keeps the same rigor and the same three-principle scope but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.
