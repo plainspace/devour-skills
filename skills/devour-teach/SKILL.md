@@ -275,6 +275,6 @@ With a Devour Context, the review front-loads the principles that matter, calibr
 ## See also
 
 - [`../devour/SKILL.md`](../devour/SKILL.md) ... start here after running teach
-- [`../../references/lineage.md`](../../references/lineage.md) ... the four-layer model
+- [`../../references/lineage.md`](../../references/lineage.md) ... the five-layer model (Layer 0 pre-HCI foundations through Layer 4 modern web)
 - [`../../references/principles-map.md`](../../references/principles-map.md) ... per-principle source citations
 - [`../../references/anti-patterns.md`](../../references/anti-patterns.md) ... what each principle is protecting against

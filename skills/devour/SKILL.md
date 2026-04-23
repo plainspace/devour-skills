@@ -257,9 +257,10 @@ If you find yourself wanting to flag something the spine doesn't cover, two path
 
 ## See also
 
-- [`references/lineage.md`](../../references/lineage.md) ... full lineage, four layers
+- [`references/lineage.md`](../../references/lineage.md) ... full lineage, five layers
 - [`references/principles-map.md`](../../references/principles-map.md) ... per-principle source citations
 - [`references/exemplars.md`](../../references/exemplars.md) ... named products with specific moves
 - [`references/anti-patterns.md`](../../references/anti-patterns.md) ... failure modes catalog
+- [`references/methodology.md`](../../references/methodology.md) ... review discipline; how to use devour well (not what to review)
 - [`references/reading-list.md`](../../references/reading-list.md) ... ordered reading list
 - [`examples/`](../../examples/) ... annotated before/after diffs from real codebases
