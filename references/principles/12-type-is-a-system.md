@@ -8,7 +8,7 @@ Typography is a system of relationships: each size, weight, leading, and spacing
 
 ## Why it matters
 
-Edward Tufte's information hierarchy principles establish that visual encoding must be systematic to be readable: inconsistent type signals inconsistent hierarchy, and inconsistent hierarchy is not hierarchy at all. Christopher Alexander's pattern language argues that the value of patterns comes from their systematic application... a pattern applied once is a coincidence, applied consistently it is a language. Sam Henri Gold's typography craft work translates this to the current web context. The Vercel design org's Geist type system demonstrates the production answer: every size is a role, every role has a justifiable relationship to the scale, and no element makes a type decision for itself.
+The pre-HCI source is Josef Müller-Brockmann's *Grid Systems in Graphic Design* (1981), which established the typographic grid as an architecture... not a layout aid but the systematic structure within which every type decision becomes meaningful in relation to every other. Modular scales, baseline grids, and column structures are not style; they are the conditions under which type can form a language rather than a collection of per-element choices. Edward Tufte's information hierarchy principles extend this: visual encoding must be systematic to be readable, and inconsistent type signals inconsistent hierarchy. Christopher Alexander's pattern language makes the same structural claim: a pattern applied once is a coincidence, applied consistently it is a language. Sam Henri Gold's typography craft work translates this to the current web context. The Vercel design org's Geist type system demonstrates the production answer: every size is a role, every role has a justifiable relationship to the scale, and no element makes a type decision for itself.
 
 ## Tactics
 
@@ -31,5 +31,6 @@ Edward Tufte's information hierarchy principles establish that visual encoding m
 
 ## Further study
 
+- Josef Müller-Brockmann, *Grid Systems in Graphic Design* (1981) ... the Layer 0 source; modular grids and systematic type scales as the architecture for typographic decision-making
 - Sam Henri Gold, samhenrigold.com ... typography craft; the thesis that Layer 4 type work is increasingly the differentiator AI cannot easily reproduce
 - Robert Bringhurst, *The Elements of Typographic Style* ... the foundational text for understanding type as a system of relationships

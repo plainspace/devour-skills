@@ -8,6 +8,13 @@ Devour is licensed under Apache 2.0. See [`LICENSE`](LICENSE) for the full licen
 
 Devour stands on a body of public work by other designers, engineers, writers, and educators. The principles in this skill are stated in original prose for clarity and consistency, but the lineage is not original. The following individuals and organizations are credited as primary sources of the thinking encoded in this skill.
 
+### Layer 0 ... Pre-HCI foundations
+
+- **Ollie Johnston** and **Frank Thomas** ... *The Illusion of Life: Disney Animation* (1981). The 12 principles of animation. Source vocabulary for principles 2 and 5.
+- **Josef Müller-Brockmann** ... *Grid Systems in Graphic Design* (1981). Systematic grids and modular type scales. Source vocabulary for principles 10 and 12.
+- **Jacques Bertin** ... *Semiology of Graphics* (1967). Visual variables as information grammar. Source vocabulary for principle 9.
+- **Hochschule für Gestaltung Ulm** (1953 to 1968) ... Founders: Inge Aicher-Scholl, Otl Aicher, Max Bill. Later director: Tomás Maldonado. The school where systematic design method was codified. The tradition that Dieter Rams's 10 principles descend from.
+
 ### Layer 1 ... Principles of design
 
 - **Dieter Rams** ... 10 Principles of Good Design (Braun, 1980s)
@@ -58,6 +65,9 @@ This skill is a working designer's reference, not a replacement for the source m
 
 - [Devouring Details](https://devouringdetails.com) by Rauno Freiberg ... $249, the most direct guide to current web design engineering practice
 - [Animations on the Web](https://animations.dev) by Emil Kowalski ... $299, the canonical animation course
+- *The Illusion of Life: Disney Animation* by Ollie Johnston and Frank Thomas ... the 12 principles of animation; Layer 0 source for motion
+- *Grid Systems in Graphic Design* by Josef Müller-Brockmann ... systematic grids; Layer 0 source for type and density
+- *Semiology of Graphics* by Jacques Bertin ... visual variables as grammar; Layer 0 source for information design
 - *The Visual Display of Quantitative Information* by Edward Tufte ... still the foundation
 - *The Design of Everyday Things* by Don Norman ... still the foundation
 - *Sketching User Experiences* by Bill Buxton ... underrated

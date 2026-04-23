@@ -8,7 +8,7 @@ Decoration is any element that occupies visual space without communicating infor
 
 ## Why it matters
 
-Edward Tufte's data-ink ratio is the foundation: maximize the proportion of ink (or pixels) devoted to displaying data, minimize the proportion used for everything else. Dieter Rams's principle 10 ("good design is as little design as possible") makes the same claim from the product design direction. Naoto Fukasawa's super-normal applies it to the everyday object: the thing that does its job without drawing attention to itself. The Linear issue list is the current software production example: high information density, near-zero chartjunk, every visible element communicating state.
+The pre-HCI source is Jacques Bertin's *Semiology of Graphics* (1967), which established that visual variables (position, size, shape, value, color, orientation, texture) are a grammar with rules... not an aesthetic palette to fill arbitrarily. Decoration, in Bertin's terms, is the occupation of a visual variable without communicating the information that variable is capable of carrying. Edward Tufte's data-ink ratio is the practice-manual extension of Bertin's grammar: maximize the proportion of ink (or pixels) devoted to displaying data, minimize the proportion used for everything else. Dieter Rams's principle 10 ("good design is as little design as possible") makes the same claim from the product design direction. Naoto Fukasawa's super-normal applies it to the everyday object: the thing that does its job without drawing attention to itself. The Linear issue list is the current software production example: high information density, near-zero chartjunk, every visible element communicating state.
 
 ## Tactics
 
@@ -31,5 +31,6 @@ Edward Tufte's data-ink ratio is the foundation: maximize the proportion of ink 
 
 ## Further study
 
-- Edward Tufte, *The Visual Display of Quantitative Information* (1983) ... the data-ink ratio and chartjunk; the foundational text for this principle
+- Jacques Bertin, *Semiology of Graphics* (1967) ... the Layer 0 source; visual variables as a grammar for information encoding
+- Edward Tufte, *The Visual Display of Quantitative Information* (1983) ... the data-ink ratio and chartjunk; the practice manual built on Bertin's foundation
 - Dieter Rams, principle 10 in *Less and More: The Design Ethos of Dieter Rams* (Klemp & Ueki-Polet, 2009)

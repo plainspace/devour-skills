@@ -2,9 +2,47 @@
 
 An ordered reading list for someone new to the devour lineage. Organized by layer. Each entry includes a brief note on why it matters for design engineering practice.
 
-The four-layer model is explained in [`lineage.md`](lineage.md). The short version: Layers 1-3 are the slow-moving foundations that make Layer 4 advice durable. If you only read Layer 4, you will re-derive the principles every few years when the Layer 4 names change. If you read Layers 1-3 first, the principles stay with you permanently.
+The five-layer model is explained in [`lineage.md`](lineage.md). The short version: Layers 0-3 are the slow-moving foundations that make Layer 4 advice durable. If you only read Layer 4, you will re-derive the principles every few years when the Layer 4 names change. If you read Layers 0-3 first, the principles stay with you permanently.
 
 See "Where to start" at the bottom of this file for sequencing by background.
+
+---
+
+## Layer 0 ... Pre-HCI foundations
+
+Pre-computing sources. These thinkers were not designing software, but their work is directly load-bearing for devour's principles on motion, information, density, and systematic type. Layer 1 operationalizes what Layer 0 built.
+
+---
+
+### Ollie Johnston and Frank Thomas ... *The Illusion of Life: Disney Animation*
+
+**Format:** Book. 1981. Long (575 pages), but the chapter on the 12 principles is self-contained.
+
+**Why it matters for devour:** Squash and stretch, arcs, slow in and slow out, anticipation, staging, timing, and follow-through are the source vocabulary for devour's principles 2 (physics over duration) and 5 (sequence carries meaning). These are not cartoon techniques; they are observations about how physical motion communicates weight, causality, and intention. Emil Kowalski and Rauno Freiberg both cite this book directly.
+
+---
+
+### Josef Müller-Brockmann ... *Grid Systems in Graphic Design*
+
+**Format:** Book. 1981. Also published in German (*Rastersysteme für die visuelle Gestaltung*).
+
+**Why it matters for devour:** Müller-Brockmann's argument is that the grid is not a layout convenience; it is the systematic architecture that makes every element's position meaningful in relation to every other element. The chapter on typographic grids is the conceptual foundation for devour's principle 12 (type is a system). The modular grid framework underpins principle 10 (density is a craft choice): density decisions are only craft when there is a grid to support them.
+
+---
+
+### Jacques Bertin ... *Semiology of Graphics*
+
+**Format:** Book. Originally published in French (*Sémiologie graphique*) in 1967. English translation published by the University of Wisconsin Press, 1983.
+
+**Why it matters for devour:** Bertin identified the seven visual variables (position, size, shape, value, color, orientation, texture) and described the grammatical rules governing their use. This is the theoretical foundation that Edward Tufte built his data-ink ratio on. Devour's principle 9 (reduce decoration, increase information) traces through Tufte to Bertin. Bertin is the grammar; Tufte is the practice manual.
+
+---
+
+### Hochschule für Gestaltung Ulm ... School archive and histories
+
+**Format:** Not a single book. Key secondary sources include *An HfG Ulm Review* (Ken Friedman, ed.) and *The Ulm School: The Development of Industrial Design* (Lindinger, ed., 1991). Also: Otl Aicher's *The World as Design* (1994) and *Typographie* (1988).
+
+**Why it matters for devour:** HfG Ulm is where systematic design method was codified as a discipline: design proceeds from defined method, research, and criteria. Dieter Rams worked within this tradition. His 10 principles are the Ulm method applied to industrial product design. Understanding Ulm explains why Layer 1 Rams is what it is, not just what it says. Start with Aicher's *The World as Design* as the most accessible entry point.
 
 ---
 
@@ -285,7 +323,7 @@ Typography, animation theory, and systems thinking that deepens the layer-specif
 
 **Format:** Essay by John Lasseter. "Principles of Traditional Animation Applied to 3D Computer Animation," 1987. Also codified in *The Illusion of Life* by Frank Thomas and Ollie Johnston.
 
-**Why it matters:** Anticipation, follow-through, squash and stretch, slow in / slow out. These principles are not about cartoon animation; they are about how motion communicates physical reality. Devour's principle #5 (sequence carries meaning) and #2 (physics over duration) both have Disney lineage.
+**Why it matters:** Anticipation, follow-through, squash and stretch, slow in / slow out. These principles are not about cartoon animation; they are about how motion communicates physical reality. Devour's principle #5 (sequence carries meaning) and #2 (physics over duration) both have Disney lineage. The primary citation for *The Illusion of Life* is now in Layer 0; this entry covers Lasseter's derivative essay specifically.
 
 ---
 

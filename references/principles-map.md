@@ -1,10 +1,10 @@
 # Principles map
 
-This document maps each of devour's twelve principles back to its primary sources across the four-layer lineage. Every principle is cited. None are original to me. The phrasing is mine for clarity and consistency, but the thinking is borrowed openly from people who have done the work.
+This document maps each of devour's twelve principles back to its primary sources across the five-layer lineage. Every principle is cited. None are original to me. The phrasing is mine for clarity and consistency, but the thinking is borrowed openly from people who have done the work.
 
 For each principle: **primary sources** (the load-bearing influences), **secondary sources** (related), and **canonical exemplar** (the production work that demonstrates it best).
 
-See [`lineage.md`](lineage.md) for the four-layer model and full attribution.
+See [`lineage.md`](lineage.md) for the five-layer model and full attribution.
 
 ---
 
@@ -30,6 +30,7 @@ See [`lineage.md`](lineage.md) for the four-layer model and full attribution.
 > Real movement has mass, springs, and damping. Eased durations betray themselves as animation.
 
 **Primary sources:**
+- **Ollie Johnston and Frank Thomas** ... *The Illusion of Life* (1981), 12 principles of animation (squash and stretch, arcs, slow-in/slow-out) (Layer 0)
 - **Imran Chaudhri / Bas Ording** ... iPhone rubber-banding and inertial scrolling (Layer 3)
 - **Loren Brichter** ... pull-to-refresh (Layer 3)
 - **Rauno Freiberg** ... Devouring Details, "Simulating Physics" chapter (Layer 4)
@@ -83,6 +84,7 @@ See [`lineage.md`](lineage.md) for the four-layer model and full attribution.
 > Stagger only when order matters. Otherwise, simultaneity.
 
 **Primary sources:**
+- **Ollie Johnston and Frank Thomas** ... *The Illusion of Life* (1981), 12 principles of animation (anticipation, staging, timing, follow-through) (Layer 0)
 - **Edward Tufte** ... data-ink ratio, every choice signifies (Layer 1)
 - **Bill Verplank** ... do/feel/know feedback model (Layer 2)
 - **Rauno Freiberg** ... Devouring Details, "Motion Choreography" chapter (Layer 4)
@@ -154,6 +156,7 @@ See [`lineage.md`](lineage.md) for the four-layer model and full attribution.
 > Every element earns its pixels.
 
 **Primary sources:**
+- **Jacques Bertin** ... *Semiology of Graphics* (1967), the theoretical foundation for visual variables as information grammar (Layer 0)
 - **Edward Tufte** ... data-ink ratio (Layer 1)
 - **Dieter Rams, principle 5** ... unobtrusive (Layer 1)
 - **Dieter Rams, principle 10** ... "as little design as possible" (Layer 1)
@@ -172,6 +175,7 @@ See [`lineage.md`](lineage.md) for the four-layer model and full attribution.
 > Linear's density and Notion's spaciousness are both right; choose intentionally.
 
 **Primary sources:**
+- **Josef Müller-Brockmann** ... *Grid Systems in Graphic Design* (1981), systematic grids as the foundation for intentional density (Layer 0)
 - **Edward Tufte** ... density as a virtue when designed well (Layer 1)
 - **Bret Victor** ... "Magic Ink" on dense information software (Layer 2)
 - **Linear team** ... density as a productivity choice (Layer 3)
@@ -208,6 +212,7 @@ See [`lineage.md`](lineage.md) for the four-layer model and full attribution.
 > Scale, leading, weight, optical sizing follow rules.
 
 **Primary sources:**
+- **Josef Müller-Brockmann** ... *Grid Systems in Graphic Design* (1981), modular grids and systematic type scales (Layer 0)
 - **Edward Tufte** ... typography as information hierarchy (Layer 1)
 - **Christopher Alexander** ... pattern languages (Layer 1)
 - **Sam Henri Gold** ... typography craft (Layer 4)
@@ -239,3 +244,5 @@ For traceability, here is the explicit map from Rams's 10 principles to devour's
 | 10. As little design as possible        | #9 Reduce decoration                    |
 
 Five of devour's twelve principles trace primarily to Rams. Principle 6 ("honest") is the most important single influence on the spine.
+
+**Note on HfG Ulm:** Rams's 10 principles did not originate in isolation. They descend from the systematic design method codified at the Hochschule für Gestaltung Ulm (1953 to 1968), where Otl Aicher, Max Bill, and Tomás Maldonado established that design proceeds from method and criteria, not from individual stylistic intuition. Rams worked within that tradition. The table above maps Rams to devour; this note maps Rams to Layer 0.

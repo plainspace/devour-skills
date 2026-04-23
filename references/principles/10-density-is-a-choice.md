@@ -8,7 +8,7 @@ Density is not a scale from bad to good. It is a dimension that must be calibrat
 
 ## Why it matters
 
-Edward Tufte argues that well-designed density is more usable, not less: small multiples and dense data displays allow comparison and pattern recognition that spacious layouts prevent. Bret Victor's "Magic Ink" makes the case for information software as a graphic design problem where density in service of comprehension is a virtue. The Linear team made density a named product principle: "speed as a feature" and "density as a craft choice" are in the Linear Method. The Vercel dashboard is the contemporary web example: high density, but every space is intentional.
+The pre-HCI source is Josef Müller-Brockmann's *Grid Systems in Graphic Design* (1981): systematic grids are the architecture that makes density decisions legible rather than arbitrary. A dense layout without an underlying grid is not designed density... it is compressed layout. Müller-Brockmann's argument is that the grid is not a constraint applied from the outside; it is the logic that makes every element's position meaningful in relation to every other. Edward Tufte extends this: well-designed density is more usable, not less... small multiples and dense data displays allow comparison and pattern recognition that spacious layouts prevent. Bret Victor's "Magic Ink" makes the case for information software as a graphic design problem where density in service of comprehension is a virtue. The Linear team made density a named product principle: "speed as a feature" and "density as a craft choice" are in the Linear Method. The Vercel dashboard is the contemporary web example: high density, but every space is intentional.
 
 ## Tactics
 
@@ -32,5 +32,6 @@ Edward Tufte argues that well-designed density is more usable, not less: small m
 
 ## Further study
 
+- Josef Müller-Brockmann, *Grid Systems in Graphic Design* (1981) ... the Layer 0 source; systematic grids as the foundation for intentional density
 - Bret Victor, "Magic Ink" (worrydream.com) ... information software as a graphic design problem; density in service of comprehension
 - Edward Tufte, *Envisioning Information* (1990) ... small multiples and the case for designed density

@@ -9,7 +9,7 @@ Real movement has mass, springs, and damping. A tween runs for a fixed duration 
 
 ## Why it matters
 
-Imran Chaudhri and Bas Ording's rubber-banding implementation on the original iPhone is the canonical layer 3 demonstration: the further you stretch the content past the edge, the more resistance; the faster you release, the more snap-back velocity. No tween can replicate this because tweens don't carry gesture velocity. Rauno Freiberg's "Simulating Physics" chapter in Devouring Details extends this to the web: spring-based motion is not an aesthetic choice, it is the physically honest one. Emil Kowalski's Animations on the Web translates the principle into React with practical spring configurations.
+The pre-HCI source is Ollie Johnston and Frank Thomas's *The Illusion of Life* (1981), whose 12 principles of animation include squash and stretch, arcs, and slow in and slow out... all of which are observations about physically honest motion. A ball that squashes on impact and stretches on release is obeying the same physics as a rubber ball; a character whose limbs lag before following the torso is modeling inertia. Johnston and Thomas derived these from animation empirically, but the underlying claim is about what motion must do to feel real. Imran Chaudhri and Bas Ording's rubber-banding implementation on the original iPhone is the canonical Layer 3 demonstration: the further you stretch the content past the edge, the more resistance; the faster you release, the more snap-back velocity. No tween can replicate this because tweens don't carry gesture velocity. Rauno Freiberg's "Simulating Physics" chapter in Devouring Details extends this to the web: spring-based motion is not an aesthetic choice, it is the physically honest one. Emil Kowalski's Animations on the Web translates the principle into React with practical spring configurations.
 
 ## Tactics
 
@@ -32,5 +32,6 @@ Imran Chaudhri and Bas Ording's rubber-banding implementation on the original iP
 
 ## Further study
 
+- Ollie Johnston and Frank Thomas, *The Illusion of Life: Disney Animation* (1981) ... the Layer 0 source; the 12 principles (squash and stretch, arcs, slow in and slow out) are the vocabulary for physically honest motion
 - Rauno Freiberg, Devouring Details, "Simulating Physics" chapter (devouringdetails.com)
 - Emil Kowalski, Animations on the Web, spring chapters (animations.dev)
