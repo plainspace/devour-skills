@@ -410,6 +410,34 @@ For the theory behind each principle, see [`principles-map.md`](principles-map.m
 
 ---
 
+### Cleanup-after-navigation race
+
+**What it is:** A single event handler triggers both a route change (`router.push(path)`) and a local state cleanup (`setOpen(false)`, `setSelected(null)`, etc.) ... but the navigation runs first.
+
+**Why it fails:** React's render pipeline can flush the route change before the local state update commits. Portal-mounted UI (modal, command palette, popover, toast) is stranded in the new route tree. The user navigates successfully but the old surface stays visible. This is principle #7 with a wrinkle: when *crossing* a boundary (a route change), close-out work must happen *before* the boundary, not concurrent with it. Otherwise fragments of the old state are stranded in the new one.
+
+**Fix direction:** State cleanup before navigation. Always.
+
+```tsx
+// Wrong:
+const handleSelect = (path: string) => {
+  router.push(path);    // navigation may flush before setOpen commits
+  setOpen(false);       // stranded portal in new route
+};
+
+// Right:
+const handleSelect = (path: string) => {
+  setOpen(false);       // queue cleanup first
+  router.push(path);
+};
+```
+
+The same rule applies to any portal-rendered UI invoked from a list of navigation targets: command palettes, autocomplete results, search overlays, sidebar nav menus that contain links. If a click both *closes the surface* and *takes the user somewhere*, close before going.
+
+**Lineage:** Principle #7 corollary ... cleanup must precede the boundary, not coincide with it. This is a React-specific failure mode, but the underlying principle (preserve state across boundaries cleanly) is general.
+
+---
+
 ## Principle #8 ... Make affordances visible without making them loud
 
 > Signifiers should be discoverable, not declarative.

@@ -216,11 +216,27 @@ After the migration was applied, the user tested the flow end-to-end:
 3. Arrow down to first result ✓
 4. Hit Enter ... navigation fires, **but the modal and backdrop don't hide** ❌
 
-The migrated `navigate` helper called `setOpen(false)` before `router.push(...)`, but the `<CommandItem onSelect>` handlers were calling `router.push(...)` directly inside the inline arrow function without invoking `navigate`. The dialog's open state was independent of the route and required explicit close.
+The migrated `navigate` helper called `router.push(path)` *before* `setOpen(false)`. Both updates ran in the same handler. React's render pipeline flushed the route change before the local state update committed, leaving the Radix Dialog portal stranded in the new route tree.
 
-In the previous hand-rolled implementation, this bug was likely hidden by the dialog's mount/unmount being tied to state that probably reset on navigation (or a different render path). With Radix `<CommandDialog>`, open state is fully controlled and must be closed explicitly.
+The hand-rolled implementation likely hid this race because the modal was a sibling div in the same component, not a portal. With Radix `<CommandDialog>`, the dialog renders into a portal at `document.body`, fully decoupled from the component's own subtree. Open state is controlled, and closing must happen *before* the navigation commits, not concurrent with it.
 
-**Fix:** Each `CommandItem.onSelect` was changed from a single statement to:
+**Fix:** Reverse the order. State cleanup before navigation. Always.
+
+```tsx
+// Before (broken ... navigation can flush before setOpen commits):
+const navigate = (path: string) => {
+  router.push(path);
+  setOpen(false);
+};
+
+// After (correct ... cleanup queues first, navigation second):
+const navigate = (path: string) => {
+  setOpen(false);
+  router.push(path);
+};
+```
+
+The `CommandItem.onSelect` handlers were also updated to inline the same order:
 
 ```tsx
 onSelect={() => {
@@ -229,9 +245,9 @@ onSelect={() => {
 }}
 ```
 
-Same pattern applied to artist results. The `navigate` helper was inlined.
+This is a real example of **principle #7 (preserve user state across boundaries)** with a corollary the spine implies but doesn't name: when *crossing* a boundary, close-out work must happen *before* the boundary, not concurrent with it. Otherwise fragments of the old state are stranded in the new one.
 
-This is a real example of principle #4 (reversibility is craft) operating at the state level: the component said "I am open" and the user's action implied "I'm done with this surface." The UI didn't follow the user's intent. The fix made state honest.
+The pattern is now in [`references/anti-patterns.md`](../../references/anti-patterns.md) under principle #7 as "Cleanup-after-navigation race." The general rule applies to any portal-rendered UI invoked from a list of navigation targets: command palettes, autocomplete results, search overlays, sidebar nav menus containing links. If a click both closes the surface and takes the user somewhere, close before going.
 
 ## What this example demonstrates
 
