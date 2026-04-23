@@ -1,0 +1,36 @@
+# Principle 2 ... Physics over duration
+
+> The details are not the details. They make the design.
+> ... Charles and Ray Eames
+
+## What it means
+
+Real movement has mass, springs, and damping. A tween runs for a fixed duration regardless of how fast the user moved; a spring responds to velocity. When elements the user moves or gestures against are governed by fixed-duration easing, the mismatch between the expected physical feedback and the actual behavior is felt even when it cannot be named. Spring physics closes that gap.
+
+## Why it matters
+
+Imran Chaudhri and Bas Ording's rubber-banding implementation on the original iPhone is the canonical layer 3 demonstration: the further you stretch the content past the edge, the more resistance; the faster you release, the more snap-back velocity. No tween can replicate this because tweens don't carry gesture velocity. Rauno Freiberg's "Simulating Physics" chapter in Devouring Details extends this to the web: spring-based motion is not an aesthetic choice, it is the physically honest one. Emil Kowalski's Animations on the Web translates the principle into React with practical spring configurations.
+
+## Tactics
+
+- Replace `transition: transform Xms ease-*` on any draggable, swipeable, or gesture-driven element with spring physics.
+- Never use `transition: all` on interactive components. Different properties need different physical metaphors; collapsing them into one transition prevents targeted physics.
+- Use `linear` easing only for color and opacity changes where physical metaphor does not apply. Never for spatial movement.
+- For dialogs and sheets, spring-in on enter to communicate mass. A dialog that pops in on a fixed-duration ease has no weight.
+
+## Anti-patterns
+
+- **`transition: transform 300ms ease-out` on dragged elements:** Tween speed is constant regardless of gesture velocity. Release fast, the element still takes 300ms. The physical metaphor is broken.
+- **Linear easing on spatial movement:** Nothing in the physical world moves like a conveyor belt. Linear is correct for opacity fades, never for position.
+- **Tween-based dialog enter/exit:** A modal entering on a CSS transition at a fixed duration communicates a scheduled animation, not an object with mass.
+
+## Exemplars
+
+- **iOS rubber-banding:** The original production spring. Stretch past the scroll edge; resistance increases. Release; snap-back velocity matches stretch speed. No tween could do this.
+- **Vaul drawer:** Drag to midpoint and release. Spring velocity carries through from gesture speed. This is what drag-and-release should feel like on every surface.
+- **NotBoring Calculator:** Each button press springs back. The visual behavior matches what a physical button does.
+
+## Further study
+
+- Rauno Freiberg, Devouring Details, "Simulating Physics" chapter (devouringdetails.com)
+- Emil Kowalski, Animations on the Web, spring chapters (animations.dev)

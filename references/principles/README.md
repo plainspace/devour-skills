@@ -1,78 +1,32 @@
-# Principles
+# Principles ... deep-dive files
 
-This folder is intended to hold one Markdown file per principle for deep treatment of each of devour's twelve principles.
+One file per principle. Compact treatment (300-500 words) covering what it means, lineage, tactics, anti-patterns, exemplars, and further study. These files are the long-form version of the spine; `references/principles-map.md` is the terse source map.
 
-**The twelve principle files are forthcoming.** They are not included in the v0.1 release.
+Start with principle 1 and read in order the first time through. After that, jump to the principle you need.
 
-For now:
+1. [Honest motion](01-honest-motion.md)
+2. [Physics over duration](02-physics-over-duration.md)
+3. [Commit on intent, not on contact](03-commit-on-intent.md)
+4. [Reversibility is craft](04-reversibility-is-craft.md)
+5. [Sequence carries meaning](05-sequence-carries-meaning.md)
+6. [The fingertip and the cursor are not the same](06-fingertip-and-cursor.md)
+7. [Preserve user state across boundaries](07-preserve-user-state.md)
+8. [Make affordances visible without making them loud](08-affordances-visible-quiet.md)
+9. [Reduce decoration, increase information](09-reduce-decoration.md)
+10. [Density is a craft choice, not a default](10-density-is-a-choice.md)
+11. [Match the metaphor to the medium](11-metaphor-to-medium.md)
+12. [Type is a system, not a decision per element](12-type-is-a-system.md)
 
-- **Principle citations and source mapping:** [`../principles-map.md`](../principles-map.md) ... maps each principle to its primary and secondary sources across the four-layer lineage.
-- **Failure modes per principle:** [`../anti-patterns.md`](../anti-patterns.md) ... 3-5 named anti-patterns per principle, with descriptions and fix directions.
-- **Positive exemplars per principle:** [`../exemplars.md`](../exemplars.md) ... named products with specific moves to study.
-- **Full lineage:** [`../lineage.md`](../lineage.md) ... the four-layer model and how each layer feeds the spine.
+## Format
 
----
+Each file follows the same structure:
 
-## Planned structure
+- Epigraph (one line, from a primary source)
+- What it means (plain statement of the principle)
+- Why it matters (lineage context, named sources)
+- Tactics (concrete moves)
+- Anti-patterns (concrete failure modes)
+- Exemplars (products and moves that demonstrate the principle)
+- Further study (primary and operational reading)
 
-When the per-principle files are written, each will follow this structure:
-
-```
-# Principle #N: [Name]
-
-> [The principle statement, one sentence]
-
-## Statement
-
-[The full principle in 2-3 sentences, expanded beyond the one-line version]
-
-## Sources
-
-[Primary and secondary citations from the four-layer lineage]
-
-## What this catches
-
-[The classes of problems this principle is designed to identify]
-
-## Tactics
-
-[The positive patterns that satisfy this principle, with code examples]
-
-## Anti-patterns
-
-[The failure modes specific to this principle, cross-referenced to anti-patterns.md]
-
-## Exemplars
-
-[Named products that demonstrate this principle in production, cross-referenced to exemplars.md]
-
-## Relationship to other principles
-
-[How this principle interacts with or depends on others in the spine]
-```
-
----
-
-## Contribution
-
-The per-principle files are a high-priority contribution target. If you want to contribute to devour, writing a thorough treatment of a single principle... with citations, code examples, and real exemplars... is the most valuable thing you can add.
-
-Guidelines for contributing a principle file:
-
-1. Follow the structure above.
-2. Cite the lineage explicitly by layer and name. The principle has a four-layer ancestry; trace it.
-3. Code examples should be idiomatic React/TypeScript. No pseudocode for the tactical sections.
-4. Exemplars must be real, named, publicly accessible products. No hypotheticals.
-5. Anti-patterns must name the failure mode, not just describe the bad code. The name is what makes it memorable and citable.
-
-Open a pull request with the principle file, and reference the principle number in the PR title.
-
----
-
-## See also
-
-- [`../principles-map.md`](../principles-map.md)
-- [`../anti-patterns.md`](../anti-patterns.md)
-- [`../exemplars.md`](../exemplars.md)
-- [`../lineage.md`](../lineage.md)
-- [`../../skills/devour/SKILL.md`](../../skills/devour/SKILL.md)
+The files stay compact deliberately. `references/principles-map.md` is terser; `references/lineage.md` is the full four-layer attribution. These files fit between.
