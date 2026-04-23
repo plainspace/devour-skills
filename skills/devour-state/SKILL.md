@@ -47,6 +47,8 @@ Read the `Devour Context` block. Check **Principle weighting**. For a productivi
 
 ## Process
 
+**Always execute this process from scratch on each invocation.** If prior devour-state output exists in session memory, ignore it. Re-read targets, re-run browser-MCP detection, re-verify findings. Never reproduce, paraphrase, or replay cached output. If the user asks to "re-run," "run again," or "check again," they are asking for a fresh execution of the full process.
+
 ### Step 0 ... Check for --terse flag
 
 Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` before passing arguments to Step 1. Terse mode keeps the same rigor and the same two-principle scope but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.

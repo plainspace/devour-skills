@@ -47,6 +47,8 @@ A `Devour Context` block will exist in `.devour-context.md` (the canonical locat
 
 ## Process
 
+**Always execute this process from scratch on each invocation.** If prior devour output exists in session memory, ignore it. Re-read targets, re-run Step 1a browser-MCP detection, re-verify findings. Never reproduce, paraphrase, or replay cached output from a prior run. The codebase may have changed since the last review (fixes applied, new commits), and even if it has not, the verification itself is the review. If the user asks to "re-run," "run again," "check again," or similar, they are asking for a fresh execution of the full process, not a reprint of the last output.
+
 ### Step 0 ... Check for --terse flag
 
 Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` from the arguments before passing them to Step 1. Terse mode keeps the same rigor and the same spine but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.
@@ -56,8 +58,9 @@ Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip 
 If `$ARGUMENTS` is provided (after stripping `--terse`), the target is that file, component, pattern, or URL. Read it.
 
 If `$ARGUMENTS` is empty:
+
 - Default to **changed files in the current branch** (`git diff main..HEAD --name-only`, filtered to design-relevant files: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `.scss`, `.html`, `.astro`).
-- If the current branch has no changes, ask the user what to review.
+- If the current branch has no changes, do NOT fall back to replaying a prior review. Ask the user what to review. Suggest natural targets based on the repo: recent commits (`git log --oneline -10`) often reveal which surfaces have been actively worked on. Also check for a prior review target in session context... if the user ran `/devour` recently on specific files, those are natural candidates for a fresh re-execution. Offer options; wait for the user to pick before proceeding.
 
 #### Step 1a ... Detect a browser-driving MCP
 

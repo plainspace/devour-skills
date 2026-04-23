@@ -46,6 +46,8 @@ Read the `Devour Context` block from `.devour-context.md`, `.claude/CLAUDE.md`, 
 
 ## Process
 
+**Always execute this process from scratch on each invocation.** If prior devour-motion output exists in session memory, ignore it. Re-read targets, re-run browser-MCP detection, re-verify findings. Never reproduce, paraphrase, or replay cached output. If the user asks to "re-run," "run again," or "check again," they are asking for a fresh execution of the full process.
+
 ### Step 0 ... Check for --terse flag
 
 Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` before passing arguments to Step 1. Terse mode keeps the same rigor and the same three-principle scope but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.
