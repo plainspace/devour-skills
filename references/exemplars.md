@@ -60,7 +60,7 @@ The search input commits on typing, not on cursor-over. There is no confusion be
 
 **Principles:** #3 (commit on intent: hover delay prevents false intent), #6 (ergonomics: keyboard-first, all actions reachable), #11 (metaphor: command surface is distinct from browse surface)
 
-**Links:** [cmdk.vercel.app](https://cmdk.vercel.app) · [github.com/pacocoursey/cmdk](https://github.com/pacocoursey/cmdk) · Authors: Paco Coursey + Rauno Freiberg (Vercel)
+**Links:** [cmdk.vercel.app](https://cmdk.vercel.app) · [github.com/pacocoursey/cmdk](https://github.com/pacocoursey/cmdk) · Author: Paco Coursey; integrated at Vercel by Rauno Freiberg in 2020
 
 ---
 
@@ -74,7 +74,7 @@ The failure mode this prevents: a trigger+overlay bundled into a single componen
 
 **Principle:** #11 (match metaphor to medium: global overlays are conceptually singletons; implementation matches)
 
-**Sources:** Emil Kowalski (Sonner) · Paco Coursey + Rauno Freiberg (cmdk)
+**Sources:** Emil Kowalski (Sonner) · Paco Coursey (cmdk, integrated at Vercel by Rauno Freiberg)
 
 ---
 
@@ -168,7 +168,7 @@ MercuryOS is cited throughout Layer 4 practice because it makes legible a set of
 
 **Principles:** #5 (sequence: causality is spatial, not temporal), #11 (metaphor: action surface matches spatial context)
 
-**Links:** [mercury.os](https://mercury.os) · Author: Jason Yuan
+**Links:** [mercuryos.com](https://www.mercuryos.com) · Author: Jason Yuan
 
 ---
 

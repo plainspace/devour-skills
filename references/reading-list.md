@@ -134,7 +134,7 @@ Where Layer 1 principles get applied to the medium of screens and input devices.
 
 **Format:** Talk. CUSEC 2012. ~54 minutes.
 
-**Link:** [vimeo.com/36579366](https://vimeo.com/36579366)
+**Link:** [vimeo.com/906418692](https://vimeo.com/906418692)
 
 **Why it matters:** The talk that established Victor's reputation. The live representation demo... coding with immediate visual feedback... is a demonstration of every HCI principle from Layer 2 applied simultaneously. The thesis: creators should have immediate, live feedback from their creative tools.
 
@@ -216,7 +216,7 @@ Where the principles get applied to native platforms (iOS, macOS, modern desktop
 
 **Format:** Design project + essays.
 
-**Link:** [mercury.os](https://mercury.os)
+**Link:** [mercuryos.com](https://www.mercuryos.com)
 
 **Why it matters:** A speculative redesign of the operating system interface built around spatial relationships and ambient surfaces. Useful for understanding what it means for an action surface to match its medium, and for thinking about interactions beyond the window-and-toolbar metaphor. Rauno Freiberg has cited MercuryOS directly.
 
@@ -240,7 +240,7 @@ The current generation of practitioners who have made the web feel like native s
 
 ### Emil Kowalski ... *Animations on the Web*
 
-**Format:** Video course. $299.
+**Format:** Video course. $249.
 
 **Link:** [animations.dev](https://animations.dev)
 
@@ -350,7 +350,7 @@ This sequence gives you the foundation (Rams, Tufte, Norman) and then connects i
 Start here:
 1. Norman's *The Design of Everyday Things* (a week)
 2. Devouring Details by Rauno Freiberg ($249, a few evenings)
-3. Emil Kowalski's Animations on the Web ($299, a few evenings)
+3. Emil Kowalski's Animations on the Web ($249, a few evenings)
 4. Then dig back: Tufte, Rams, Bret Victor's essays
 
 You already have the implementation instincts. Norman gives you the vocabulary to describe design problems. Devouring Details and Animations on the Web give you the specific web patterns. The backfill (Tufte, Rams, Victor) is for understanding *why* those patterns are right, which is what makes the knowledge durable.

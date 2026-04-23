@@ -182,7 +182,7 @@ Staff Design Engineer at Vercel. Previously at The Browser Company on Arc. Eston
 - **[Devouring Details](https://devouringdetails.com)** ($249) ... interactive reference manual with 23 chapters, 23 downloadable React components, and 8 named principles: Inferring Intent, Interaction Metaphors, Ergonomic Interactions, Simulating Physics, Motion Choreography, Responsive Interfaces, Contained Gestures, Drawing Inspiration
 - **[rauno.me](https://rauno.me)** ... ~70 craft entries spanning prototypes, production work, and essays
 - Essays: "Invisible Details of Interaction Design" (2023), "Designing Depth" (2024), "Crafting the Next.js Website" (2023), "What will you ship?" (2023), "History of Software Design" (2026)
-- Open source: [cmdk](https://github.com/pacocoursey/cmdk) (with Paco Coursey) ... the command-menu pattern used by virtually every modern productivity app
+- Integrated open source: [cmdk](https://github.com/pacocoursey/cmdk) by Paco Coursey (used and integrated by Rauno at Vercel in 2020) ... the command-menu pattern used by virtually every modern productivity app
 
 **Devour load:** Rauno is the single largest tactical influence on devour's Layer 4. His 8 DD principles map directly to devour's spine: Inferring Intent → #3, Ergonomic Interactions → #6, Simulating Physics → #2, Motion Choreography → #5, Interaction Metaphors → #11.
 
@@ -190,7 +190,7 @@ Staff Design Engineer at Vercel. Previously at The Browser Company on Arc. Eston
 
 Design Engineer at Linear. Previously at Vercel on the design team. Author of:
 
-- **[Animations on the Web](https://animations.dev)** ($299) ... canonical web animation course
+- **[Animations on the Web](https://animations.dev)** ($249) ... canonical web animation course
 - **[Sonner](https://github.com/emilkowalski/sonner)** ... opinionated toast component for React
 - **[Vaul](https://github.com/emilkowalski/vaul)** ... drawer component for React
 - **[emilkowal.ski](https://emilkowal.ski)** ... 14+ essays on craft and animation

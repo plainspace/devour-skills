@@ -43,7 +43,7 @@ Devour stands on a body of public work by other designers, engineers, writers, a
 ### Layer 4 ... Modern web design engineering
 
 - **Rauno Freiberg** ... Staff Design Engineer at Vercel. [Devouring Details](https://devouringdetails.com) ($249), [rauno.me](https://rauno.me), essays including "Invisible Details of Interaction Design" and "Designing Depth"
-- **Emil Kowalski** ... Design Engineer at Linear. [emilkowal.ski](https://emilkowal.ski), [Animations on the Web](https://animations.dev) ($299), [Sonner](https://github.com/emilkowalski/sonner), [Vaul](https://github.com/emilkowalski/vaul), essays including "Developing Taste" and "Train Your Judgement"
+- **Emil Kowalski** ... Design Engineer at Linear. [emilkowal.ski](https://emilkowal.ski), [Animations on the Web](https://animations.dev) ($249), [Sonner](https://github.com/emilkowalski/sonner), [Vaul](https://github.com/emilkowalski/vaul), essays including "Developing Taste" and "Train Your Judgement"
 - **The Browser Company team** ... Arc, Dia
 - **The Vercel design organization** ... Geist Design System, the Vercel dashboard, [cmdk](https://github.com/pacocoursey/cmdk) by Paco Coursey
 - **Brian Lovin** ... [brianlovin.com](https://brianlovin.com), considered web craft gallery
@@ -64,7 +64,7 @@ If you find your work cited here and would prefer different attribution language
 This skill is a working designer's reference, not a replacement for the source material. The best thing you can do for your own craft is buy the work directly:
 
 - [Devouring Details](https://devouringdetails.com) by Rauno Freiberg ... $249, the most direct guide to current web design engineering practice
-- [Animations on the Web](https://animations.dev) by Emil Kowalski ... $299, the canonical animation course
+- [Animations on the Web](https://animations.dev) by Emil Kowalski ... $249, the canonical animation course
 - *The Illusion of Life: Disney Animation* by Ollie Johnston and Frank Thomas ... the 12 principles of animation; Layer 0 source for motion
 - *Grid Systems in Graphic Design* by Josef Müller-Brockmann ... systematic grids; Layer 0 source for type and density
 - *Semiology of Graphics* by Jacques Bertin ... visual variables as grammar; Layer 0 source for information design
