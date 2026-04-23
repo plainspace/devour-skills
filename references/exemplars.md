@@ -64,6 +64,20 @@ The search input commits on typing, not on cursor-over. There is no confusion be
 
 ---
 
+## Sonner / cmdk singleton host pattern
+
+**What to study:** How both libraries resolve the problem of global overlays through architectural convention: one host, many callers.
+
+**The specific move:** Sonner mounts a single `<Toaster />` at the app root. Every `toast()` call anywhere in the tree dispatches to that one host. There is no per-component toast instance, no per-feature toast container, no local open state. The overlay is globally singleton by design. cmdk's reference `CommandDialog` wrapper follows the same shape: one `<CommandDialog>` in the root layout, triggers dispatch to open it. This matches the conceptual model. A command palette is not a feature-scoped surface; it is an application-level surface. Implementation reflects that.
+
+The failure mode this prevents: a trigger+overlay bundled into a single component rendered multiple times (once per responsive breakpoint, once per nav slot) produces multiple parallel overlay instances. Only the visible one closes on selection; the rest remain as orphan portals in `document.body`, holding `pointer-events: none` on the body and blocking all interaction on the next page. No timing fix resolves this because the cause is structural. The singleton host pattern eliminates the structural condition.
+
+**Principle:** #11 (match metaphor to medium: global overlays are conceptually singletons; implementation matches)
+
+**Sources:** Emil Kowalski (Sonner) · Paco Coursey + Rauno Freiberg (cmdk)
+
+---
+
 ## Linear
 
 **What to study:** Navigation hover delays. Keyboard-first model. Offline-first state. Information density.

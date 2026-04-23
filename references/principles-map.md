@@ -197,6 +197,8 @@ See [`lineage.md`](lineage.md) for the four-layer model and full attribution.
 
 **Canonical exemplar:** Notion's slash menu. The action surface is *inline* in the document, not a modal that interrupts. The metaphor (writing) and the medium (a contenteditable surface) match perfectly.
 
+**Related exemplar:** Sonner and cmdk's singleton host pattern... see `exemplars.md`. Global overlays are conceptually singletons; implementation matches. Bundling a trigger and overlay into one component and rendering it multiple times (per breakpoint, per nav slot) produces orphan portals that block interaction on navigation.
+
 **Anti-pattern:** A modal dialog for a single-field text edit when an inline edit would do. The modal is overkill; the friction loses people.
 
 ---

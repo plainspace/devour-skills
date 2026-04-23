@@ -414,9 +414,13 @@ For the theory behind each principle, see [`principles-map.md`](principles-map.m
 
 **What it is:** A single event handler triggers both a route change (`router.push(path)`) and a local state cleanup (`setOpen(false)`, `setSelected(null)`, etc.) ... but the navigation runs first.
 
-**Why it fails:** React's render pipeline can flush the route change before the local state update commits. Portal-mounted UI (modal, command palette, popover, toast) is stranded in the new route tree. The user navigates successfully but the old surface stays visible. This is principle #7 with a wrinkle: when *crossing* a boundary (a route change), close-out work must happen *before* the boundary, not concurrent with it. Otherwise fragments of the old state are stranded in the new one.
+**When this advice is enough (simple case):** plain React state transitions tied to a `router.push()` or equivalent, where the component containing the overlay is rendered exactly once in the tree. Cleanup first, navigate second.
 
-**Fix direction:** State cleanup before navigation. Always.
+**When this advice is NOT enough (structural case):** if the state cleanup involves a portal-based overlay (Radix Dialog, cmdk CommandDialog, Vaul Drawer, Sonner Toaster, Headless UI Dialog, any Presence-wrapped surface) AND the component containing that overlay is rendered more than once in the tree, the order-fix alone cannot prevent orphan portals. See the related anti-pattern: `Orphan portal from duplicated trigger+overlay component`.
+
+**Why it fails:** React's render pipeline can flush the route change before the local state update commits. Portal-mounted UI (modal, command palette, popover, toast) is stranded in the new route tree. The user navigates successfully but the old surface stays visible. This is principle #7 with a wrinkle: when *crossing* a boundary (a route change), close-out work must happen *before* the boundary, not concurrent with it. Otherwise fragments of the old state are stranded in the new one. When the component is duplicated across the tree, only the instance the user interacted with receives the `onSelect` close signal... the other instances never get it, and their portals remain open in `document.body` regardless of cleanup order.
+
+**Fix direction (simple case):** State cleanup before navigation. Always.
 
 ```tsx
 // Wrong:
@@ -434,7 +438,50 @@ const handleSelect = (path: string) => {
 
 The same rule applies to any portal-rendered UI invoked from a list of navigation targets: command palettes, autocomplete results, search overlays, sidebar nav menus that contain links. If a click both *closes the surface* and *takes the user somewhere*, close before going.
 
+**Fix direction (structural case):** split trigger and overlay; see next entry.
+
 **Lineage:** Principle #7 corollary ... cleanup must precede the boundary, not coincide with it. This is a React-specific failure mode, but the underlying principle (preserve state across boundaries cleanly) is general.
+
+---
+
+### Orphan portal from duplicated trigger+overlay component
+
+**What it is:** A component that bundles a trigger (button, keyboard shortcut handler) with its own portal-based overlay (Radix Dialog, cmdk CommandDialog, Vaul Drawer, Sonner, Headless UI Dialog, any React Presence-wrapped surface) is rendered more than once in the tree. Common shape: one instance per responsive breakpoint container (`<div class="hidden md:flex">` + `<div class="md:hidden">`), or one per layout slot (desktop nav, mobile nav, sheet-nested copy). Each instance holds its own local `open` state. Each registers its own shortcut listener (⌘K, Escape). When triggered, all instances open in parallel.
+
+**Why it fails:** Only the visible instance receives the user's interaction and closes cleanly on selection. The other instances remain open with `data-state="open"`, render their portals into `document.body`, and on many libraries hold `pointer-events: none` on body to block outside-dialog clicks. The result is visual and interaction breakdown on the next navigation target: clicks do not register, focus is trapped, visual artifacts persist. Simple timing fixes (`requestAnimationFrame`, `setTimeout`) cannot address this because the root cause is structural, not temporal. The orphaned portals are stranded because their parent components never received a close signal, not because of a render flush timing issue.
+
+**Fix direction:** Split the component into two exports: a lightweight trigger (button + keyboard shortcut) rendered per-context, and a singleton overlay mounted exactly once at the layout level. Triggers communicate with the overlay via a chosen global mechanism: custom DOM events, React Context, global store, or imperative ref API. The choice of mechanism does not matter; what matters is that there is one overlay instance, globally.
+
+```tsx
+// Before: trigger + dialog in one component, rendered 3 times
+<Nav>
+  <div className="hidden md:flex">
+    <Search />  {/* own open state, own listener, own dialog */}
+  </div>
+  <div className="md:hidden">
+    <Search />  {/* own open state, own listener, own dialog */}
+  </div>
+  <Sheet>
+    <Search />  {/* own open state, own listener, own dialog */}
+  </Sheet>
+</Nav>
+
+// After: three triggers, one dialog
+<RootLayout>
+  <Nav>
+    <div className="hidden md:flex"><SearchButton /></div>
+    <div className="md:hidden"><SearchButton /></div>
+    <Sheet><SearchButton /></Sheet>
+  </Nav>
+  <SearchDialog />  {/* singleton, mounted once at layout level */}
+</RootLayout>
+```
+
+**Lineage:**
+- Principle #4 (reversibility is craft) ... orphan portals break the exit path; the user has no way to close what they cannot see
+- Principle #7 (preserve user state across boundaries) ... orphaned DOM state that blocks clicks on the destination page is a direct violation of state continuity across navigation
+- Principle #11 (match metaphor to medium) ... a command palette, toast host, or global modal is conceptually a singleton; implementation should reflect that
+- Sonner's architectural default (one `<Toaster />`, many `toast()` calls) is the canonical solution to this class of problem
 
 ---
 
