@@ -72,7 +72,7 @@ Look for immediately:
 
 #### Step 1a ... Detect a browser-driving MCP
 
-Before reading any code, check whether any browser-driving MCP is available in your tool set. Devour-state does not require a specific browser MCP; any tool family that lets you open pages, navigate, evaluate scripts, and (ideally) take screenshots will work.
+Before reading any code, check whether any browser-driving MCP is available in your tool set. Devour-state does not require a specific browser MCP; any tool family that lets you open pages, navigate, and evaluate scripts will work.
 
 Common browser MCPs to look for, by tool-name prefix:
 
@@ -83,6 +83,8 @@ Common browser MCPs to look for, by tool-name prefix:
 - `mcp__puppeteer__*` (Puppeteer MCP)
 
 The minimum capabilities devour-state needs are: open a URL, evaluate JavaScript on the page, navigate between routes, and trigger async operations. Different MCPs name these differently. Identify the relevant tools by capability, not by exact name.
+
+**DOM-first rule:** state-preservation findings are about what persists (or doesn't) across navigation, reload, and async boundaries. Use `evaluate_script` to read stored state before and after the boundary: scroll position (`window.scrollY`), form values (`document.querySelectorAll('input').forEach(i => log(i.value))`), selection state (`window.getSelection()`), localStorage, sessionStorage, and DOM attributes. Screenshots cannot capture state continuity because state is not a visual artifact... it is an invariant across time. Read the invariant directly. Reserve screenshots for the rare case where visual state (highlighted row, active tab) is easier to confirm visually than to probe structurally.
 
 **If NO browser-driving MCP is available:**
 

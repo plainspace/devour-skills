@@ -67,7 +67,7 @@ Look for immediately:
 
 #### Step 1a ... Detect a browser-driving MCP
 
-Before reading any code, check whether any browser-driving MCP is available in your tool set. Devour-micro does not require a specific browser MCP; any tool family that lets you open pages, navigate, evaluate scripts, and (ideally) take screenshots will work.
+Before reading any code, check whether any browser-driving MCP is available in your tool set. Devour-micro does not require a specific browser MCP; any tool family that lets you open pages, navigate, and evaluate scripts will work.
 
 Common browser MCPs to look for, by tool-name prefix:
 
@@ -77,7 +77,9 @@ Common browser MCPs to look for, by tool-name prefix:
 - `mcp__browserbase__*` (Browserbase)
 - `mcp__puppeteer__*` (Puppeteer MCP)
 
-The minimum capabilities devour-micro needs are: open a URL, evaluate JavaScript on the page, and (preferably) take a screenshot or DOM snapshot. Different MCPs name these differently. Identify the relevant tools by capability, not by exact name.
+The minimum capabilities devour-micro needs are: open a URL, evaluate JavaScript on the page, and take a DOM snapshot (accessibility tree or equivalent). Screenshots are optional and should be used sparingly. Different MCPs name these differently. Identify the relevant tools by capability, not by exact name.
+
+**DOM-first rule:** micro-interaction findings are about hit rects, hover delays, intent detection, and metaphor fit... all measurable via `evaluate_script`. Read touch target sizes with `getBoundingClientRect()`, read hover timers by triggering events and measuring `performance.now()`, read metaphor consistency by inspecting ARIA roles and class patterns. Screenshots show one frame; micro-interactions are about time-based behavior that one frame cannot capture. Use screenshots only for visual-judgment questions (does the tooltip position look right on the rendered page?) that DOM inspection cannot answer.
 
 **If NO browser-driving MCP is available:**
 

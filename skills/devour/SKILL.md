@@ -64,7 +64,7 @@ If `$ARGUMENTS` is empty:
 
 #### Step 1a ... Detect a browser-driving MCP
 
-Before reading any code, check whether any browser-driving MCP is available in your tool set. Devour does not require a specific browser MCP; any tool family that lets you open pages, navigate, evaluate scripts, and (ideally) take screenshots will work.
+Before reading any code, check whether any browser-driving MCP is available in your tool set. Devour does not require a specific browser MCP; any tool family that lets you open pages, navigate, and evaluate scripts will work.
 
 Common browser MCPs to look for, by tool-name prefix:
 
@@ -74,7 +74,9 @@ Common browser MCPs to look for, by tool-name prefix:
 - `mcp__browserbase__*` (Browserbase)
 - `mcp__puppeteer__*` (Puppeteer MCP)
 
-The minimum capabilities devour needs are: open a URL, evaluate JavaScript on the page, and (preferably) take a screenshot or DOM snapshot. Different MCPs name these differently. Identify the relevant tools by capability, not by exact name.
+The minimum capabilities devour needs are: open a URL, evaluate JavaScript on the page, and take a DOM snapshot (accessibility tree or equivalent structured representation). Screenshots are optional and should be used sparingly... DOM inspection is faster, more precise, and cheaper for almost every devour finding. Use `evaluate_script` to read exact values (`getBoundingClientRect`, `getComputedStyle`, inline styles, DOM attributes, `performance.now()`) rather than reading pixels from an image. Different MCPs name these capabilities differently. Identify the relevant tools by capability, not by exact name.
+
+**DOM-first rule:** for any finding devour can verify by inspecting DOM attributes, computed styles, class names, rect sizes, timing functions, or event handlers, use `evaluate_script` or `take_snapshot` rather than a screenshot. Reserve screenshots for findings that genuinely require visual judgment the DOM cannot express (font rendering quirks, compositing artifacts, cross-browser pixel-level differences). Motion timing, touch target size, hover state presence, backdrop opacity, token compliance, and stagger intervals are all DOM-verifiable. Screenshots of these waste context and rarely produce signal the DOM did not already provide.
 
 **If NO browser-driving MCP is available:**
 
@@ -120,7 +122,7 @@ After environment is established, read the target file(s) in full. For each targ
 
 - The current code
 - Any related design system tokens or shared components
-- Any visible production state (the live page via browser MCP if available, or a screenshot / deployed preview otherwise)
+- Any visible production state (the live page via browser MCP if available, or a deployed preview otherwise)
 
 ### Step 2 ... Apply the spine
 

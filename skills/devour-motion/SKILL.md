@@ -64,7 +64,7 @@ If `$ARGUMENTS` is empty:
 
 #### Step 1a ... Detect a browser-driving MCP
 
-Before reading any code, check whether any browser-driving MCP is available in your tool set. Devour does not require a specific browser MCP; any tool family that lets you open pages, navigate, evaluate scripts, and (ideally) take screenshots will work.
+Before reading any code, check whether any browser-driving MCP is available in your tool set. Devour-motion does not require a specific browser MCP; any tool family that lets you open pages, navigate, and evaluate scripts will work.
 
 Common browser MCPs to look for, by tool-name prefix:
 
@@ -74,7 +74,9 @@ Common browser MCPs to look for, by tool-name prefix:
 - `mcp__browserbase__*` (Browserbase)
 - `mcp__puppeteer__*` (Puppeteer MCP)
 
-The minimum capabilities devour needs are: open a URL, evaluate JavaScript on the page, and (preferably) take a screenshot or DOM snapshot. Different MCPs name these differently. Identify the relevant tools by capability, not by exact name.
+The minimum capabilities devour-motion needs are: open a URL, evaluate JavaScript on the page, and take a DOM snapshot (accessibility tree or equivalent). Screenshots are optional and should be used sparingly. Use `evaluate_script` to read timing functions, computed transforms, `performance.now()` timestamps, and animation state directly from the DOM. Different MCPs name these differently. Identify the relevant tools by capability, not by exact name.
+
+**DOM-first rule:** motion findings are timing-based, and timing is a number. Read the number with `evaluate_script`; do not infer it from a screenshot. Measure animation duration by capturing `performance.now()` before/after the animation completes, not by comparing image frames. Read `getComputedStyle(el).transitionDuration` and `transitionTimingFunction` directly. Screenshots are appropriate only for compositing artifacts or visual-perception-of-motion judgments that the DOM cannot express.
 
 **If NO browser-driving MCP is available:**
 
@@ -107,9 +109,9 @@ After environment is established, read the target file(s) in full. Specific patt
 
 For each finding that depends on felt experience rather than code structure, drive the page. Examples:
 
-- **Sheet timing or dialog entry feel** ... navigate to the page that triggers it, click the trigger, observe. Use a screenshot tool if available to capture intermediate frames, or evaluate JavaScript to inspect computed timing functions.
+- **Sheet timing or dialog entry feel** ... navigate to the page that triggers it, click the trigger, observe. Use `evaluate_script` to inspect computed timing functions (`getComputedStyle(el).transitionDuration`, `transitionTimingFunction`) and measure actual elapsed time via `performance.now()` bracketing the trigger. A screenshot is a last resort if the animation cannot be reasoned about from computed styles.
 - **Hover commit delays** ... evaluate JavaScript to dispatch `mouseenter`/`mouseleave` events on target elements, measure response.
-- **Stagger sequences** ... navigate to the relevant grid, capture screenshots at multiple timestamps, look at whether all items animate or only the first N.
+- **Stagger sequences** ... navigate to the relevant grid. Use `evaluate_script` to observe each item's animation state directly: read `animation-delay`, `transition-delay`, or inline motion props on each item; trigger the entrance (scroll into view, filter change, etc.) and bracket with `performance.now()` to confirm whether all items animate or only the first N. This is faster and more precise than reading screenshots at multiple timestamps.
 - **Filter-change re-animation** (the bug devour catches): apply a filter, watch whether existing cards re-trigger their entrance animation. This is the canonical case for browser-required verification.
 - **Reduced-motion behavior** ... evaluate JavaScript to set `prefers-reduced-motion: reduce` via CSS or media-query emulation, re-trigger interactions.
 
