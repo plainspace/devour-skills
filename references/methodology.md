@@ -10,9 +10,6 @@ New entries go here when real use exposes a review-discipline failure mode, not 
 
 ## Speculative fixing without observation
 
-> No fixes without investigation. Trace data flow, test hypotheses, stop after 3 failed fixes.
-> ... adapted from Garry Tan's gstack, `/investigate` skill
-
 ### What it is
 
 A reviewer applies a finding's suggested fix, the fix doesn't resolve the symptom, and the reviewer applies a second speculative fix ... then a third ... without once observing the actual runtime state (DOM, console, network, process, data). Three fixes in, the bug is still there and the reviewer is now three steps further from understanding the real cause than when they started.
@@ -29,7 +26,7 @@ The shape is recognizable: `try A → didn't work → try B → didn't work → 
 
 ### Fix direction
 
-**After one failed fix, stop and observe.** Not after three. The Iron Law in its original gstack form permits three attempts before inspection; in practice, one failed attempt is already the signal. Run the app. Open the console. Inspect the DOM. Log the actual state. Compare observed state to the model the fix was based on. Adjust the model before writing more code.
+**After one failed fix, stop and observe.** Not after three. One failed attempt is already the signal that the model behind the fix is wrong. Run the app. Open the console. Inspect the DOM. Log the actual state. Compare observed state to the model the fix was based on. Adjust the model before writing more code.
 
 **For portal-rendered UI specifically,** the observation is usually: what is the actual `data-state` attribute on the overlay after the action? Is it what React thinks it is? If not, React state and DOM state are out of sync... that's the real bug, not the thing the first fix targeted.
 
