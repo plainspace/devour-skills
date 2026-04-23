@@ -71,7 +71,7 @@ The first time you run devour in a repo, you will be prompted to invoke `/devour
 
 Every review ends with an explicit `APPLY?` prompt: apply only breaks, breaks + drifts, everything, cherry-pick, or review-only. You stay in control of what lands.
 
-Every review is also saved as a markdown file in `.devour-reviews/` at your project root. This keeps a durable record of findings for later reference, documentation, or comparison against a re-run. The directory is created automatically on the first run. Consider adding `.devour-reviews/` to your `.gitignore` if you do not want the files tracked, or commit them selectively for reviews worth keeping.
+Every run is saved as a markdown file in `.devour/runs/` at your project root, updated live as the run proceeds. This makes runs durable against session compaction and resumable across sessions. The directory is created automatically on the first run. Consider adding `.devour/` to your `.gitignore` if you do not want the files tracked, or commit runs selectively for ones worth keeping.
 
 ### Browser-driving MCP (recommended)
 

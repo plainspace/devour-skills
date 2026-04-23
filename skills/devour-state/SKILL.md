@@ -479,36 +479,76 @@ When applying:
 - **Ask once per 🟡 DRIFT or 🟢 OPPORTUNITY** that involves a real taste call (e.g., "persisting filter state to URL ... is this navigable enough to want it deep-linkable?"). Skip the ask if the fix is mechanical.
 - **After all fixes are applied, ask if the user wants to commit.** Do not auto-commit.
 
-### Step 4 ... Save the review to file
+### Step 4 ... Save the run to file (streaming, compaction-safe)
 
-After emitting the full review to the user (header, findings, INTERACTIONS, STATE SUMMARY, APPLY? prompt), also write the complete review text to a file in the user's project.
+Devour-state writes each invocation's output as a "run" file under `$REPO/.devour/runs/`. The file is written incrementally as the review proceeds, not just at the end. This makes runs durable against session compaction or abort, and makes them resumable. See Step 0b for resume behavior.
 
-**Location:** `.devour-reviews/<ISO-date>-<HHMM>-devour-state-<target-slug>.md` relative to the project root.
+**Location:** `$REPO/.devour/runs/<YYYY-MM-DDTHHMMSS>-devour-state-<target-slug>.md` relative to the target repo root.
 
-- `<ISO-date>` is today's date in YYYY-MM-DD format
-- `<HHMM>` is the current time in 24-hour format, user's local time zone
-- `<target-slug>` is derived from the review target. If the target was a single file, slugify the file path (e.g., `src/components/Search.tsx` → `src-components-search`). If the target was a directory or multiple files, slugify the broadest shared path or use `full-site` for whole-site reviews. Keep the slug under 40 characters.
+- `<YYYY-MM-DDTHHMMSS>` is the current UTC timestamp, ISO-8601-like but filename-safe (no colons). Example: `2026-04-23T164500`.
+- `<target-slug>` is derived from the review target. Slugify the target path: replace `/` with `-`, lowercase, strip unsafe characters, keep under 40 chars. For diff-based default targets, use `diff-main-HEAD`. For whole-repo reviews, use `repo-full`.
 
-**Directory creation:** if `.devour-reviews/` does not exist, create it. Write the file fresh each time; do not overwrite. If a file at the exact path already exists (same minute), append `-1`, `-2`, etc. until unique.
+**Directory creation:** if `$REPO/.devour/` or `$REPO/.devour/runs/` does not exist, create the nested structure. Never write outside `$REPO`.
 
-**Contents:** the complete review in markdown. Start with a YAML frontmatter block:
+**File lifecycle:**
 
-```
+1. **At run start** (after Step 1 target is established): create the run file with this scaffolding. Write this and save immediately.
+
+```markdown
 ---
-date: <ISO timestamp>
+status: in-progress
+started: <ISO-8601 UTC timestamp>
+completed: null
 skill: devour-state
 target: <human-readable target description>
-reviewed: <code only | code + browser (<MCP name>)>
+repo: <$REPO absolute path>
+context-file: <path to .devour-context.md if read, else null>
+browser-mcp: <detected MCP short name if any, else null>
+terse: <true|false>
 ---
+
+# Devour run: <target>
+
+## Context
+
+<empty; filled in Step 2 or equivalent>
+
+## Findings
+
+<empty; findings appended one at a time in Step 3>
+
+## Interactions between findings
+
+<empty; filled in Step 4>
+
+## Apply decisions
+
+<empty; filled after APPLY? prompt is answered>
+
+## Outcomes
+
+<empty; filled after fixes are verified>
 ```
 
-Then the full review body... every finding, INTERACTIONS block, STATE SUMMARY, and APPLY? prompt. Do not include interactive chatter (tool-call descriptions, "running checks now" narration, etc.). Just the review itself.
+2. **After context is gathered** (end of Step 2): write the Context section atomically. Save.
 
-**Announce to the user** after the review is written:
+3. **For each finding identified in Step 3**: append the finding to the Findings section in the file's current state. Save after each finding. The finding format in the file mirrors the screen output (verbose or terse per `$TERSE`).
 
-> Review saved to `.devour-reviews/<filename>`.
+4. **After the findings phase completes** (end of Step 4): write the "Interactions between findings" section atomically. Save.
 
-**Git hygiene:** if `.devour-reviews/` is not in the project's `.gitignore` and the project uses git, tell the user once at the end of the review: "Consider adding `.devour-reviews/` to your `.gitignore`, or commit reviews selectively for important ones."
+5. **After the APPLY? prompt is answered** (after Step 5 decision lands): write the Apply decisions section as a markdown table with one row per finding: `| Finding | Decision | Notes |`. Save.
+
+6. **After fixes are verified** (or after the user chooses review-only): write the Outcomes section, flip frontmatter `status` from `in-progress` to `complete`, set `completed` to the current UTC timestamp. Save. This is the final write.
+
+**Announce to the user** at start of run (immediately after scaffolding is written):
+
+> Run started: `$REPO/.devour/runs/<filename>.md`. This file updates live as the review proceeds, so it survives compaction.
+
+At end of run (after status flips to `complete`):
+
+> Run complete: `$REPO/.devour/runs/<filename>.md`.
+
+**Git hygiene:** if `$REPO/.devour/` is not in the project's `.gitignore` and the project uses git, tell the user once at the end of the run: "Consider adding `.devour/` to your `.gitignore`, or commit runs selectively for important ones."
 
 Do NOT auto-add to `.gitignore`. The user decides.
 
