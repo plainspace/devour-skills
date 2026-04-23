@@ -59,12 +59,65 @@ If `$ARGUMENTS` is empty:
 - Default to **changed files in the current branch** (`git diff main..HEAD --name-only`, filtered to design-relevant files: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `.scss`, `.html`, `.astro`).
 - If the current branch has no changes, ask the user what to review.
 
-For each target file, you will need:
+#### Step 1a ... Detect a browser-driving MCP
+
+Before reading any code, check whether any browser-driving MCP is available in your tool set. Devour does not require a specific browser MCP; any tool family that lets you open pages, navigate, evaluate scripts, and (ideally) take screenshots will work.
+
+Common browser MCPs to look for, by tool-name prefix:
+
+- `mcp__chrome-devtools__*` (chrome-devtools-mcp ... most common)
+- `mcp__playwright__*` (Playwright MCP)
+- `mcp__browser__*` or `mcp__browser-mcp__*` (BrowserMCP)
+- `mcp__browserbase__*` (Browserbase)
+- `mcp__puppeteer__*` (Puppeteer MCP)
+
+The minimum capabilities devour needs are: open a URL, evaluate JavaScript on the page, and (preferably) take a screenshot or DOM snapshot. Different MCPs name these differently. Identify the relevant tools by capability, not by exact name.
+
+**If NO browser-driving MCP is available:**
+
+Tell the user once, plainly: "I don't have a browser-driving MCP available in this session, so this will be a code-only review. Motion, ergonomic, overlay, and state findings need browser verification. To enable that, install any browser MCP (chrome-devtools, Playwright, BrowserMCP, etc.) and re-run."
+
+Then proceed with code-only review. Mark the output `Reviewed: code only`.
+
+**If a browser MCP IS available:**
+
+Try the equivalent of `list_pages` first. Three cases:
+
+1. **A page matching the dev server is already open** (look for `localhost`, `127.0.0.1`, or a known dev URL from `package.json`'s `dev` script): use it. Select/focus it.
+2. **No matching page is open, but you can find the dev server URL** (read `package.json`, look for `next dev`, `vite`, `pnpm dev`, port hints; default to `http://localhost:3000` for Next/Vite, `http://localhost:5173` for Vite, `http://localhost:5174` for Astro): open it.
+3. **No dev server detectable**: ask the user once: "What URL is your dev server on?" If the user doesn't have one running, fall back to code-only and mark accordingly.
+
+Mark the output `Reviewed: code + browser (<MCP name>)` once you have a live page.
+
+**When a browser MCP IS available and a dev server is running:**
+
+For any finding that depends on runtime behavior, **do the browser verification before emitting the finding**. This applies to:
+
+- Motion timing and felt timing (principles #1, #2, #5)
+- Hover delay behavior and intent commit (principle #3)
+- Touch target hit areas (principle #6)
+- Overlay/modal/dialog behavior and metaphor fit (principle #11)
+- State transitions, optimistic rollback, and route-change behavior (principles #4, #7)
+
+Rules:
+
+- If verification **confirms** the issue: emit the finding tagged `[browser-confirmed]`.
+- If verification **shows no issue**: do NOT emit the finding. The code-based hypothesis was wrong; observation overrides it.
+- Do NOT emit findings that say "verify in browser first" or "test this in browser." The skill has browser access; it does that work itself.
+
+Findings that are reliably code-confirmable (principles #9, #10, #12, and most of #8) may be emitted as `[code-confirmed]` without browser verification.
+
+**When a browser MCP IS available but NO dev server is running:**
+
+Ask the user once: "I have browser MCP access but no dev server. Should I try to detect a running instance, or should I proceed with code-only review?" If they provide a URL, use it. Otherwise proceed code-only.
+
+#### Step 1b ... Read the code
+
+After environment is established, read the target file(s) in full. For each target file, you will need:
+
 - The current code
 - Any related design system tokens or shared components
-- Any visible production state (running dev server URL, screenshot, deployed preview)
-
-**If the user has a running dev server**, prefer driving it via the `chrome-devtools` MCP to see actual behavior. Static code review misses motion and interaction issues that the spine specifically catches. State this explicitly in the output ("Reviewed code only; recommend re-running with dev server for motion findings").
+- Any visible production state (the live page via browser MCP if available, or a screenshot / deployed preview otherwise)
 
 ### Step 2 ... Apply the spine
 
@@ -116,6 +169,13 @@ Reference:
 - **🔴 BREAKS** ... the principle is violated in a way that visibly hurts the user. Reversibility error path missing. Touch target unreachable. State lost on navigation.
 - **🟡 DRIFTS** ... the principle is not catastrophically violated but the surface is drifting toward sloppiness. Hover commits too fast. Type scale has crept to four sizes. Decoration is creeping.
 - **🟢 OPPORTUNITY** ... the principle is not violated but there's a higher-craft move available. Spring physics where you have eased duration. Stagger where current motion is simultaneous (or vice versa).
+
+**Finding annotation:** Each finding should be tagged immediately after the severity marker:
+
+- `[code-confirmed]` ... finding was verified from static code alone
+- `[browser-confirmed]` ... finding was verified by driving the live UI via browser MCP
+
+If no browser MCP is available, all findings are `[code-confirmed]`. If browser MCP is available, findings touching motion (#1, #2, #5), ergonomics (#3, #6), overlay/metaphor behavior (#11), and state transitions (#4, #7) should be `[browser-confirmed]` by actually running the check before emitting the finding.
 
 ### Step 4 ... Look for inter-finding conflicts
 
@@ -181,6 +241,7 @@ N breaks · N drifts · N opportunities
 Principles most engaged: <#1, #4, #8>
 Principles checked but clean: <#2, #3, #6, #7, #9, #10, #11, #12>
 Principles not applicable to this surface: <#5>
+Reviewed: <code only | code + browser (<MCP name>)>
 ═══════════════════════════════════════════════════
 
 ═══════════════════════════════════════════════════
@@ -194,6 +255,8 @@ APPLY?
 ```
 
 After printing the review, **always print the APPLY? block as the final lines of output.** Do not skip it. The block names the user's options explicitly so they don't have to guess what's possible.
+
+If code-only (no browser MCP found or no dev server), append above the APPLY? block: "Reviewed code only. Motion, ergonomic, overlay, and state findings above need browser verification before you trust them. Re-run with a browser MCP + dev server to confirm."
 
 When applying:
 

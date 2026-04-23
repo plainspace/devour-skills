@@ -113,6 +113,12 @@ For each finding that depends on felt experience rather than code structure, dri
 
 Annotate findings with `[code-confirmed]` or `[browser-confirmed]` so the user knows which findings have been verified at runtime.
 
+**Rules for emitting findings when browser MCP is available:**
+
+- If verification **confirms** the issue: emit the finding tagged `[browser-confirmed]`.
+- If verification **shows no issue**: do NOT emit the finding. The code-based hypothesis was wrong; observation overrides it.
+- Do NOT emit findings that say "verify in browser first" or "test this in browser." The skill has browser access; it does that work itself.
+
 ---
 
 ### Step 2 ... Apply principles #1, #2, and #5

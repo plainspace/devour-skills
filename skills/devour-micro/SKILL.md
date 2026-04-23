@@ -63,7 +63,53 @@ Look for immediately:
 - Touch target sizing: any `w-X h-X` on clickable elements, `size:`, `p-X` on buttons
 - Component usage: `<Dialog>`, `<Modal>`, `<Drawer>`, `<Sheet>`, `<Toast>`, `<Popover>`, `<Tooltip>`, `<Pagination>` ... check if the right component is being used for the job
 
-If a dev server is running, use `chrome-devtools` to observe hover behavior in the browser. Hover-commit issues are much easier to see live than to infer from code.
+#### Step 1a ... Detect a browser-driving MCP
+
+Before reading any code, check whether any browser-driving MCP is available in your tool set. Devour-micro does not require a specific browser MCP; any tool family that lets you open pages, navigate, evaluate scripts, and (ideally) take screenshots will work.
+
+Common browser MCPs to look for, by tool-name prefix:
+
+- `mcp__chrome-devtools__*` (chrome-devtools-mcp ... most common)
+- `mcp__playwright__*` (Playwright MCP)
+- `mcp__browser__*` or `mcp__browser-mcp__*` (BrowserMCP)
+- `mcp__browserbase__*` (Browserbase)
+- `mcp__puppeteer__*` (Puppeteer MCP)
+
+The minimum capabilities devour-micro needs are: open a URL, evaluate JavaScript on the page, and (preferably) take a screenshot or DOM snapshot. Different MCPs name these differently. Identify the relevant tools by capability, not by exact name.
+
+**If NO browser-driving MCP is available:**
+
+Tell the user once, plainly: "I don't have a browser-driving MCP available in this session, so this will be a code-only review. Almost every finding in this skill is runtime-dependent ... hover delays, touch target hit areas, and modal/overlay behavior all need browser verification. To enable that, install any browser MCP (chrome-devtools, Playwright, BrowserMCP, etc.) and re-run."
+
+Then proceed with code-only review. Mark the output `Reviewed: code only`.
+
+**If a browser MCP IS available:**
+
+Try the equivalent of `list_pages` first. Three cases:
+
+1. **A page matching the dev server is already open** (look for `localhost`, `127.0.0.1`, or a known dev URL from `package.json`'s `dev` script): use it. Select/focus it.
+2. **No matching page is open, but you can find the dev server URL** (read `package.json`, look for `next dev`, `vite`, `pnpm dev`, port hints; default to `http://localhost:3000` for Next/Vite, `http://localhost:5173` for Vite, `http://localhost:5174` for Astro): open it.
+3. **No dev server detectable**: ask the user once: "What URL is your dev server on?" If the user doesn't have one running, fall back to code-only and mark accordingly.
+
+Mark the output `Reviewed: code + browser (<MCP name>)` once you have a live page.
+
+**When a browser MCP IS available and a dev server is running:**
+
+For any finding that depends on runtime behavior, **do the browser verification before emitting the finding**. For devour-micro, this covers nearly every finding:
+
+- **Hover delay / intent commit** (principle #3): dispatch `mouseenter`/`mouseleave` events via JavaScript, measure how quickly the UI responds. Observe whether tooltips, hover cards, or nav sub-menus fire on cursor pass-through.
+- **Touch target hit areas** (principle #6): inspect computed dimensions on clickable elements. Evaluate against the 44px standard. Check whether padding expands the tap area beyond the visual bounds.
+- **Modal / overlay / metaphor behavior** (principle #11): navigate to the surface that triggers each component. Open it. Observe behavior at runtime ... dismiss behavior, snap points, spring feel, whether the metaphor fits the data shape.
+
+Rules:
+
+- If verification **confirms** the issue: emit the finding tagged `[browser-confirmed]`.
+- If verification **shows no issue**: do NOT emit the finding. The code-based hypothesis was wrong; observation overrides it.
+- Do NOT emit findings that say "verify in browser first" or "test this in browser." The skill has browser access; it does that work itself.
+
+**When a browser MCP IS available but NO dev server is running:**
+
+Ask the user once: "I have browser MCP access but no dev server. Should I try to detect a running instance, or should I proceed with code-only review?" If they provide a URL, use it. Otherwise proceed code-only.
 
 ---
 
@@ -319,6 +365,13 @@ Reference:
 - **🟡 DRIFTS** ... not catastrophic but the surface is drifting: hover delays are slightly too short; a touch target is 36px when 44px is the standard; a popover is getting close to modal territory.
 - **🟢 OPPORTUNITY** ... the principle is not violated but a higher-craft move is available: intent delay could be tuned; touch targets could be expanded without visual change; a metaphor mismatch that affects a secondary surface rather than a primary task.
 
+**Finding annotation:** Each finding should be tagged immediately after the severity marker:
+
+- `[code-confirmed]` ... finding was verified from static code alone
+- `[browser-confirmed]` ... finding was verified by driving the live UI via browser MCP
+
+If no browser MCP is available, all findings are `[code-confirmed]`. If browser MCP is available, findings touching hover intent (#3), touch target sizing (#6), and overlay/metaphor behavior (#11) should be `[browser-confirmed]` by actually running the check before emitting the finding. Devour-micro findings are more runtime-dependent than any other skill in the family ... code-only review on these three principles is structurally limited.
+
 **Default (verbose):** Each finding includes symptom, principle explanation, tactic with code, and reference with full exemplar prose. Use this unless `--terse` was set.
 
 **Terse mode (`--terse`):** Each finding is compressed to six lines. No exemplar paragraph, no extended explanation. Same severity markers, same principle and source citations, same APPLY? and INTERACTIONS blocks.
@@ -380,6 +433,8 @@ APPLY?
 ```
 
 After printing the review, **always print the APPLY? block as the final lines of output.** Do not skip it.
+
+If code-only (no browser MCP found or no dev server), append above the APPLY? block: "Reviewed code only. Most findings in this skill are runtime-dependent; hover delays, touch target hit areas, and overlay behavior need browser verification before you trust them. Re-run with a browser MCP + dev server to confirm."
 
 **Before printing the SUMMARY block, check for inter-finding conflicts.** Two findings can be in tension when fixing one weakens the other, or when both share a root cause that requires a single structural change to resolve. If any conflicts exist, name them in the INTERACTIONS BETWEEN FINDINGS block (between the findings and the SUMMARY). If none, skip the block entirely.
 
