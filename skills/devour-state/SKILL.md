@@ -456,6 +456,39 @@ When applying:
 - **Ask once per 🟡 DRIFT or 🟢 OPPORTUNITY** that involves a real taste call (e.g., "persisting filter state to URL ... is this navigable enough to want it deep-linkable?"). Skip the ask if the fix is mechanical.
 - **After all fixes are applied, ask if the user wants to commit.** Do not auto-commit.
 
+### Step 4 ... Save the review to file
+
+After emitting the full review to the user (header, findings, INTERACTIONS, STATE SUMMARY, APPLY? prompt), also write the complete review text to a file in the user's project.
+
+**Location:** `.devour-reviews/<ISO-date>-<HHMM>-devour-state-<target-slug>.md` relative to the project root.
+
+- `<ISO-date>` is today's date in YYYY-MM-DD format
+- `<HHMM>` is the current time in 24-hour format, user's local time zone
+- `<target-slug>` is derived from the review target. If the target was a single file, slugify the file path (e.g., `src/components/Search.tsx` → `src-components-search`). If the target was a directory or multiple files, slugify the broadest shared path or use `full-site` for whole-site reviews. Keep the slug under 40 characters.
+
+**Directory creation:** if `.devour-reviews/` does not exist, create it. Write the file fresh each time; do not overwrite. If a file at the exact path already exists (same minute), append `-1`, `-2`, etc. until unique.
+
+**Contents:** the complete review in markdown. Start with a YAML frontmatter block:
+
+```
+---
+date: <ISO timestamp>
+skill: devour-state
+target: <human-readable target description>
+reviewed: <code only | code + browser (<MCP name>)>
+---
+```
+
+Then the full review body... every finding, INTERACTIONS block, STATE SUMMARY, and APPLY? prompt. Do not include interactive chatter (tool-call descriptions, "running checks now" narration, etc.). Just the review itself.
+
+**Announce to the user** after the review is written:
+
+> Review saved to `.devour-reviews/<filename>`.
+
+**Git hygiene:** if `.devour-reviews/` is not in the project's `.gitignore` and the project uses git, tell the user once at the end of the review: "Consider adding `.devour-reviews/` to your `.gitignore`, or commit reviews selectively for important ones."
+
+Do NOT auto-add to `.gitignore`. The user decides.
+
 ---
 
 ## Voice
