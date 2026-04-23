@@ -1,7 +1,7 @@
 ---
 name: devour
 description: "Lineage-aware design engineering review. Reviews changed code or a target component/page/flow against a stable spine of design principles drawn from Dieter Rams, Edward Tufte, Don Norman, Bret Victor, Bill Buxton, Loren Brichter, Andy Matuschak, the Linear team, Rauno Freiberg, Emil Kowalski, and others. Outputs specific, citable findings with fixes. Use when the user wants principled design review, polish that traces back to a source, or to raise the craft bar on a specific surface."
-argument-hint: "[target file, component, page, or pattern] [--terse]"
+argument-hint: "[--repo <absolute-path>] [target file, component, page, or pattern] [--terse]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -49,6 +49,29 @@ A `Devour Context` block will exist in `.devour-context.md` (the canonical locat
 
 **Always execute this process from scratch on each invocation.** If prior devour output exists in session memory, ignore it. Re-read targets, re-run Step 1a browser-MCP detection, re-verify findings. Never reproduce, paraphrase, or replay cached output from a prior run. The codebase may have changed since the last review (fixes applied, new commits), and even if it has not, the verification itself is the review. If the user asks to "re-run," "run again," "check again," or similar, they are asking for a fresh execution of the full process, not a reprint of the last output.
 
+### Step 0a ... Resolve target repo (`--repo`)
+
+Read `$ARGUMENTS`. If `--repo <path>` is present:
+
+1. Extract `<path>` as the value.
+2. Strip `--repo <path>` from `$ARGUMENTS` before passing to later steps.
+3. Validate: the path must exist and be a directory. If it does not: stop and report `--repo path does not exist: <path>. Aborting.`
+4. Set `$REPO` = the absolute `<path>`.
+
+If `--repo` is not present: set `$REPO` = current working directory.
+
+For the rest of this skill:
+- All file reads, relative-path resolutions, and project-local lookups use `$REPO` as the root.
+- Git commands run with `git -C $REPO ...`.
+- `.devour-context.md` reads from `$REPO/.devour-context.md`.
+- `.devour/runs/` writes to `$REPO/.devour/runs/`.
+- `package.json` reads from `$REPO/package.json`.
+- If a target argument is a relative path, resolve it against `$REPO`. If absolute, use as-is.
+
+If `$REPO` is not a git repository (no `.git/` directory inside), warn the user once:
+`Note: $REPO is not a git repo. Skipping diff-based default. Provide a target file or pattern.`
+Then proceed with code review, but do not attempt `git diff` defaults.
+
 ### Step 0 ... Check for --terse flag
 
 Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` from the arguments before passing them to Step 1. Terse mode keeps the same rigor and the same spine but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.
@@ -59,7 +82,7 @@ If `$ARGUMENTS` is provided (after stripping `--terse`), the target is that file
 
 If `$ARGUMENTS` is empty:
 
-- Default to **changed files in the current branch** (`git diff main..HEAD --name-only`, filtered to design-relevant files: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `.scss`, `.html`, `.astro`).
+- Default to **changed files in the target repo's current branch** (`git -C $REPO diff main..HEAD --name-only`, filtered to design-relevant files: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `.scss`, `.html`, `.astro`).
 - If the current branch has no changes, do NOT fall back to replaying a prior review. Ask the user what to review. Suggest natural targets based on the repo: recent commits (`git log --oneline -10`) often reveal which surfaces have been actively worked on. Also check for a prior review target in session context... if the user ran `/devour` recently on specific files, those are natural candidates for a fresh re-execution. Offer options; wait for the user to pick before proceeding.
 
 #### Step 1a ... Detect a browser-driving MCP
@@ -89,7 +112,7 @@ Then proceed with code-only review. Mark the output `Reviewed: code only`.
 Try the equivalent of `list_pages` first. Three cases:
 
 1. **A page matching the dev server is already open** (look for `localhost`, `127.0.0.1`, or a known dev URL from `package.json`'s `dev` script): use it. Select/focus it.
-2. **No matching page is open, but you can find the dev server URL** (read `package.json`, look for `next dev`, `vite`, `pnpm dev`, port hints; default to `http://localhost:3000` for Next/Vite, `http://localhost:5173` for Vite, `http://localhost:5174` for Astro): open it.
+2. **No matching page is open, but you can find the dev server URL** (read `$REPO/package.json`, look for `next dev`, `vite`, `pnpm dev`, port hints; default to `http://localhost:3000` for Next/Vite, `http://localhost:5173` for Vite, `http://localhost:5174` for Astro): open it.
 3. **No dev server detectable**: ask the user once: "What URL is your dev server on?" If the user doesn't have one running, fall back to code-only and mark accordingly.
 
 Mark the output `Reviewed: code + browser (<MCP name>)` once you have a live page.
