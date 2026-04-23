@@ -1,7 +1,7 @@
 ---
 name: devour-teach
 description: "Project context setup for devour reviews. Run once per repo before the first devour pass. Reads the project, asks 5-7 questions, synthesizes answers into a Devour Context block, and writes it to .devour-context.md or the project CLAUDE.md. Without context, devour produces generic findings; with context, it applies the right principles at the right weight for this specific product."
-argument-hint: ""
+argument-hint: "[--repo <absolute-path>]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -27,13 +27,36 @@ Run `/devour-teach` once per repo before any other devour skill. The output is a
 
 ## Process
 
+### Step 0a ... Resolve target repo (`--repo`)
+
+Read `$ARGUMENTS`. If `--repo <path>` is present:
+
+1. Extract `<path>` as the value.
+2. Strip `--repo <path>` from `$ARGUMENTS` before passing to later steps.
+3. Validate: the path must exist and be a directory. If it does not: stop and report `--repo path does not exist: <path>. Aborting.`
+4. Set `$REPO` = the absolute `<path>`.
+
+If `--repo` is not present: set `$REPO` = current working directory.
+
+For the rest of this skill:
+- All file reads, relative-path resolutions, and project-local lookups use `$REPO` as the root.
+- Git commands run with `git -C $REPO ...`.
+- `.devour-context.md` reads from `$REPO/.devour-context.md`.
+- `.devour/runs/` writes to `$REPO/.devour/runs/`.
+- `package.json` reads from `$REPO/package.json`.
+- If a target argument is a relative path, resolve it against `$REPO`. If absolute, use as-is.
+
+If `$REPO` is not a git repository (no `.git/` directory inside), warn the user once:
+`Note: $REPO is not a git repo. Skipping diff-based default. Provide a target file or pattern.`
+Then proceed with code review, but do not attempt `git diff` defaults.
+
 ### Step 1 ... Read existing project files
 
 Before asking any questions, read the project to understand what you are already looking at. Do not ask questions you can infer from the code.
 
 Read in this order (stop when you have enough context to ask meaningful questions, not before):
 
-1. `package.json` ... what is this project? what dependencies are installed? (React version, Next.js, Framer Motion, animation libraries, UI library, form library, routing)
+1. `$REPO/package.json` ... what is this project? what dependencies are installed? (React version, Next.js, Framer Motion, animation libraries, UI library, form library, routing)
 2. `README.md` ... how does the project describe itself?
 3. `.claude/CLAUDE.md` or `CLAUDE.md` ... any existing project instructions; don't overwrite, but note what's there
 4. Any obvious design system or token files: `tailwind.config.*`, `tokens.css`, `theme.ts`, `design-tokens.*`
@@ -183,11 +206,11 @@ The "Specific things to watch for" section should include at least one observati
 
 ### Step 5 ... Write to a file
 
-**Default: write to `.devour-context.md` in the project root.**
+**Default: write to `$REPO/.devour-context.md` in the project root.**
 
 This is the open-source-friendly default. `.devour-context.md` is a portable, tool-agnostic file that any AI assistant (Claude Code, Cursor, Cline, Continue, Codex, Aider, Goose, ...) can be pointed at. It also makes "this repo has run devour" a discoverable signal in the file tree.
 
-Create `.devour-context.md` with this structure:
+Create `$REPO/.devour-context.md` with this structure:
 
 ```markdown
 # Devour Context
@@ -207,11 +230,11 @@ If your AI assistant doesn't auto-load this file, you can manually include it:
 ...
 ```
 
-Tell the user: "Created `.devour-context.md` in the project root. Add it to version control. If you want it auto-loaded by Claude Code, append its contents to your CLAUDE.md or reference it from there."
+Tell the user: "Created `$REPO/.devour-context.md` in the project root. Add it to version control. If you want it auto-loaded by Claude Code, append its contents to your CLAUDE.md or reference it from there."
 
 **Optional: auto-link from CLAUDE.md if it exists.**
 
-If `.claude/CLAUDE.md` or `CLAUDE.md` exists in the project root, ask the user: "I've created `.devour-context.md`. Want me to add a one-line reference in your CLAUDE.md so Claude Code picks it up automatically?"
+If `$REPO/.claude/CLAUDE.md` or `$REPO/CLAUDE.md` exists in the project root, ask the user: "I've created `$REPO/.devour-context.md`. Want me to add a one-line reference in your CLAUDE.md so Claude Code picks it up automatically?"
 
 If yes, append a single line to the appropriate CLAUDE.md:
 

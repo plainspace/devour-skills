@@ -1,7 +1,7 @@
 ---
 name: devour-motion
 description: "Deep motion review against principles #1 (honest motion), #2 (physics over duration), and #5 (sequence carries meaning). Use when the user wants an animation pass, a motion-specific craft review, or when motion in a component feels wrong but the reason isn't named. Traces findings back to the lineage: Emil Kowalski, Rauno Freiberg, Loren Brichter, Chaudhri/Ording at Apple, Dieter Rams."
-argument-hint: "[target] [--terse]"
+argument-hint: "[--repo <absolute-path>] [target] [--terse]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -48,6 +48,29 @@ Read the `Devour Context` block from `.devour-context.md`, `.claude/CLAUDE.md`, 
 
 **Always execute this process from scratch on each invocation.** If prior devour-motion output exists in session memory, ignore it. Re-read targets, re-run browser-MCP detection, re-verify findings. Never reproduce, paraphrase, or replay cached output. If the user asks to "re-run," "run again," or "check again," they are asking for a fresh execution of the full process.
 
+### Step 0a ... Resolve target repo (`--repo`)
+
+Read `$ARGUMENTS`. If `--repo <path>` is present:
+
+1. Extract `<path>` as the value.
+2. Strip `--repo <path>` from `$ARGUMENTS` before passing to later steps.
+3. Validate: the path must exist and be a directory. If it does not: stop and report `--repo path does not exist: <path>. Aborting.`
+4. Set `$REPO` = the absolute `<path>`.
+
+If `--repo` is not present: set `$REPO` = current working directory.
+
+For the rest of this skill:
+- All file reads, relative-path resolutions, and project-local lookups use `$REPO` as the root.
+- Git commands run with `git -C $REPO ...`.
+- `.devour-context.md` reads from `$REPO/.devour-context.md`.
+- `.devour/runs/` writes to `$REPO/.devour/runs/`.
+- `package.json` reads from `$REPO/package.json`.
+- If a target argument is a relative path, resolve it against `$REPO`. If absolute, use as-is.
+
+If `$REPO` is not a git repository (no `.git/` directory inside), warn the user once:
+`Note: $REPO is not a git repo. Skipping diff-based default. Provide a target file or pattern.`
+Then proceed with code review, but do not attempt `git diff` defaults.
+
 ### Step 0 ... Check for --terse flag
 
 Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` before passing arguments to Step 1. Terse mode keeps the same rigor and the same three-principle scope but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.
@@ -57,7 +80,7 @@ Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip 
 If `$ARGUMENTS` is provided (after stripping `--terse`), the target is that file, component, or pattern. Read it in full.
 
 If `$ARGUMENTS` is empty:
-- Default to changed files in the current branch (`git diff main..HEAD --name-only`, filtered to `.tsx`, `.jsx`, `.css`, `.scss`).
+- Default to changed files in the target repo's current branch (`git -C $REPO diff main..HEAD --name-only`, filtered to `.tsx`, `.jsx`, `.css`, `.scss`).
 - If no changes, ask the user what to review.
 
 **Motion cannot be fully reviewed from static code.** A 200ms `ease-in-out` looks fine in source but may feel hesitant on real hardware. A spring config that math-checks may overshoot at 60Hz. The skill must drive the actual UI when possible.
@@ -88,8 +111,8 @@ Then proceed with code-only review. Mark the output `Reviewed: code only`.
 
 Try the equivalent of `list_pages` first. Three cases:
 
-1. **A page matching the dev server is already open** (look for `localhost`, `127.0.0.1`, or a known dev URL from `package.json`'s `dev` script): use it. Select/focus it.
-2. **No matching page is open, but you can find the dev server URL** (read `package.json`, look for `next dev`, `vite`, `pnpm dev`, port hints; default to `http://localhost:3000` for Next/Vite, `http://localhost:5173` for Vite, `http://localhost:5174` for Astro): open it.
+1. **A page matching the dev server is already open** (look for `localhost`, `127.0.0.1`, or a known dev URL from `$REPO/package.json`'s `dev` script): use it. Select/focus it.
+2. **No matching page is open, but you can find the dev server URL** (read `$REPO/package.json`, look for `next dev`, `vite`, `pnpm dev`, port hints; default to `http://localhost:3000` for Next/Vite, `http://localhost:5173` for Vite, `http://localhost:5174` for Astro): open it.
 3. **No dev server detectable**: ask the user once: "What URL is your dev server on?" If the user doesn't have one running, fall back to code-only and mark accordingly.
 
 Mark the output `Reviewed: code + browser (<MCP name>)` once you have a live page.
