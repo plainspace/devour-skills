@@ -287,11 +287,11 @@ Start with "You Don't Need Animations." It is the shortest and most directly app
 
 ---
 
-### Sam Henri Gold ... samhenrigold.com
+### Sam Henri Gold ... samhenri.gold
 
 **Format:** Essays and case studies.
 
-**Link:** [samhenrigold.com](https://samhenrigold.com)
+**Link:** [samhenri.gold](https://samhenri.gold)
 
 **Why it matters:** Typography craft, motion theory, and an articulate perspective on what AI tools can and cannot reproduce in design engineering. His recent essay on Claude design articulates why Layer 4 craft matters more in an AI-augmented world, not less.
 

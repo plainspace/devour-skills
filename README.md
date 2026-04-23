@@ -15,14 +15,15 @@ Most "polish" or "design review" tools tell you what looks off. Devour tells you
 
 The bar is set by people who treat software as a craft material:
 
+- **Layer 0 ... Pre-HCI foundations.** Ollie Johnston and Frank Thomas (Disney animation), Josef Müller-Brockmann (grid systems), Jacques Bertin (visual variables), HfG Ulm (systematic design method).
 - **Layer 1 ... Principles of design itself.** Dieter Rams, the Eameses, Naoto Fukasawa, Edward Tufte, Christopher Alexander.
 - **Layer 2 ... Principles of human-computer interaction.** Bret Victor, Bill Verplank, Bill Buxton, Don Norman, Bruce Tognazzini.
 - **Layer 3 ... Principles of native software craft.** Imran Chaudhri and Bas Ording at Apple, Loren Brichter, Andy Matuschak, Andy Allen at NotBoring, the Linear team, Jason Yuan.
 - **Layer 4 ... Principles of modern web design engineering.** Rauno Freiberg (Vercel, Devouring Details), Emil Kowalski (Linear, Sonner, Vaul), the Browser Company, the Vercel design org, Brian Lovin, Sam Henri Gold.
 
-Layers 1 through 3 are *informational* prerequisites ... they shape how you think. Layer 4 is *operational* ... it is what shows up in the diff. Most polish tools ignore Layers 1 through 3 and lift Layer 4's surface tactics. Those tools age fast.
+Layers 0 through 3 are *informational* prerequisites ... they shape how you think. Layer 4 is *operational* ... it is what shows up in the diff. Most polish tools ignore Layers 0 through 3 and lift Layer 4's surface tactics. Those tools age fast.
 
-Devour is structured as a principles spine drawn from Layers 1 through 3, with operational tactics from Layer 4. The principles are stable. The tactics evolve. The citations get added to `references/`.
+Devour is structured as a principles spine drawn from Layers 0 through 3, with operational tactics from Layer 4. The principles are stable. The tactics evolve. The citations get added to `references/`.
 
 See [`references/lineage.md`](references/lineage.md) for the full map.
 
@@ -78,7 +79,7 @@ Devour runs in two modes: **code-only** (always works) and **code + browser** (b
 
 Devour is not tied to any specific browser MCP. It works with whichever you have:
 
-- [`chrome-devtools-mcp`](https://github.com/cyrilluce/chrome-devtools-mcp) ... most common
+- [`chrome-devtools-mcp`](https://github.com/ChromeDevTools/chrome-devtools-mcp) ... most common
 - [Playwright MCP](https://github.com/microsoft/playwright-mcp)
 - [BrowserMCP](https://browsermcp.io/)
 - [Browserbase MCP](https://github.com/browserbase/mcp-server-browserbase)
@@ -138,7 +139,7 @@ Devour stands on a body of work that is not mine. The principles are stated in m
 - **The Vercel design org** ... Geist, the Vercel dashboard, the cmdk pattern.
 - **The Browser Company** ... Arc, Dia.
 
-Full citations in [`references/lineage.md`](references/lineage.md). Per-principle source maps in [`references/principles-map.md`](references/principles-map.md).
+Full citations in [`references/lineage.md`](references/lineage.md). Per-principle source maps in [`references/principles-map.md`](references/principles-map.md). Review discipline (how to use devour well) in [`references/methodology.md`](references/methodology.md).
 
 If you build software for a living, buy these people's work. They are why the bar is high.
 

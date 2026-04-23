@@ -47,7 +47,7 @@ Devour stands on a body of public work by other designers, engineers, writers, a
 - **The Browser Company team** ... Arc, Dia
 - **The Vercel design organization** ... Geist Design System, the Vercel dashboard, [cmdk](https://github.com/pacocoursey/cmdk) by Paco Coursey
 - **Brian Lovin** ... [brianlovin.com](https://brianlovin.com), considered web craft gallery
-- **Sam Henri Gold** ... typography, motion. [samhenrigold.com](https://samhenrigold.com)
+- **Sam Henri Gold** ... typography, motion. [samhenri.gold](https://samhenri.gold)
 
 ---
 

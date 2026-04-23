@@ -32,5 +32,5 @@ The pre-HCI source is Josef Müller-Brockmann's *Grid Systems in Graphic Design*
 ## Further study
 
 - Josef Müller-Brockmann, *Grid Systems in Graphic Design* (1981) ... the Layer 0 source; modular grids and systematic type scales as the architecture for typographic decision-making
-- Sam Henri Gold, samhenrigold.com ... typography craft; the thesis that Layer 4 type work is increasingly the differentiator AI cannot easily reproduce
+- Sam Henri Gold, samhenri.gold ... typography craft; the thesis that Layer 4 type work is increasingly the differentiator AI cannot easily reproduce
 - Robert Bringhurst, *The Elements of Typographic Style* ... the foundational text for understanding type as a system of relationships

@@ -223,7 +223,7 @@ Arc browser, now Dia. Pushed the envelope on what a browser interface could be. 
 
 ### Sam Henri Gold
 
-[samhenrigold.com](https://samhenrigold.com). Typography craft, motion theory. Recently published "Thoughts and Feelings around Claude Design" which articulates a thesis that Layer 4 craft is increasingly the domain that AI tools cannot easily reproduce ... raising the bar for human designers, not lowering it.
+[samhenri.gold](https://samhenri.gold). Typography craft, motion theory. Recently published "Thoughts and Feelings around Claude Design" which articulates a thesis that Layer 4 craft is increasingly the domain that AI tools cannot easily reproduce ... raising the bar for human designers, not lowering it.
 
 ---
 
