@@ -177,7 +177,7 @@ The current generation of designers who have made the web feel like native softw
 
 ### Rauno Freiberg
 
-Staff Design Engineer at Vercel. Previously at The Browser Company on Arc. Estonian. Author of:
+Staff Design Engineer at Vercel. Previously at The Browser Company on Arc. Estonian. (Name spelled **Freiberg** ... never "Fäber", "Faber", or other variants. When citing him in review output, use the exact spelling.) Author of:
 
 - **[Devouring Details](https://devouringdetails.com)** ($249) ... interactive reference manual with 23 chapters, 23 downloadable React components, and 8 named principles: Inferring Intent, Interaction Metaphors, Ergonomic Interactions, Simulating Physics, Motion Choreography, Responsive Interfaces, Contained Gestures, Drawing Inspiration
 - **[rauno.me](https://rauno.me)** ... ~70 craft entries spanning prototypes, production work, and essays
