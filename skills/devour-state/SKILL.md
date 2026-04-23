@@ -1,7 +1,7 @@
 ---
 name: devour-state
 description: "Deep review of state-handling principles #4 (reversibility is craft) and #7 (preserve user state across boundaries). Use when optimistic UI feels unsafe, when users lose work on navigation, when error paths are missing or silent, or when a feature involving async operations needs a state lifecycle audit. Traces findings back to Emil Kowalski (Sonner), the Linear team, Loren Brichter, Andy Matuschak, Bret Victor, Don Norman."
-argument-hint: "[target file or component]"
+argument-hint: "[target] [--terse]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -30,13 +30,13 @@ For motion review (spring physics, animation honesty), use [`devour-motion`](../
 
 ## MANDATORY PREPARATION
 
-This skill requires project context established by `devour:teach`.
+This skill requires project context established by `/devour-teach`.
 
-**If the project has not run `devour:teach` yet:**
+**If the project has not run `/devour-teach` yet:**
 
 1. STOP. Do not proceed.
-2. Tell the user: "Devour needs project context first. Running `devour:teach` to set up."
-3. Invoke `devour:teach`. Follow it through to completion.
+2. Tell the user: "Devour needs project context first. Running `/devour-teach` to set up."
+3. Invoke `devour-teach`. Follow it through to completion.
 4. Return here.
 
 **If context exists:**
@@ -47,9 +47,13 @@ Read the `Devour Context` block. Check **Principle weighting**. For a productivi
 
 ## Process
 
+### Step 0 ... Check for --terse flag
+
+Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` before passing arguments to Step 1. Terse mode keeps the same rigor and the same two-principle scope but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.
+
 ### Step 1 ... Establish target
 
-If `$ARGUMENTS` is provided, read the target file(s) in full.
+If `$ARGUMENTS` is provided (after stripping `--terse`), read the target file(s) in full.
 
 If `$ARGUMENTS` is empty:
 - Default to changed files in the current branch filtered to `.tsx`, `.jsx`, `.ts`.
@@ -317,7 +321,22 @@ Reference:
 - **🟡 DRIFTS** ... the principle is not catastrophically violated but the surface is slipping: toast exists but the error variant is generic ("Something went wrong") rather than actionable; scroll position resets in a case where most users won't notice but some will; tab state is component-only rather than URL-driven.
 - **🟢 OPPORTUNITY** ... the principle is met minimally but a more complete implementation would substantially improve trust: add `toast.promise()` where you have separate loading/success/error calls; persist filter state to URL; add auto-save draft to a long-form editor.
 
-**Output format:**
+**Default (verbose):** Each finding includes symptom, principle explanation, tactic with code, and reference with full exemplar prose. Use this unless `--terse` was set.
+
+**Terse mode (`--terse`):** Each finding is compressed to six lines. No exemplar paragraph, no extended explanation. Same severity markers, same principle and source citations, same APPLY? and INTERACTIONS blocks.
+
+Terse finding format:
+```
+🔴 / 🟡 / 🟢  File: <path>:<line>
+Symptom: <one sentence>
+Principle: #N <name>
+Source: <Designer>, "<Work>"
+Tactic: <one sentence>
+```
+
+The header block, severity groupings, INTERACTIONS BETWEEN FINDINGS block, STATE SUMMARY block, and APPLY? block all remain in terse mode, unchanged.
+
+**Verbose output format (default):**
 
 ```
 ═══════════════════════════════════════════════════

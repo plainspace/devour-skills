@@ -1,7 +1,7 @@
 ---
 name: devour-micro
 description: "Deep micro-interaction review against principles #3 (commit on intent, not on contact), #6 (the fingertip and the cursor are not the same), and #11 (match the metaphor to the medium). Use when hover behavior feels jittery, touch targets feel wrong, or UI components are using the wrong interaction pattern for their context. Traces findings back to Rauno Freiberg, Bruce Tognazzini, Bill Buxton, Don Norman, the original iPhone team."
-argument-hint: "[target file or component]"
+argument-hint: "[target] [--terse]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -28,13 +28,13 @@ For motion-specific review (spring physics, honest animation, sequence), use [`d
 
 ## MANDATORY PREPARATION
 
-This skill requires project context established by `devour:teach`.
+This skill requires project context established by `/devour-teach`.
 
-**If the project has not run `devour:teach` yet:**
+**If the project has not run `/devour-teach` yet:**
 
 1. STOP. Do not proceed.
-2. Tell the user: "Devour needs project context first. Running `devour:teach` to set up."
-3. Invoke `devour:teach`. Follow it through to completion.
+2. Tell the user: "Devour needs project context first. Running `/devour-teach` to set up."
+3. Invoke `devour-teach`. Follow it through to completion.
 4. Return here.
 
 **If context exists:**
@@ -45,9 +45,13 @@ Read the `Devour Context` block. Check **Primary surface** and **Principle weigh
 
 ## Process
 
+### Step 0 ... Check for --terse flag
+
+Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` before passing arguments to Step 1. Terse mode keeps the same rigor and the same three-principle scope but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.
+
 ### Step 1 ... Establish target
 
-If `$ARGUMENTS` is provided, the target is that file, component, or pattern. Read it.
+If `$ARGUMENTS` is provided (after stripping `--terse`), the target is that file, component, or pattern. Read it.
 
 If `$ARGUMENTS` is empty:
 - Default to changed files in the current branch filtered to design-relevant files.
@@ -315,7 +319,22 @@ Reference:
 - **🟡 DRIFTS** ... not catastrophic but the surface is drifting: hover delays are slightly too short; a touch target is 36px when 44px is the standard; a popover is getting close to modal territory.
 - **🟢 OPPORTUNITY** ... the principle is not violated but a higher-craft move is available: intent delay could be tuned; touch targets could be expanded without visual change; a metaphor mismatch that affects a secondary surface rather than a primary task.
 
-**Output format:**
+**Default (verbose):** Each finding includes symptom, principle explanation, tactic with code, and reference with full exemplar prose. Use this unless `--terse` was set.
+
+**Terse mode (`--terse`):** Each finding is compressed to six lines. No exemplar paragraph, no extended explanation. Same severity markers, same principle and source citations, same APPLY? and INTERACTIONS blocks.
+
+Terse finding format:
+```
+🔴 / 🟡 / 🟢  File: <path>:<line>
+Symptom: <one sentence>
+Principle: #N <name>
+Source: <Designer>, "<Work>"
+Tactic: <one sentence>
+```
+
+The header block, severity groupings, INTERACTIONS BETWEEN FINDINGS block, MICRO SUMMARY block, and APPLY? block all remain in terse mode, unchanged.
+
+**Verbose output format (default):**
 
 ```
 ═══════════════════════════════════════════════════

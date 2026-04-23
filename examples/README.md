@@ -42,7 +42,7 @@ Each example's `README.md` follows this structure. Copy this template when addin
 
 **Codebase:** <name and one-line tech description>
 **Date:** <YYYY-MM-DD>
-**Devour skill used:** <devour | devour:motion | devour:micro | devour:state>
+**Devour skill used:** <devour | devour-motion | devour-micro | devour-state>
 **Principle(s) engaged:** <#N (name), #N (name)>
 **Severity:** <🔴 BREAKS | 🟡 DRIFTS | 🟢 OPPORTUNITY>
 

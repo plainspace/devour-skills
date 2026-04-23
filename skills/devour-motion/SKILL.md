@@ -1,7 +1,7 @@
 ---
 name: devour-motion
 description: "Deep motion review against principles #1 (honest motion), #2 (physics over duration), and #5 (sequence carries meaning). Use when the user wants an animation pass, a motion-specific craft review, or when motion in a component feels wrong but the reason isn't named. Traces findings back to the lineage: Emil Kowalski, Rauno Freiberg, Loren Brichter, Chaudhri/Ording at Apple, Dieter Rams."
-argument-hint: "[target file or component]"
+argument-hint: "[target] [--terse]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -29,13 +29,13 @@ For a broader craft review, use [`devour`](../devour/SKILL.md). For micro-intera
 
 ## MANDATORY PREPARATION
 
-This skill requires project context established by `devour:teach`.
+This skill requires project context established by `/devour-teach`.
 
-**If the project has not run `devour:teach` yet:**
+**If the project has not run `/devour-teach` yet:**
 
 1. STOP. Do not proceed.
-2. Tell the user: "Devour needs project context first. Running `devour:teach` to set up."
-3. Invoke `devour:teach`. Follow it through to completion.
+2. Tell the user: "Devour needs project context first. Running `/devour-teach` to set up."
+3. Invoke `devour-teach`. Follow it through to completion.
 4. Return here.
 
 **If context exists:**
@@ -46,9 +46,13 @@ Read the `Devour Context` block from `.devour-context.md`, `.claude/CLAUDE.md`, 
 
 ## Process
 
+### Step 0 ... Check for --terse flag
+
+Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` before passing arguments to Step 1. Terse mode keeps the same rigor and the same three-principle scope but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.
+
 ### Step 1 ... Establish target and environment
 
-If `$ARGUMENTS` is provided, the target is that file, component, or pattern. Read it in full.
+If `$ARGUMENTS` is provided (after stripping `--terse`), the target is that file, component, or pattern. Read it in full.
 
 If `$ARGUMENTS` is empty:
 - Default to changed files in the current branch (`git diff main..HEAD --name-only`, filtered to `.tsx`, `.jsx`, `.css`, `.scss`).
@@ -295,7 +299,22 @@ Reference:
 - **🟡 DRIFTS** ... the motion is not catastrophically wrong but is drifting: easing curves that are close to correct but not quite spring behavior; a stagger that's mostly harmless but unprincipled; honest motion that could be slightly more informative.
 - **🟢 OPPORTUNITY** ... the motion is absent where it would add real information, or is correct but a higher-craft version is available: spring physics available that would improve the feel; stagger that would add meaning to an ordered list.
 
-**Output format:**
+**Default (verbose):** Each finding includes symptom, principle explanation, tactic with code, and reference with full exemplar prose. Use this unless `--terse` was set.
+
+**Terse mode (`--terse`):** Each finding is compressed to six lines. No exemplar paragraph, no extended explanation. Same severity markers, same principle and source citations, same APPLY? and INTERACTIONS blocks.
+
+Terse finding format:
+```
+🔴 / 🟡 / 🟢  File: <path>:<line>
+Symptom: <one sentence>
+Principle: #N <name>
+Source: <Designer>, "<Work>"
+Tactic: <one sentence>
+```
+
+The header block, severity groupings, INTERACTIONS BETWEEN FINDINGS block, MOTION SUMMARY block, and APPLY? block all remain in terse mode, unchanged.
+
+**Verbose output format (default):**
 
 ```
 ═══════════════════════════════════════════════════

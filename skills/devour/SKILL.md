@@ -1,7 +1,7 @@
 ---
 name: devour
 description: "Lineage-aware design engineering review. Reviews changed code or a target component/page/flow against a stable spine of design principles drawn from Dieter Rams, Edward Tufte, Don Norman, Bret Victor, Bill Buxton, Loren Brichter, Andy Matuschak, the Linear team, Rauno Freiberg, Emil Kowalski, and others. Outputs specific, citable findings with fixes. Use when the user wants principled design review, polish that traces back to a source, or to raise the craft bar on a specific surface."
-argument-hint: "[target file, component, page, or pattern]"
+argument-hint: "[target file, component, page, or pattern] [--terse]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -32,14 +32,14 @@ For accessibility audits, a checklist tool (`rams`, `web-design-guidelines`, `a1
 
 Before reviewing anything, devour requires project context. Different products live in different parts of the spine ... a marketing page values principles 9 and 12 most; a productivity app values 3, 4, and 7 most; a creative tool values 2 and 5 most. Without context, devour produces generic findings.
 
-**If the project has not run `devour:teach` yet:**
+**If the project has not run `/devour-teach` yet:**
 
 1. STOP. Do not proceed with review.
-2. Tell the user: "Devour needs project context first. Running `devour:teach` to set up."
-3. Invoke `devour:teach`. Follow it through to completion.
+2. Tell the user: "Devour needs project context first. Running `/devour-teach` to set up."
+3. Invoke `devour-teach`. Follow it through to completion.
 4. Then return to this skill.
 
-**If the project has already run `devour:teach`:**
+**If the project has already run `/devour-teach`:**
 
 A `Devour Context` block will exist in `.devour-context.md` (the canonical location) or, if the consumer has linked it, in their loaded project instructions (`.claude/CLAUDE.md`, `.cursorrules`, etc.). Read it before doing review. The context names which principles weight highest for this product and which exemplars are most relevant.
 
@@ -47,9 +47,13 @@ A `Devour Context` block will exist in `.devour-context.md` (the canonical locat
 
 ## Process
 
+### Step 0 ... Check for --terse flag
+
+Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` from the arguments before passing them to Step 1. Terse mode keeps the same rigor and the same spine but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.
+
 ### Step 1 ... Establish target
 
-If `$ARGUMENTS` is provided, the target is that file, component, pattern, or URL. Read it.
+If `$ARGUMENTS` is provided (after stripping `--terse`), the target is that file, component, pattern, or URL. Read it.
 
 If `$ARGUMENTS` is empty:
 - Default to **changed files in the current branch** (`git diff main..HEAD --name-only`, filtered to design-relevant files: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `.scss`, `.html`, `.astro`).
@@ -126,6 +130,23 @@ When you find an interaction, surface it explicitly in a dedicated block (see St
 
 ### Step 5 ... Output format
 
+**Default (verbose):** Each finding includes symptom, principle explanation, tactic with code, and reference with full exemplar prose. Use this unless `--terse` was set.
+
+**Terse mode (`--terse`):** Each finding is compressed to six lines. No exemplar paragraph, no extended explanation. Same severity markers, same principle and source citations, same APPLY? and INTERACTIONS blocks.
+
+Terse finding format:
+```
+🔴 / 🟡 / 🟢  File: <path>:<line>
+Symptom: <one sentence>
+Principle: #N <name>
+Source: <Designer>, "<Work>"
+Tactic: <one sentence>
+```
+
+The header block, severity groupings, INTERACTIONS BETWEEN FINDINGS block, SUMMARY block, and APPLY? block all remain in terse mode, unchanged.
+
+**Verbose output format (default):**
+
 ```
 ═══════════════════════════════════════════════════
 DEVOUR REVIEW: <target>
@@ -187,10 +208,10 @@ When applying:
 
 For deeper passes on specific principles, devour has focused sub-skills. Invoke when the user signals depth on a specific axis:
 
-- [`devour:motion`](../devour-motion/SKILL.md) ... principles #1, #2, #5 (honest motion, physics, sequence)
-- [`devour:micro`](../devour-micro/SKILL.md) ... principles #3, #6, #11 (intent, ergonomics, metaphor)
-- [`devour:state`](../devour-state/SKILL.md) ... principles #4, #7 (reversibility, state preservation)
-- [`devour:teach`](../devour-teach/SKILL.md) ... project context setup (run once per repo)
+- [`/devour-motion`](../devour-motion/SKILL.md) ... principles #1, #2, #5 (honest motion, physics, sequence)
+- [`/devour-micro`](../devour-micro/SKILL.md) ... principles #3, #6, #11 (intent, ergonomics, metaphor)
+- [`/devour-state`](../devour-state/SKILL.md) ... principles #4, #7 (reversibility, state preservation)
+- [`/devour-teach`](../devour-teach/SKILL.md) ... project context setup (run once per repo)
 
 ---
 

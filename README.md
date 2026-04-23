@@ -59,13 +59,14 @@ Or clone into your project's `.claude/skills/` directly.
 ```
 /devour                    Review the current changes against the full spine
 /devour <file or pattern>  Review a specific target
-/devour:teach              Set up devour for this project (run once per repo)
-/devour:motion             Deep review of motion principles
-/devour:micro              Deep review of micro-interaction principles
-/devour:state              Deep review of state-handling principles
+/devour --terse            Compact output, same rigor, less teaching prose
+/devour-teach              Set up devour for this project (run once per repo)
+/devour-motion             Deep review of motion principles
+/devour-micro              Deep review of micro-interaction principles
+/devour-state              Deep review of state-handling principles
 ```
 
-The first time you run devour in a repo, you will be prompted to invoke `devour:teach` to establish project context. Different products live in different parts of the spine; a marketing page values different principles than a productivity app.
+The first time you run devour in a repo, you will be prompted to invoke `/devour-teach` to establish project context. Different products live in different parts of the spine; a marketing page values different principles than a productivity app.
 
 Every review ends with an explicit `APPLY?` prompt: apply only breaks, breaks + drifts, everything, cherry-pick, or review-only. You stay in control of what lands.
 
@@ -89,7 +90,7 @@ If no browser MCP is available, devour proceeds with code-only review and tells 
 
 Devour's output is verbose by design. Every finding has four parts: symptom (what's in the code), principle (why it matters, with the lineage source named), tactic (the specific fix), and reference (the exemplar to study). Strip any of those out and you have a checklist; keep all four and every review is a small lesson in design engineering.
 
-If you already know the principles cold and just want the punch list, this is on the v0.2 roadmap (`--terse` flag). For v0.1, the verbose path is the only path. Read the prose; it's where the learning lives.
+If you already know the principles cold and just want the punch list, pass `--terse` to any review skill. Same rigor, same citations, no extended exemplar prose. The verbose path is still the default... read the prose; it's where the learning lives.
 
 ---
 

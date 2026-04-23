@@ -10,7 +10,7 @@
 
 ## Context
 
-Fifth Set's `Devour Context` was set up via `/devour:teach` and identified the product as a content platform with a "considered" motion appetite. Principle #1 was weighted HIGH (breaks), #5 MEDIUM (drifts), #2 medium. The card entrance stagger, live pulse, and slide-up animations all needed to feel like a single deliberate system, not independent experiments.
+Fifth Set's `Devour Context` was set up via `/devour-teach` and identified the product as a content platform with a "considered" motion appetite. Principle #1 was weighted HIGH (breaks), #5 MEDIUM (drifts), #2 medium. The card entrance stagger, live pulse, and slide-up animations all needed to feel like a single deliberate system, not independent experiments.
 
 The review covered the full motion surface (no specific target file, since main was clean ... devour-motion fell back to scanning the codebase): `LiveBadge.tsx`, `EventCard.tsx`, `EventList.tsx`, `GroupedListingsView.tsx`, `StarButton.tsx`, `Nav.tsx`, `Search.tsx`, `Sheet.tsx`, and `globals.css`.
 
