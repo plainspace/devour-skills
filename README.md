@@ -38,6 +38,44 @@ See [`references/lineage.md`](references/lineage.md) for the full map.
 
 ---
 
+## How is this different from...
+
+Devour is opinionated about what it does and doesn't do. Here's how it differs from other design tools you're likely to consider.
+
+### Impeccable (Paul Bakaus)
+
+[Impeccable](https://impeccable.style) is a generalist design toolkit: one skill with 23 commands spanning creation, critique, refinement, simplification, and hardening. It teaches your AI design vocabulary across seven dimensions, writes PRODUCT.md and DESIGN.md to your project root, and has a Live Mode for browser iteration. Use impeccable when you want to *make* design.
+
+Devour is a specialist: twelve principles, citation-heavy, narrow. Every finding cites a named source from the five-layer lineage. Use devour when you want to *judge* design.
+
+The two compose. Run devour to identify principle violations. Pick a matching `/impeccable` subcommand to apply the fix. A devour finding that says "#9 reduce decoration, citing Tufte" becomes `/impeccable distill` as the tactical pass. Devour names the principle; impeccable executes the change.
+
+If you install one, install the other too. They're designed for different jobs.
+
+### rams (Anthropic)
+
+`rams` is a visual and accessibility review based on Dieter Rams's 10 principles. It's fast, broad, and built into Claude Code. Devour overlaps on the Rams principles but extends through Tufte, Norman, Victor, Buxton, Brichter, Matuschak, the Linear team, Rauno, Kowalski, Johnston & Thomas, Müller-Brockmann, and HfG Ulm. Use `rams` for a quick pass. Use devour for a principled review with explicit source citations.
+
+### web-design-guidelines (Rauno Freiberg et al.)
+
+This skill reviews against WAI-ARIA and common accessibility guidelines. Devour is not an accessibility audit. For that, use `web-design-guidelines` or `chrome-devtools-mcp:a11y-debugging`. Devour flags obvious ergonomic failures under principle #6 (the fingertip and the cursor are not the same) but it is not comprehensive on a11y.
+
+### When to use devour
+
+- You want principles review with citations, not polish.
+- A stakeholder is going to ask "why did we do this?" and "because it looks better" isn't enough.
+- You're onboarding a team and want the reviews themselves to teach design engineering.
+- You want to raise the craft bar on something specific and defend the reasoning.
+
+### When NOT to use devour
+
+- You want to *make* design... use `impeccable`.
+- You want accessibility... use `a11y-debugging` or `web-design-guidelines`.
+- You want a quick polish pass on AI-generated output... use `impeccable polish` or `impeccable critique`.
+- You want visual iteration in the browser... use `impeccable live`.
+
+---
+
 ## Install
 
 This is a skill family for [Claude Code](https://claude.com/claude-code) and compatible Claude SDK environments. Symlink the skills into your skills directory.
