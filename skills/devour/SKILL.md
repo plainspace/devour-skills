@@ -1,7 +1,7 @@
 ---
 name: devour
 description: "Lineage-aware design engineering review. Reviews changed code or a target component/page/flow against a stable spine of design principles drawn from Dieter Rams, Edward Tufte, Don Norman, Bret Victor, Bill Buxton, Loren Brichter, Andy Matuschak, the Linear team, Rauno Freiberg, Emil Kowalski, and others. Outputs specific, citable findings with fixes. Use when the user wants principled design review, polish that traces back to a source, or to raise the craft bar on a specific surface."
-argument-hint: "[target file, component, page, or pattern] [--terse]"
+argument-hint: "[--repo <absolute-path>] [target file, component, page, or pattern] [--terse]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -49,6 +49,62 @@ A `Devour Context` block will exist in `.devour-context.md` (the canonical locat
 
 **Always execute this process from scratch on each invocation.** If prior devour output exists in session memory, ignore it. Re-read targets, re-run Step 1a browser-MCP detection, re-verify findings. Never reproduce, paraphrase, or replay cached output from a prior run. The codebase may have changed since the last review (fixes applied, new commits), and even if it has not, the verification itself is the review. If the user asks to "re-run," "run again," "check again," or similar, they are asking for a fresh execution of the full process, not a reprint of the last output.
 
+### Step 0a ... Resolve target repo (`--repo`)
+
+Read `$ARGUMENTS`. If `--repo <path>` is present:
+
+1. Extract `<path>` as the value.
+2. Strip `--repo <path>` from `$ARGUMENTS` before passing to later steps.
+3. Validate: the path must exist and be a directory. If it does not: stop and report `--repo path does not exist: <path>. Aborting.`
+4. Set `$REPO` = the absolute `<path>`.
+
+If `--repo` is not present: set `$REPO` = current working directory.
+
+For the rest of this skill:
+- All file reads, relative-path resolutions, and project-local lookups use `$REPO` as the root.
+- Git commands run with `git -C $REPO ...`.
+- `.devour-context.md` reads from `$REPO/.devour-context.md`.
+- `.devour/runs/` writes to `$REPO/.devour/runs/`.
+- `package.json` reads from `$REPO/package.json`.
+- If a target argument is a relative path, resolve it against `$REPO`. If absolute, use as-is.
+
+If `$REPO` is not a git repository (no `.git/` directory inside), warn the user once:
+`Note: $REPO is not a git repo. Skipping diff-based default. Provide a target file or pattern.`
+Then proceed with code review, but do not attempt `git diff` defaults.
+
+### Step 0b ... Check for in-progress run (resume)
+
+Scan `$REPO/.devour/runs/` for any `.md` file with a YAML frontmatter field `status: in-progress`. Filter to files where BOTH:
+
+- `skill` frontmatter matches the current skill (e.g., `devour`).
+- `target` frontmatter matches the current target argument (after stripping `--repo` and `--terse`). If the current invocation has no target (diff-based default), match against the `diff-main-HEAD` slug or equivalent.
+
+**Match count handling:**
+
+- **Zero matches:** proceed with new run. No prompt.
+- **One match:** print this prompt and wait for user response:
+
+  ```
+  Found in-progress run from <started ISO timestamp>
+  with <N> findings already saved.
+
+    R: Resume this run (append new findings/sections to the existing file)
+    F: Start fresh (leave the old file; create a new run file)
+    C: Cancel
+
+  Choose [R/F/C]:
+  ```
+
+- **Multiple matches:** print a numbered list of all matches with their timestamp and finding count, then offer Resume N / Fresh / Cancel.
+
+**Resume semantics:**
+
+- If user chooses R: read the matched file. Preserve its frontmatter except update `started` field (leave as-is; do not overwrite). Find the first empty section. Continue the review from the equivalent step in this skill's Process. When appending new findings, continue from the next number (if 3 findings are saved, new findings start at Finding 4).
+- If user chooses F: leave the matched file untouched. Create a new run file per Step 6. The old in-progress file stays on disk; the user can delete it manually.
+- If user chooses C: stop. No new file created.
+
+This step runs once per invocation, before Step 1 (establish target). If resume is chosen, Step 1 and Step 1a may be skipped or truncated depending on what the in-progress file already has.
+
 ### Step 0 ... Check for --terse flag
 
 Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` from the arguments before passing them to Step 1. Terse mode keeps the same rigor and the same spine but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.
@@ -59,7 +115,7 @@ If `$ARGUMENTS` is provided (after stripping `--terse`), the target is that file
 
 If `$ARGUMENTS` is empty:
 
-- Default to **changed files in the current branch** (`git diff main..HEAD --name-only`, filtered to design-relevant files: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `.scss`, `.html`, `.astro`).
+- Default to **changed files in the target repo's current branch** (`git -C $REPO diff main..HEAD --name-only`, filtered to design-relevant files: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `.scss`, `.html`, `.astro`).
 - If the current branch has no changes, do NOT fall back to replaying a prior review. Ask the user what to review. Suggest natural targets based on the repo: recent commits (`git log --oneline -10`) often reveal which surfaces have been actively worked on. Also check for a prior review target in session context... if the user ran `/devour` recently on specific files, those are natural candidates for a fresh re-execution. Offer options; wait for the user to pick before proceeding.
 
 #### Step 1a ... Detect a browser-driving MCP
@@ -89,7 +145,7 @@ Then proceed with code-only review. Mark the output `Reviewed: code only`.
 Try the equivalent of `list_pages` first. Three cases:
 
 1. **A page matching the dev server is already open** (look for `localhost`, `127.0.0.1`, or a known dev URL from `package.json`'s `dev` script): use it. Select/focus it.
-2. **No matching page is open, but you can find the dev server URL** (read `package.json`, look for `next dev`, `vite`, `pnpm dev`, port hints; default to `http://localhost:3000` for Next/Vite, `http://localhost:5173` for Vite, `http://localhost:5174` for Astro): open it.
+2. **No matching page is open, but you can find the dev server URL** (read `$REPO/package.json`, look for `next dev`, `vite`, `pnpm dev`, port hints; default to `http://localhost:3000` for Next/Vite, `http://localhost:5173` for Vite, `http://localhost:5174` for Astro): open it.
 3. **No dev server detectable**: ask the user once: "What URL is your dev server on?" If the user doesn't have one running, fall back to code-only and mark accordingly.
 
 Mark the output `Reviewed: code + browser (<MCP name>)` once you have a live page.
@@ -263,36 +319,76 @@ After printing the review, **always print the APPLY? block as the final lines of
 
 If code-only (no browser MCP found or no dev server), append above the APPLY? block: "Reviewed code only. Motion, ergonomic, overlay, and state findings above need browser verification before you trust them. Re-run with a browser MCP + dev server to confirm."
 
-### Step 6 ... Save the review to file
+### Step 6 ... Save the run to file (streaming, compaction-safe)
 
-After emitting the full review to the user (header, findings, INTERACTIONS, SUMMARY, APPLY? prompt), also write the complete review text to a file in the user's project.
+Devour writes each invocation's output as a "run" file under `$REPO/.devour/runs/`. The file is written incrementally as the review proceeds, not just at the end. This makes runs durable against session compaction or abort, and makes them resumable. See Step 0b for resume behavior.
 
-**Location:** `.devour-reviews/<ISO-date>-<HHMM>-devour-<target-slug>.md` relative to the project root.
+**Location:** `$REPO/.devour/runs/<YYYY-MM-DDTHHMMSS>-devour-<target-slug>.md` relative to the target repo root.
 
-- `<ISO-date>` is today's date in YYYY-MM-DD format
-- `<HHMM>` is the current time in 24-hour format, user's local time zone
-- `<target-slug>` is derived from the review target. If the target was a single file, slugify the file path (e.g., `src/components/Search.tsx` → `src-components-search`). If the target was a directory or multiple files, slugify the broadest shared path or use `full-site` for whole-site reviews. Keep the slug under 40 characters.
+- `<YYYY-MM-DDTHHMMSS>` is the current UTC timestamp, ISO-8601-like but filename-safe (no colons). Example: `2026-04-23T164500`.
+- `<target-slug>` is derived from the review target. Slugify the target path: replace `/` with `-`, lowercase, strip unsafe characters, keep under 40 chars. For diff-based default targets, use `diff-main-HEAD`. For whole-repo reviews, use `repo-full`.
 
-**Directory creation:** if `.devour-reviews/` does not exist, create it. Write the file fresh each time; do not overwrite. If a file at the exact path already exists (same minute), append `-1`, `-2`, etc. until unique.
+**Directory creation:** if `$REPO/.devour/` or `$REPO/.devour/runs/` does not exist, create the nested structure. Never write outside `$REPO`.
 
-**Contents:** the complete review in markdown. Start with a YAML frontmatter block:
+**File lifecycle:**
 
-```
+1. **At run start** (after Step 1 target is established): create the run file with this scaffolding. Write this and save immediately.
+
+```markdown
 ---
-date: <ISO timestamp>
+status: in-progress
+started: <ISO-8601 UTC timestamp>
+completed: null
 skill: devour
 target: <human-readable target description>
-reviewed: <code only | code + browser (<MCP name>)>
+repo: <$REPO absolute path>
+context-file: <path to .devour-context.md if read, else null>
+browser-mcp: <detected MCP short name if any, else null>
+terse: <true|false>
 ---
+
+# Devour run: <target>
+
+## Context
+
+<empty; filled in Step 2 or equivalent>
+
+## Findings
+
+<empty; findings appended one at a time in Step 3>
+
+## Interactions between findings
+
+<empty; filled in Step 4>
+
+## Apply decisions
+
+<empty; filled after APPLY? prompt is answered>
+
+## Outcomes
+
+<empty; filled after fixes are verified>
 ```
 
-Then the full review body... every finding, INTERACTIONS block, SUMMARY, and APPLY? prompt. Do not include interactive chatter (tool-call descriptions, "running checks now" narration, etc.). Just the review itself.
+2. **After context is gathered** (end of Step 2): write the Context section atomically. Save.
 
-**Announce to the user** after the review is written:
+3. **For each finding identified in Step 3**: append the finding to the Findings section in the file's current state. Save after each finding. The finding format in the file mirrors the screen output (verbose or terse per `$TERSE`).
 
-> Review saved to `.devour-reviews/<filename>`.
+4. **After the findings phase completes** (end of Step 4): write the "Interactions between findings" section atomically. Save.
 
-**Git hygiene:** if `.devour-reviews/` is not in the project's `.gitignore` and the project uses git, tell the user once at the end of the review: "Consider adding `.devour-reviews/` to your `.gitignore`, or commit reviews selectively for important ones."
+5. **After the APPLY? prompt is answered** (after Step 5 decision lands): write the Apply decisions section as a markdown table with one row per finding: `| Finding | Decision | Notes |`. Save.
+
+6. **After fixes are verified** (or after the user chooses review-only): write the Outcomes section, flip frontmatter `status` from `in-progress` to `complete`, set `completed` to the current UTC timestamp. Save. This is the final write.
+
+**Announce to the user** at start of run (immediately after scaffolding is written):
+
+> Run started: `$REPO/.devour/runs/<filename>.md`. This file updates live as the review proceeds, so it survives compaction.
+
+At end of run (after status flips to `complete`):
+
+> Run complete: `$REPO/.devour/runs/<filename>.md`.
+
+**Git hygiene:** if `$REPO/.devour/` is not in the project's `.gitignore` and the project uses git, tell the user once at the end of the run: "Consider adding `.devour/` to your `.gitignore`, or commit runs selectively for important ones."
 
 Do NOT auto-add to `.gitignore`. The user decides.
 
@@ -364,4 +460,4 @@ If you find yourself wanting to flag something the spine doesn't cover, two path
 - [`references/anti-patterns.md`](../../references/anti-patterns.md) ... failure modes catalog
 - [`references/methodology.md`](../../references/methodology.md) ... review discipline; how to use devour well (not what to review)
 - [`references/reading-list.md`](../../references/reading-list.md) ... ordered reading list
-- [`examples/`](../../examples/) ... annotated before/after diffs from real codebases
+- [`runs/`](../../runs/) ... curated runs from real codebases (the public collection)

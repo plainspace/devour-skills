@@ -45,3 +45,32 @@ The shape is recognizable: `try A → didn't work → try B → didn't work → 
 This entry was added after a real debugging session in which the reviewer applied three speculative fixes (`requestAnimationFrame` deferral, `setTimeout` deferral, hoisting the parent component into root layout) to a close-on-navigate bug before inspecting the DOM. The actual cause (one component containing a portal overlay was rendered three times, opening three parallel dialogs, only one of which received the close signal) would have been visible in seconds via a single DOM query. The three fixes were reverted; the real fix was an architectural change informed by one minute of observation.
 
 ---
+
+## Composing devour with impeccable
+
+Devour is a specialist review. [Impeccable](https://impeccable.style) is a generalist toolkit. Together they cover make-and-judge cleanly... devour names principle violations; impeccable's subcommands execute the fixes.
+
+Recommended flow for a serious craft pass:
+
+1. **Set up project context once per repo:**
+   - Run `/impeccable teach` to create `PRODUCT.md` and `DESIGN.md` (audience, register, brand voice, anti-references, design system tokens).
+   - Run `/devour-teach` to create `.devour-context.md` (principle weighting, motion appetite, density preference).
+
+2. **Review with devour:**
+   - `/devour` for a full-spine review.
+   - `/devour-motion`, `/devour-micro`, `/devour-state` for focused depth.
+   - Every finding cites a principle and a source. Devour writes a run file to `.devour/runs/`.
+
+3. **For findings you decide to apply, pick the matching `/impeccable` subcommand:**
+   - Principle #9 (reduce decoration) → `/impeccable distill`
+   - Principle #12 (type is a system) → `/impeccable typeset`
+   - Principle #1 / #2 (motion) → `/impeccable animate`
+   - Principle #10 (density) → `/impeccable layout`
+   - Principle #4 / #7 (state handling) → `/impeccable harden`
+   - Principle #8 (affordances) → `/impeccable polish`
+
+4. **Commit with a message that names the principle and the impeccable command used.** Example: `Apply devour #9 via /impeccable distill on StatCard`.
+
+Devour alone tells you what's wrong and why. Impeccable alone tells you what to make. Devour + impeccable closes the loop from principle to code.
+
+**Not required:** devour works standalone. If you don't have impeccable installed, findings still cite principles and sources; the tactic fix is yours to execute however you want.

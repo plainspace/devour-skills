@@ -9,7 +9,7 @@ If you animate something, the animation must communicate information the static 
 
 ## Why it matters
 
-Rams's principle 6 establishes that design cannot misrepresent its purpose or capabilities. Don Norman's feedback model extends this to interfaces: the system must communicate what happened, and motion is one of the strongest signals it can send. When motion is used decoratively, it occupies the same channel as meaningful feedback and degrades that channel. Emil Kowalski's essay "You Don't Need Animations" makes the modern case explicitly: each animation is a claim, and the claim must be true.
+The pre-HCI source is Ollie Johnston and Frank Thomas's *The Illusion of Life* (1981). Their 12 animation principles were derived empirically from the problem of making motion feel physically real... not aesthetically pleasing, physically honest. The underlying claim is that motion must communicate something true about the thing it depicts. When Emil Kowalski and Rauno Freiberg write about motion, they are writing in a vocabulary Johnston and Thomas named. Rams's principle 6 extends this to design ethics: design cannot misrepresent its purpose or capabilities. Don Norman's feedback model extends it to interfaces: the system must communicate what happened, and motion is one of the strongest signals it can send. When motion is used decoratively, it occupies the same channel as meaningful feedback and degrades that channel. Emil Kowalski's essay "You Don't Need Animations" makes the modern case explicitly: each animation is a claim, and the claim must be true.
 
 ## Tactics
 
@@ -31,5 +31,6 @@ Rams's principle 6 establishes that design cannot misrepresent its purpose or ca
 
 ## Further study
 
+- Ollie Johnston and Frank Thomas, *The Illusion of Life: Disney Animation* (1981) ... the Layer 0 source; the 12 animation principles, derived from physical honesty, establish the vocabulary for why motion must communicate something true
 - Emil Kowalski, "You Don't Need Animations" (emilkowal.ski) ... the primary case for motion as a citable claim
 - Dieter Rams, principle 6 in *Less and More: The Design Ethos of Dieter Rams* (Klemp & Ueki-Polet, 2009)

@@ -38,6 +38,44 @@ See [`references/lineage.md`](references/lineage.md) for the full map.
 
 ---
 
+## How is this different from...
+
+Devour is opinionated about what it does and doesn't do. Here's how it differs from other design tools you're likely to consider.
+
+### Impeccable (Paul Bakaus)
+
+[Impeccable](https://impeccable.style) is a generalist design toolkit: one skill with 23 commands spanning creation, critique, refinement, simplification, and hardening. It teaches your AI design vocabulary across seven dimensions, writes PRODUCT.md and DESIGN.md to your project root, and has a Live Mode for browser iteration. Use impeccable when you want to *make* design.
+
+Devour is a specialist: twelve principles, citation-heavy, narrow. Every finding cites a named source from the five-layer lineage. Use devour when you want to *judge* design.
+
+The two compose. Run devour to identify principle violations. Pick a matching `/impeccable` subcommand to apply the fix. A devour finding that says "#9 reduce decoration, citing Tufte" becomes `/impeccable distill` as the tactical pass. Devour names the principle; impeccable executes the change.
+
+If you install one, install the other too. They're designed for different jobs.
+
+### rams (Anthropic)
+
+`rams` is a visual and accessibility review based on Dieter Rams's 10 principles. It's fast, broad, and built into Claude Code. Devour overlaps on the Rams principles but extends through Tufte, Norman, Victor, Buxton, Brichter, Matuschak, the Linear team, Rauno, Kowalski, Johnston & Thomas, Müller-Brockmann, and HfG Ulm. Use `rams` for a quick pass. Use devour for a principled review with explicit source citations.
+
+### web-design-guidelines (Rauno Freiberg et al.)
+
+This skill reviews against WAI-ARIA and common accessibility guidelines. Devour is not an accessibility audit. For that, use `web-design-guidelines` or `chrome-devtools-mcp:a11y-debugging`. Devour flags obvious ergonomic failures under principle #6 (the fingertip and the cursor are not the same) but it is not comprehensive on a11y.
+
+### When to use devour
+
+- You want principles review with citations, not polish.
+- A stakeholder is going to ask "why did we do this?" and "because it looks better" isn't enough.
+- You're onboarding a team and want the reviews themselves to teach design engineering.
+- You want to raise the craft bar on something specific and defend the reasoning.
+
+### When NOT to use devour
+
+- You want to *make* design... use `impeccable`.
+- You want accessibility... use `a11y-debugging` or `web-design-guidelines`.
+- You want a quick polish pass on AI-generated output... use `impeccable polish` or `impeccable critique`.
+- You want visual iteration in the browser... use `impeccable live`.
+
+---
+
 ## Install
 
 This is a skill family for [Claude Code](https://claude.com/claude-code) and compatible Claude SDK environments. Symlink the skills into your skills directory.
@@ -53,25 +91,40 @@ ln -s ~/.devour-skills/skills/devour-teach ~/.claude/skills/devour-teach
 
 Or clone into your project's `.claude/skills/` directly.
 
+### Global install vs. per-project
+
+If you use devour on multiple repos, symlink the skills into `~/.claude/skills/` once and they will be available in every Claude Code session. You can then target any repo with `--repo <path>`:
+
+```bash
+for s in devour devour-motion devour-micro devour-state devour-teach; do
+  ln -s /path/to/this/repo/skills/$s ~/.claude/skills/$s
+done
+```
+
+If you only use devour in one repo, per-project install (symlink into that repo's `.claude/skills/`) is fine. In that case you run devour from inside the target repo (cwd = target) without the `--repo` flag.
+
 ---
 
 ## Usage
 
 ```
-/devour                    Review the current changes against the full spine
-/devour <file or pattern>  Review a specific target
-/devour --terse            Compact output, same rigor, less teaching prose
-/devour-teach              Set up devour for this project (run once per repo)
-/devour-motion             Deep review of motion principles
-/devour-micro              Deep review of micro-interaction principles
-/devour-state              Deep review of state-handling principles
+/devour                              Review the current changes against the full spine
+/devour <file or pattern>            Review a specific target in the current repo
+/devour --repo <path>                Review the target repo from anywhere
+/devour --repo <path> <target>       Review a specific target in a specific repo
+/devour --terse                      Compact output, same rigor, less teaching prose
+/devour-teach                        Set up devour for this project (run once per repo)
+/devour-teach --repo <path>          Set up devour for a specific repo from anywhere
+/devour-motion                       Deep review of motion principles
+/devour-micro                        Deep review of micro-interaction principles
+/devour-state                        Deep review of state-handling principles
 ```
 
 The first time you run devour in a repo, you will be prompted to invoke `/devour-teach` to establish project context. Different products live in different parts of the spine; a marketing page values different principles than a productivity app.
 
 Every review ends with an explicit `APPLY?` prompt: apply only breaks, breaks + drifts, everything, cherry-pick, or review-only. You stay in control of what lands.
 
-Every review is also saved as a markdown file in `.devour-reviews/` at your project root. This keeps a durable record of findings for later reference, documentation, or comparison against a re-run. The directory is created automatically on the first run. Consider adding `.devour-reviews/` to your `.gitignore` if you do not want the files tracked, or commit them selectively for reviews worth keeping.
+Every run is saved as a markdown file in `.devour/runs/` at your project root, updated live as the run proceeds. This makes runs durable against session compaction and resumable across sessions. The directory is created automatically on the first run. Consider adding `.devour/` to your `.gitignore` if you do not want the files tracked, or commit runs selectively for ones worth keeping.
 
 ### Browser-driving MCP (recommended)
 

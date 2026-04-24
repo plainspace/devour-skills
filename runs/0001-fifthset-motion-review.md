@@ -1,30 +1,30 @@
-# Example 0001: Fifth Set motion review
-
-**Codebase:** Fifth Set ... Next.js 16 + Tailwind 4 + shadcn editorial events directory for jazz fans across 7 US cities. Dark, magazine-register aesthetic with a Playfair/Inter/Mono type system.
-**Date:** 2026-04-22
-**Devour skill used:** `devour-motion`
-**Principle(s) engaged:** #1 (honest motion), #2 (physics over duration), #5 (sequence carries meaning)
-**Severity:** 1 🔴 BREAK · 4 🟡 DRIFTS · 3 🟢 OPPORTUNITIES
-
 ---
+status: complete
+started: 2026-04-22T00:00:00Z
+completed: 2026-04-22T23:59:59Z
+skill: devour-motion
+target: "Fifth Set event listing: LiveBadge.tsx, EventCard.tsx, EventList.tsx, GroupedListingsView.tsx, StarButton.tsx, Nav.tsx, Search.tsx, Sheet.tsx, globals.css"
+repo: /Users/borrowers/Codes/fifthset
+context-file: .devour-context.md
+browser-mcp: null
+terse: false
+---
+
+# Devour run: Fifth Set event listing motion review
 
 ## Context
 
 Fifth Set's `Devour Context` was set up via `/devour-teach` and identified the product as a content platform with a "considered" motion appetite. Principle #1 was weighted HIGH (breaks), #5 MEDIUM (drifts), #2 medium. The card entrance stagger, live pulse, and slide-up animations all needed to feel like a single deliberate system, not independent experiments.
 
-The review covered the full motion surface (no specific target file, since main was clean ... devour-motion fell back to scanning the codebase): `LiveBadge.tsx`, `EventCard.tsx`, `EventList.tsx`, `GroupedListingsView.tsx`, `StarButton.tsx`, `Nav.tsx`, `Search.tsx`, `Sheet.tsx`, and `globals.css`.
+The review covered the full motion surface (no specific target file, since main was clean... devour-motion fell back to scanning the codebase): `LiveBadge.tsx`, `EventCard.tsx`, `EventList.tsx`, `GroupedListingsView.tsx`, `StarButton.tsx`, `Nav.tsx`, `Search.tsx`, `Sheet.tsx`, and `globals.css`.
 
-## The before
+**Codebase:** Fifth Set... Next.js 16 + Tailwind 4 + shadcn editorial events directory for jazz fans across 7 US cities. Dark, magazine-register aesthetic with a Playfair/Inter/Mono type system.  
+**Date:** 2026-04-22  
+**Devour skill used:** `devour-motion`  
+**Principle(s) engaged:** #1 (honest motion), #2 (physics over duration), #5 (sequence carries meaning)  
+**Severity:** 1 🔴 BREAK · 4 🟡 DRIFTS · 3 🟢 OPPORTUNITIES
 
-Five surfaces had motion behaviors that, individually, looked fine in code but together drifted from the "considered" register the project was aiming for:
-
-- `LiveBadge.tsx` ... pulse animation applied to both genuinely-live shows AND sponsored "Featured" venues
-- `globals.css` ... per-card stagger keyframes hardcoded for exactly 9 children, breaking silently at card 10 in a list of 15+ NYC shows
-- `EventCard.tsx` ... `card-enter` class re-fires on every re-render, so applying a filter caused all cards to bounce in as if newly loaded
-- `Sheet.tsx` (shadcn) ... mobile bottom sheet uses `transition duration-200 ease-in-out`, the symmetric S-curve on entry feels hesitant
-- `globals.css` and `StarButton.tsx` ... `transition: all 0.2s ease` and `transition-all` apply one duration to every property (color, geometry, opacity), undifferentiated motion
-
-## The devour finding
+## Findings
 
 ```
 ═══════════════════════════════════════════════════
@@ -146,26 +146,31 @@ Reviewed: code only
 
 (This run was on the v0.1 skill before the `INTERACTIONS BETWEEN FINDINGS` block was added. The skill resolved the conflict at apply-time instead, surfaced in the testing notes below.)
 
-## The after
+## Interactions between findings
 
-Two commits on the test branch:
+Not surfaced in the v0.1 review output. The structural fix happened at apply-time, after the user said "Apply findings 2-5." The interaction between findings #2 (stagger ceiling) and #3 (filter re-animation) was resolved by the user at apply time rather than flagged by the skill. This gap led directly to the addition of the `INTERACTIONS BETWEEN FINDINGS` block in the next skill iteration ([commit `318ffa6`](https://github.com/plainspace/devour-skills/commit/318ffa6)).
 
-1. **`f46ad34`** ... Remove pulse animation from featured venue badge (the 🔴 BREAK)
-2. **`a8eada5`** ... Fix motion drifts: stagger ceiling, filter re-animation, sheet timing, transition-all (4 of the 4 🟡 DRIFTS)
+## Apply decisions
+
+| Finding | Decision | Notes |
+|---------|----------|-------|
+| 1 (🔴 LiveBadge pulse on featured) | Apply | Commit `f46ad34` |
+| 2 (🟡 Stagger ceiling at 9) | Apply | Resolved jointly with finding #3; commit `a8eada5` |
+| 3 (🟡 card-enter re-fires on filter) | Apply | Resolved jointly with finding #2; commit `a8eada5` |
+| 4 (🟡 Sheet ease-in-out) | Apply | Commit `a8eada5` |
+| 5 (🟡 transition-all) | Apply | Commit `a8eada5` |
+| 6–8 (🟢 Opportunities) | Defer | Taste calls; deferred to a future motion polish pass |
+
+## Outcomes
+
+Two commits on the test branch (`devour-test-2026-04-22` in the fifthset repo):
+
+1. **`f46ad34`**... Remove pulse animation from featured venue badge (the 🔴 BREAK)
+2. **`a8eada5`**... Fix motion drifts: stagger ceiling, filter re-animation, sheet timing, transition-all (4 of the 4 🟡 DRIFTS)
 
 **Notable structural decision:** Findings #2 (stagger ceiling) and #3 (filter re-animation) were in tension. Fixing only the ceiling would have left a now-extended stagger that still re-fires on filter removal. The applied fix replaced the per-card `card-enter` with a section-level `animate-fade-in` on the grid container, resolving both findings simultaneously by changing where the animation lives. The grid container persists across filter changes, so the fade no longer re-fires when a filter narrows the view.
 
 The 3 🟢 OPPORTUNITIES were not applied. They are taste calls deferred for a future motion polish pass.
-
-Files changed (snapshots in this folder):
-
-- `before-LiveBadge.tsx` / `after-LiveBadge.tsx` ... featured branch loses `animate-pulse-live`
-- `before-globals.css` / `after-globals.css` ... `.filter-pill` becomes property-specific transitions; `card-enter` keyframes and 9 `nth-child` rules are removed; `card-enter` is removed from the reduced-motion block
-- `before-EventCard.tsx` / `after-EventCard.tsx` ... `card-enter` class removed from the EventCard root
-- `before-StarButton.tsx` / `after-StarButton.tsx` ... `transition-all` becomes `transition-colors` on both the button and the Star icon
-- `before-sheet.tsx` / `after-sheet.tsx` ... `ease-in-out` becomes `ease-out` on the sheet base timing
-- `before-EventList.tsx` / `after-EventList.tsx` ... grid container gets `animate-fade-in`
-- `before-GroupedListingsView.tsx` / `after-GroupedListingsView.tsx` ... grid container gets `animate-fade-in`
 
 Net diff: 7 files, +8 / -28 lines.
 
@@ -173,11 +178,11 @@ Net diff: 7 files, +8 / -28 lines.
 
 Three things make this a useful first example:
 
-**1. Devour finds bugs that look like polish.** The featured-badge pulse is the canonical case for principle #1 ... the same animation applied to two facts that mean different things. The dev wouldn't have caught it on their own; it was already shipped to production. Devour caught it in one pass because the principle is stable: animated state must communicate something the static state cannot.
+**1. Devour finds bugs that look like polish.** The featured-badge pulse is the canonical case for principle #1... the same animation applied to two facts that mean different things. The dev wouldn't have caught it on their own; it was already shipped to production. Devour caught it in one pass because the principle is stable: animated state must communicate something the static state cannot.
 
-**2. Findings can interact, and the right fix is sometimes structural.** Findings #2 and #3 individually asked for tactical changes (extend the ceiling, prevent re-mounting). Together, they revealed that the *implementation pattern* was wrong: per-card animation when the meaning was section-level. The fix wasn't "fix the ceiling and prevent re-mount." It was "move the animation to where the meaning lives." This is a category-error fix, and it's the kind of move that earns trust in a review tool ... it doesn't just push the bugs around.
+**2. Findings can interact, and the right fix is sometimes structural.** Findings #2 and #3 individually asked for tactical changes (extend the ceiling, prevent re-mounting). Together, they revealed that the *implementation pattern* was wrong: per-card animation when the meaning was section-level. The fix wasn't "fix the ceiling and prevent re-mount." It was "move the animation to where the meaning lives." This is a category-error fix, and it's the kind of move that earns trust in a review tool... it doesn't just push the bugs around.
 
-**3. Citations are working.** Every finding traces to a named source (Emil Kowalski's "You Don't Need Animations," Rauno's "Motion Choreography," "Simulating Physics," Don Norman on feedback). The references aren't decorative ... they tell the user *which* essay or chapter to read if they want to learn the principle deeper. The skill makes itself a teaching surface, not a checklist.
+**3. Citations are working.** Every finding traces to a named source (Emil Kowalski's "You Don't Need Animations," Rauno's "Motion Choreography," "Simulating Physics," Don Norman on feedback). The references aren't decorative... they tell the user *which* essay or chapter to read if they want to learn the principle deeper. The skill makes itself a teaching surface, not a checklist.
 
 ## Notes
 
@@ -190,3 +195,7 @@ Three things make this a useful first example:
 - **What was NOT changed:** the `card-glow` hover transition (intentional; the slow 0.3s feel is part of the editorial register), the live pulse (correctly fires only on genuinely-live events), the slide-up animation on the bottom sheet (timing is fine, only the easing was off).
 
 - **Branch:** `devour-test-2026-04-22` in the fifthset repo. Disposable test branch; not merged to main as of this writing.
+
+## Asset references
+
+Before/after snapshots at the time of this review are in [`0001-fifthset-motion-review.assets/`](0001-fifthset-motion-review.assets/).
