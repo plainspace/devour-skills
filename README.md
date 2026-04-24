@@ -53,18 +53,33 @@ ln -s ~/.devour-skills/skills/devour-teach ~/.claude/skills/devour-teach
 
 Or clone into your project's `.claude/skills/` directly.
 
+### Global install vs. per-project
+
+If you use devour on multiple repos, symlink the skills into `~/.claude/skills/` once and they will be available in every Claude Code session. You can then target any repo with `--repo <path>`:
+
+```bash
+for s in devour devour-motion devour-micro devour-state devour-teach; do
+  ln -s /path/to/this/repo/skills/$s ~/.claude/skills/$s
+done
+```
+
+If you only use devour in one repo, per-project install (symlink into that repo's `.claude/skills/`) is fine. In that case you run devour from inside the target repo (cwd = target) without the `--repo` flag.
+
 ---
 
 ## Usage
 
 ```
-/devour                    Review the current changes against the full spine
-/devour <file or pattern>  Review a specific target
-/devour --terse            Compact output, same rigor, less teaching prose
-/devour-teach              Set up devour for this project (run once per repo)
-/devour-motion             Deep review of motion principles
-/devour-micro              Deep review of micro-interaction principles
-/devour-state              Deep review of state-handling principles
+/devour                              Review the current changes against the full spine
+/devour <file or pattern>            Review a specific target in the current repo
+/devour --repo <path>                Review the target repo from anywhere
+/devour --repo <path> <target>       Review a specific target in a specific repo
+/devour --terse                      Compact output, same rigor, less teaching prose
+/devour-teach                        Set up devour for this project (run once per repo)
+/devour-teach --repo <path>          Set up devour for a specific repo from anywhere
+/devour-motion                       Deep review of motion principles
+/devour-micro                        Deep review of micro-interaction principles
+/devour-state                        Deep review of state-handling principles
 ```
 
 The first time you run devour in a repo, you will be prompted to invoke `/devour-teach` to establish project context. Different products live in different parts of the spine; a marketing page values different principles than a productivity app.
