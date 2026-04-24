@@ -210,7 +210,7 @@ Andy Allen's work is at the intersection of Layer 3 (native iOS craft) and Layer
 
 **The specific move:** Scroll to the top of any list in iOS. Keep scrolling past the top. The content stretches with a rubber-band effect and snaps back when released. There is no "you've reached the top" message. There is no bounce animation with a fixed duration. The behavior is governed by spring physics: the further you stretch, the more resistance; the harder you release, the more snap-back velocity.
 
-This is Imran Chaudhri and Bas Ording's work on the original iPhone. It is the canonical production example of principle #2 and the starting reference point for any discussion of physics in software. Every spring animation on the web is, in some sense, a descendant of this interaction.
+This is Imran Chaudhri and Bas Ording's work on the original iPhone. It is the canonical Layer 3 demonstration of Johnston and Thomas's Layer 0 principles... squash and stretch, slow-in/slow-out, and arc translated from cel animation into a touch interface. The rubber-band stretches with resistance (squash), snaps back with velocity matching the release force (follow-through), and settles with spring behavior rather than a tween (slow-out). Every spring animation on the web is, in some sense, a descendant of this interaction.
 
 **Principle:** #2 (physics over duration: real springs, not eased tweens)
 

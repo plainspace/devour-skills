@@ -9,7 +9,7 @@ Affordances should be discoverable, not declarative. A signifier that is louder 
 
 ## Why it matters
 
-Don Norman's vocabulary distinguishes affordances (the possible actions) from signifiers (the cues that point to them): signifiers are communication, and communication can be over-stated. Naoto Fukasawa's "Without Thought" and "super-normal" philosophies push further: the best signifier is one that requires no conscious processing, just recognition. Dieter Rams's principle 5 ("good design is unobtrusive") provides the constraint: the interface should not draw attention to itself. The macOS scrollbar demonstrates all three: thin, present when needed, invisible when not, requiring no explanation.
+The pre-HCI source is HfG Ulm (1953-1968), whose systematic design method established that design proceeds from explicit criteria rather than individual stylistic intuition. Dieter Rams worked within the tradition Ulm established; his principle 5 ("good design is unobtrusive") is the Ulm method applied to the question of how a designed object should present itself. The same constraint maps directly to signifiers: the interface should not draw attention to itself, and a signifier that is louder than the interaction it points to violates that constraint. Don Norman's vocabulary distinguishes affordances (the possible actions) from signifiers (the cues that point to them): signifiers are communication, and communication can be over-stated. Naoto Fukasawa's "Without Thought" and "super-normal" philosophies push further: the best signifier is one that requires no conscious processing, just recognition. The macOS scrollbar demonstrates all three: thin, present when needed, invisible when not, requiring no explanation.
 
 ## Tactics
 
@@ -32,5 +32,6 @@ Don Norman's vocabulary distinguishes affordances (the possible actions) from si
 
 ## Further study
 
+- Hochschule für Gestaltung Ulm (1953-1968) ... the Layer 0 source for the systematic-design tradition that produced Rams's unobtrusive-design principle; see `references/lineage.md` Layer 0 section
 - Don Norman, *The Design of Everyday Things* (1988, revised 2013) ... affordances and signifiers; the vocabulary for talking about discoverability
 - Naoto Fukasawa, "Without Thought" ... super-normal design; the principle of recognition without conscious processing
