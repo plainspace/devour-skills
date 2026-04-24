@@ -415,6 +415,8 @@ Principle:
   <one sentence: the principle, what it requires here>
 Tactic:
   <the specific change, with code>
+Downstream (optional):
+  <matching /impeccable subcommand, when one applies, with a brief note on what it does for this finding>
 Reference:
   <citation: lineage source + canonical exemplar>
 ```
@@ -443,9 +445,22 @@ Symptom: <one sentence>
 Principle: #N <name>
 Source: <Designer>, "<Work>"
 Tactic: <one sentence>
+Downstream: /impeccable <subcommand>   (optional, when one applies)
 ```
 
 The header block, severity groupings, INTERACTIONS BETWEEN FINDINGS block, MICRO SUMMARY block, and APPLY? block all remain in terse mode, unchanged.
+
+**About the `Downstream:` line.** Devour emits findings; [impeccable](https://impeccable.style) executes tactical fixes. When a devour-micro finding maps cleanly to an impeccable subcommand, name it on the Downstream line. This makes the compose-don't-merge relationship operational: a user reading a run file can pick the impeccable subcommand for the next session without consulting a separate mapping table.
+
+The line is optional. Omit it when no clean impeccable command fits, or when the finding requires a designer judgment call that no subcommand can fully express.
+
+Mapping reference (micro-interaction principles only):
+
+| Principle | Primary /impeccable command | Secondary |
+|---|---|---|
+| #3 Commit on intent | /impeccable polish | - |
+| #6 Fingertip vs cursor | /impeccable adapt | /impeccable polish |
+| #11 Match metaphor to medium | /impeccable polish | - |
 
 **Verbose output format (default):**
 

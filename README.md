@@ -52,6 +52,27 @@ The two compose. Run devour to identify principle violations. Pick a matching `/
 
 If you install one, install the other too. They're designed for different jobs.
 
+### Principle → impeccable command map
+
+When you run devour and decide to apply a finding, this table tells you which `/impeccable <subcommand>` to reach for:
+
+| Devour principle | Primary /impeccable command | Secondary |
+|---|---|---|
+| #1 Honest motion | /impeccable animate | /impeccable polish |
+| #2 Physics over duration | /impeccable animate | - |
+| #3 Commit on intent | /impeccable polish | - |
+| #4 Reversibility | /impeccable harden | /impeccable clarify |
+| #5 Sequence carries meaning | /impeccable animate | - |
+| #6 Fingertip vs cursor | /impeccable adapt | /impeccable polish |
+| #7 Preserve user state | /impeccable harden | - |
+| #8 Affordances visible | /impeccable polish | /impeccable clarify |
+| #9 Reduce decoration | /impeccable distill | /impeccable quieter |
+| #10 Density is a choice | /impeccable layout | /impeccable distill |
+| #11 Match metaphor to medium | /impeccable polish | - |
+| #12 Type is a system | /impeccable typeset | - |
+
+Devour emits findings with an optional `Downstream:` line naming the matching subcommand. Use it as the bridge between principled review and tactical application.
+
 ### rams (Anthropic)
 
 `rams` is a visual and accessibility review based on Dieter Rams's 10 principles. It's fast, broad, and built into Claude Code. Devour overlaps on the Rams principles but extends through Tufte, Norman, Victor, Buxton, Brichter, Matuschak, the Linear team, Rauno, Kowalski, Johnston & Thomas, Müller-Brockmann, and HfG Ulm. Use `rams` for a quick pass. Use devour for a principled review with explicit source citations.

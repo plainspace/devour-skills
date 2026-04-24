@@ -355,6 +355,8 @@ Principle:
   <one sentence: the principle, what it requires here>
 Tactic:
   <the specific change, with code>
+Downstream (optional):
+  <matching /impeccable subcommand, when one applies, with a brief note on what it does for this finding>
 Reference:
   <citation: lineage source + canonical exemplar>
 ```
@@ -376,9 +378,22 @@ Symptom: <one sentence>
 Principle: #N <name>
 Source: <Designer>, "<Work>"
 Tactic: <one sentence>
+Downstream: /impeccable <subcommand>   (optional, when one applies)
 ```
 
 The header block, severity groupings, INTERACTIONS BETWEEN FINDINGS block, MOTION SUMMARY block, and APPLY? block all remain in terse mode, unchanged.
+
+**About the `Downstream:` line.** Devour emits findings; [impeccable](https://impeccable.style) executes tactical fixes. When a devour-motion finding maps cleanly to an impeccable subcommand, name it on the Downstream line. This makes the compose-don't-merge relationship operational: a user reading a run file can pick the impeccable subcommand for the next session without consulting a separate mapping table.
+
+The line is optional. Omit it when no clean impeccable command fits, or when the finding requires a designer judgment call that no subcommand can fully express.
+
+Mapping reference (motion principles only):
+
+| Principle | Primary /impeccable command | Secondary |
+|---|---|---|
+| #1 Honest motion | /impeccable animate | /impeccable polish |
+| #2 Physics over duration | /impeccable animate | - |
+| #5 Sequence carries meaning | /impeccable animate | - |
 
 **Verbose output format (default):**
 

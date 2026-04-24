@@ -221,9 +221,32 @@ Principle:
 Tactic:
   <the specific change that would address this>
   ```<code or pseudo-code showing the fix>```
+Downstream (optional):
+  <matching /impeccable subcommand, when one applies, with a brief note on what it does for this finding>
 Reference:
   <citation to references/principles/<file>.md, plus the canonical exemplar from the lineage>
 ```
+
+**About the `Downstream:` line.** Devour emits findings; [impeccable](https://impeccable.style) executes tactical fixes. When a devour finding maps cleanly to an impeccable subcommand (e.g., a #9 decoration finding → `/impeccable distill`), name it on the Downstream line. This makes the compose-don't-merge relationship operational: a user reading a run file can pick the impeccable subcommand for the next session without consulting a separate mapping table.
+
+The line is optional. Omit it when no clean impeccable command fits, or when the finding requires a designer judgment call that no subcommand can fully express.
+
+Mapping reference:
+
+| Principle | Primary /impeccable command | Secondary |
+|---|---|---|
+| #1 Honest motion | /impeccable animate | /impeccable polish |
+| #2 Physics over duration | /impeccable animate | - |
+| #3 Commit on intent | /impeccable polish | - |
+| #4 Reversibility | /impeccable harden | /impeccable clarify |
+| #5 Sequence carries meaning | /impeccable animate | - |
+| #6 Fingertip vs cursor | /impeccable adapt | /impeccable polish |
+| #7 Preserve user state | /impeccable harden | - |
+| #8 Affordances visible | /impeccable polish | /impeccable clarify |
+| #9 Reduce decoration | /impeccable distill | /impeccable quieter |
+| #10 Density is a choice | /impeccable layout | /impeccable distill |
+| #11 Match metaphor to medium | /impeccable polish | - |
+| #12 Type is a system | /impeccable typeset | - |
 
 **Severity scale:**
 
@@ -262,6 +285,7 @@ Symptom: <one sentence>
 Principle: #N <name>
 Source: <Designer>, "<Work>"
 Tactic: <one sentence>
+Downstream: /impeccable <subcommand>   (optional, when one applies)
 ```
 
 The header block, severity groupings, INTERACTIONS BETWEEN FINDINGS block, SUMMARY block, and APPLY? block all remain in terse mode, unchanged.
