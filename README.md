@@ -44,13 +44,15 @@ Devour is opinionated about what it does and doesn't do. Here's how it differs f
 
 ### Impeccable (Paul Bakaus)
 
-[Impeccable](https://impeccable.style) is a generalist design toolkit: one skill with 23 commands spanning creation, critique, refinement, simplification, and hardening. It teaches your AI design vocabulary across seven dimensions, writes PRODUCT.md and DESIGN.md to your project root, and has a Live Mode for browser iteration. Use impeccable when you want to *make* design.
+[Impeccable](https://impeccable.style) is a generalist design toolkit: one skill with 23 commands. Twenty-one of those commands MAKE design (`craft`, `shape`, `animate`, `delight`, `polish`, `distill`, and so on). Two of them EVALUATE design: `critique` and `audit`.
 
-Devour is a specialist: twelve principles, citation-heavy, narrow. Every finding cites a named source from the five-layer lineage. Use devour when you want to *judge* design.
+Devour overlaps specifically with `/impeccable critique`, not with the makers. Where we differ from `critique`: citation discipline. `critique` scores UX heuristics (hierarchy, clarity, emotional resonance). Devour traces every finding to a named source in a five-layer lineage (Rams, Tufte, Norman, Victor, Buxton, Brichter, Matuschak, Rauno, Kowalski, Johnston & Thomas, Müller-Brockmann, HfG Ulm). When a stakeholder asks "why," devour hands you a citation; `critique` hands you a score.
 
-The two compose. Run devour to identify principle violations. Pick a matching `/impeccable` subcommand to apply the fix. A devour finding that says "#9 reduce decoration, citing Tufte" becomes `/impeccable distill` as the tactical pass. Devour names the principle; impeccable executes the change.
+Where we differ from `audit`: scope. `audit` does accessibility + performance + responsive design. Devour defers those... use `chrome-devtools-mcp:a11y-debugging`, `web-design-guidelines`, or `/impeccable audit` for that work.
 
-If you install one, install the other too. They're designed for different jobs.
+The two tools compose. Run devour to identify principle violations with citations. Pick a matching `/impeccable <subcommand>` to apply the fix (see the principle-to-impeccable map below). Devour names the principle; impeccable executes the change.
+
+If you install one, consider the other. They're designed for different jobs.
 
 ### Principle → impeccable command map
 

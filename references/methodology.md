@@ -48,7 +48,11 @@ This entry was added after a real debugging session in which the reviewer applie
 
 ## Composing devour with impeccable
 
-Devour is a specialist review. [Impeccable](https://impeccable.style) is a generalist toolkit. Together they cover make-and-judge cleanly... devour names principle violations; impeccable's subcommands execute the fixes.
+Devour and [impeccable](https://impeccable.style) are designed for different jobs. Impeccable has 23 commands: 21 MAKE design, 2 EVALUATE (`critique` and `audit`). Devour does design review with citations... it competes with `/impeccable critique` on the citation axis, not with the makers.
+
+Use `/impeccable critique` for heuristic-scored UX review. Use devour when you want every finding to trace to a named source from the design lineage.
+
+The two compose on the execution side: run devour to identify principle violations, pick a matching `/impeccable <subcommand>` to apply the fix. Devour names the principle; impeccable executes the change.
 
 Recommended flow for a serious craft pass:
 
