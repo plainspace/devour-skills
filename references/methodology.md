@@ -57,12 +57,13 @@ The two compose on the execution side: run devour to identify principle violatio
 Recommended flow for a serious craft pass:
 
 1. **Set up project context once per repo:**
-   - Run `/impeccable teach` to create `PRODUCT.md` and `DESIGN.md` (audience, register, brand voice, anti-references, design system tokens).
-   - Run `/devour-teach` to create `.devour-context.md` (principle weighting, motion appetite, density preference).
+   - Run `/devour-teach` to create `DEVOUR.md` at repo root. devour-teach opportunistically reads `PRODUCT.md` and `DESIGN.md` if they exist (impeccable's files), and pre-fills register, audience, and brand voice from them. For multi-surface projects (e.g., marketing site + product app in one repo), pass `--surfaces` to declare per-path-prefix overrides.
 
 2. **Review with devour:**
    - `/devour` for a full-spine review.
+   - `/devour <prose description>` to route by keyword.
    - `/devour-motion`, `/devour-micro`, `/devour-state` for focused depth.
+   - `--register brand` or `--register product` to override the project default for a single run.
    - Every finding cites a principle and a source. Devour writes a run file to `.devour/runs/`.
 
 3. **For findings you decide to apply, pick the matching `/impeccable` subcommand:**

@@ -2,6 +2,8 @@
 
 This directory holds curated devour runs... the public collection that newcomers read to see what a good devour output looks like.
 
+> Devour's project context lives in `DEVOUR.md` at the target repo root. See the main [README](../README.md#project-context-devourmd) for details.
+
 A **run** is the complete honest record of one devour invocation: context, findings, interactions, apply decisions, and outcomes. The format is the same whether the run lives in a user's `.devour/runs/` directory or here in the public collection. The only difference is that the runs here are hand-picked.
 
 ## Format
@@ -22,7 +24,7 @@ completed: <ISO-8601 UTC timestamp>
 skill: devour | devour-motion | devour-micro | devour-state
 target: <human-readable target description>
 repo: <absolute path to the target repo, local-only... public runs may redact>
-context-file: <path to .devour-context.md if read, else null>
+context-file: <path to DEVOUR.md if read, else null>
 browser-mcp: <MCP name if used, else null>
 terse: <true|false>
 ---
@@ -30,7 +32,7 @@ terse: <true|false>
 
 ## Sections
 
-1. **Context** ... one paragraph. Project, surface, what devour was asked to review, relevant signals from `.devour-context.md`.
+1. **Context** ... one paragraph. Project, surface, what devour was asked to review, relevant signals from `DEVOUR.md`.
 2. **Findings** ... each finding with severity, file:line, principle, source, tactic, reference. Verbose or terse format preserved as-is from the run.
 3. **Interactions between findings** ... optional. Surface trade-offs when findings conflict.
 4. **Apply decisions** ... table: Finding / Decision (applied/skipped/deferred) / Notes.
