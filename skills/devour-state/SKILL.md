@@ -586,6 +586,7 @@ When applying:
 - **Apply 🔴 BREAKS without further confirmation** if the user picked option 1, 2, or 3. State breaks (missing error paths, lost user state) almost always need the named fix.
 - **Ask once per 🟡 DRIFT or 🟢 OPPORTUNITY** that involves a real taste call (e.g., "persisting filter state to URL ... is this navigable enough to want it deep-linkable?"). Skip the ask if the fix is mechanical.
 - **After all fixes are applied, ask if the user wants to commit.** Do not auto-commit.
+- **If the user asks devour to commit:** use an imperative-mood, capitalized-first-letter message. NEVER add `Co-Authored-By:` lines (devour is a tool, not a co-author). NEVER prefix the message with `feat:` / `fix:` / `chore:` unless the user has asked for that style explicitly.
 
 ### Step 4 ... Save the run to file (streaming, compaction-safe)
 

@@ -248,6 +248,8 @@ If yes: tell the user `DEVOUR.md is ready to be staged and committed when you're
 
 If no: offer to add `DEVOUR.md` to `.gitignore`. "Add `DEVOUR.md` to `.gitignore`? [y/N]" If yes, append `DEVOUR.md` as a new line to `$REPO/.gitignore`, creating the file if it doesn't exist.
 
+**If the user later asks devour-teach to commit:** use an imperative-mood, capitalized-first-letter message (e.g., `Add DEVOUR.md for devour reviews`). NEVER add `Co-Authored-By:` lines (devour is a tool, not a co-author). NEVER prefix the message with `feat:` / `fix:` / `chore:` unless the user has asked for that style explicitly.
+
 ### Step 7 ... Wrap-up
 
 Summarize what was written:
