@@ -1,7 +1,7 @@
 ---
 name: devour-teach
-description: "Project context setup for devour reviews. Run once per repo before the first devour pass. Reads the project, asks 5-7 questions, synthesizes answers into a Devour Context block, and writes it to .devour-context.md or the project CLAUDE.md. Without context, devour produces generic findings; with context, it applies the right principles at the right weight for this specific product."
-argument-hint: "[--repo <absolute-path>]"
+description: "Project context setup for devour reviews. Run once per repo before the first devour review. Reads the project, opportunistically reads impeccable's PRODUCT.md and DESIGN.md if present, asks questions (pre-filling where possible), and writes DEVOUR.md to the repo root. Supports multi-surface projects via a per-surface overrides section inside DEVOUR.md."
+argument-hint: "[--repo <absolute-path>] [--surfaces] [--force]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -12,7 +12,7 @@ Devour's principles are stable. Their relative importance is not. A landing page
 
 Without context, devour produces findings that are technically correct but practically wrong for the product. You get a reversibility audit on a marketing page and a decoration audit on an offline-first productivity tool.
 
-Run `/devour-teach` once per repo before any other devour skill. The output is a `Devour Context` block that all subsequent devour invocations will read before reviewing.
+Run `/devour-teach` once per repo before any other devour skill. The output is a `DEVOUR.md` file at the repo root that all subsequent devour invocations will read before reviewing.
 
 ---
 
@@ -20,14 +20,14 @@ Run `/devour-teach` once per repo before any other devour skill. The output is a
 
 - First time devour is run on any project.
 - A project has significantly changed product direction, target audience, or surface type since the last `/devour-teach` run.
-- The existing `Devour Context` feels misaligned with what the project actually is.
+- The existing `DEVOUR.md` feels misaligned with what the project actually is. Pass `--force` to regenerate.
 - Another devour skill (`devour`, `devour-motion`, `devour-micro`, `devour-state`) stopped and said "Devour needs project context first."
 
 ---
 
 ## Process
 
-### Step 0a ... Resolve target repo (`--repo`)
+### Step 0a ... Resolve target repo (`--repo`) and parse known flags
 
 Read `$ARGUMENTS`. If `--repo <path>` is present:
 
@@ -38,260 +38,256 @@ Read `$ARGUMENTS`. If `--repo <path>` is present:
 
 If `--repo` is not present: set `$REPO` = current working directory.
 
+Also parse two other known flags before later steps use them:
+
+- `--surfaces` ... set a flag `$MULTI_SURFACE = true`. Skip the multi-surface question in Step 4; go straight to surface declaration.
+- `--force` ... set a flag `$FORCE = true`. Allow overwriting an existing `DEVOUR.md` in Step 0b.
+
+Strip both from `$ARGUMENTS`.
+
 For the rest of this skill:
+
 - All file reads, relative-path resolutions, and project-local lookups use `$REPO` as the root.
 - Git commands run with `git -C $REPO ...`.
-- `.devour-context.md` reads from `$REPO/.devour-context.md`.
-- `.devour/runs/` writes to `$REPO/.devour/runs/`.
+- `DEVOUR.md` writes to `$REPO/DEVOUR.md`.
 - `package.json` reads from `$REPO/package.json`.
-- If a target argument is a relative path, resolve it against `$REPO`. If absolute, use as-is.
 
-If `$REPO` is not a git repository (no `.git/` directory inside), warn the user once:
-`Note: $REPO is not a git repo. Skipping diff-based default. Provide a target file or pattern.`
-Then proceed with code review, but do not attempt `git diff` defaults.
+### Step 0b ... Check for existing `DEVOUR.md`
 
-### Step 1 ... Read existing project files
+Check `$REPO/DEVOUR.md`. Three cases:
 
-Before asking any questions, read the project to understand what you are already looking at. Do not ask questions you can infer from the code.
+1. **Does not exist:** proceed to Step 1.
+2. **Exists, `$FORCE = true`:** confirm with user once ("`DEVOUR.md` already exists at `$REPO/DEVOUR.md`. Overwrite? [y/N]"). If yes, proceed to Step 1. If no, stop.
+3. **Exists, `$FORCE` not set:** tell the user `DEVOUR.md already exists at $REPO/DEVOUR.md. Pass --force to regenerate. Showing current contents:` and print the file. Stop.
 
-Read in this order (stop when you have enough context to ask meaningful questions, not before):
+### Step 1 ... Opportunistic reads of impeccable's files
 
-1. `$REPO/package.json` ... what is this project? what dependencies are installed? (React version, Next.js, Framer Motion, animation libraries, UI library, form library, routing)
-2. `README.md` ... how does the project describe itself?
-3. `.claude/CLAUDE.md` or `CLAUDE.md` ... any existing project instructions; don't overwrite, but note what's there
-4. Any obvious design system or token files: `tailwind.config.*`, `tokens.css`, `theme.ts`, `design-tokens.*`
-5. A sample of the actual source files: two or three representative page or component files
+Check `$REPO/PRODUCT.md` and `$REPO/DESIGN.md`. If either exists, parse best-effort.
 
-From this reading, form a preliminary hypothesis about the product type. You will refine it with questions.
+From `PRODUCT.md` (if present), extract:
+
+- `register` (the bare value: `brand` or `product`) ... if the file has a `## Register` section with a single-word body.
+- `## Users` section content ... for audience context.
+- `## Brand Personality` section content ... for brand voice context.
+- `## Anti-references` section content ... for anti-refs.
+
+From `DESIGN.md` (if present), extract:
+
+- Token declarations (`colors`, `typography`, `spacing`, `components`) ... for later reference in review runs.
+
+If either file exists but does not parse cleanly, warn once ("Found `PRODUCT.md` but could not parse cleanly; proceeding as if absent") and continue.
+
+### Step 2 ... Scan the codebase
+
+Before asking questions, scan `$REPO` for signals:
+
+- `README.md` ... project purpose, audience hints.
+- `package.json` ... tech stack, dependencies (React version, Next.js, Framer Motion, animation libraries, UI library, form library, routing).
+- `CLAUDE.md` or `.claude/CLAUDE.md` ... any existing design or product context.
+- Top-level directory structure ... candidate surfaces (see Step 4).
+- `.gitignore` ... does it already exclude `DEVOUR.md` or `.devour/`?
+- Design-system references: `tailwind.config.*`, `tokens.css`, `theme.ts`, `design-tokens.*`.
+- A sample of source files: two or three representative page or component files.
+
+Note what can be inferred. Use these signals to skip questions in Step 3 where the answer is already clear.
+
+### Step 3 ... Ask context questions
+
+Ask the user these questions one at a time. For each, show any pre-fill from Steps 1-2 and confirm or let the user override.
+
+1. **Register (required).** `brand` or `product`?
+   - If PRODUCT.md had register, pre-fill: "I see `PRODUCT.md` declares register: `<value>`. Using that. Confirm? [Y/n]"
+   - Else: "What register best describes this project? `brand` (marketing, landing, portfolio) or `product` (app UI, admin, dashboard)?"
+
+2. **Project description (one paragraph).** Use README or CLAUDE.md as draft. Confirm or edit.
+
+3. **Audience (one paragraph).** Pre-fill from PRODUCT.md's `## Users` section if present. Else ask: "Who uses this product? Consumers, developers, designers, operations / SRE / power users, executives, or a mix? Be specific about the primary segment."
+
+4. **Brand voice.** Pre-fill from PRODUCT.md's `## Brand Personality` if present. Else ask: "How should the interface feel? Calm and considered? Playful and expressive? Bold and direct? Minimal and receding? Dense and information-first?"
+
+5. **Anti-references.** Pre-fill from PRODUCT.md's `## Anti-references` if present. Else ask: "What should this explicitly NOT look like? Specific bad-example sites or patterns to avoid."
+
+6. **Principle weighting.** devour's domain. Ask: "Which devour principles apply hardest to this project? Give three bands: High (🔴 BREAK fires easily), Medium, Low / N/A."
+
+   Suggest sensible defaults based on register:
+
+   - **`brand` defaults:** #1, #9, #12 High; #8, #11, #5 Medium; #4, #7 Low.
+   - **`product` defaults:** #4, #7, #8, #3 High; #6, #12, #11 Medium; #1, #2 (varies by appetite); #10 Medium.
+
+7. **Motion appetite.** One paragraph. Suggest scale:
+   - None / static (no animation except functional loading states)
+   - Restrained / functional (only where motion communicates state change)
+   - Considered (deliberate motion that adds craft without calling attention to itself)
+   - Expressive (motion is part of the product personality)
+
+8. **Density target.** One paragraph. Suggest scale:
+   - Spacious (Notion, Craft ... generous whitespace)
+   - Balanced (Vercel dashboard, GitHub ... functional density)
+   - Dense (Linear, VS Code ... maximum information per viewport)
+   - Very dense (Bloomberg Terminal, Datadog ... power-user specific)
+
+9. **Reference exemplars.** Bullet list. Pre-fill with known exemplars from `references/exemplars.md` matching the register if useful. Be specific: "Apple" is too broad; "Linear" or "Arc" or "Vercel dashboard" is useful.
+
+10. **Specific things to watch for.** Open list. User provides. Examples:
+    - "Framer Motion is installed; spring config is reviewable in detail."
+    - "shadcn Tooltip is used in 12 components; watch for `delayDuration={0}` patterns."
+    - "react-hook-form is installed but localStorage persistence is not; draft preservation worth reviewing."
+    - "44pt targets... this is a mobile app; principle #6 findings should assume that."
+
+Skip any question where pre-fill content is already sufficient and the user accepts it.
+
+### Step 4 ... Multi-surface detection
+
+If `$MULTI_SURFACE = true` (set by `--surfaces` flag), skip the detection question and go straight to surface declaration.
+
+Otherwise, ask: "Does this project have multiple distinct surfaces with different registers or review priorities (for example: a marketing landing site AND a product app in the same repo)? [y/N]"
+
+If `N`, skip to Step 5.
+
+If `y`:
+
+1. Ask: "Name the surfaces as path prefixes. Example: `homepage/, frontend/, admin/`. What are they?"
+2. For each named surface, ask:
+   - **Register for this surface.** `brand` or `product`. Required.
+   - Optional overrides for:
+     - Principle weighting (three-band, like Step 3 question 6).
+     - Motion appetite (one paragraph).
+     - Density target (one paragraph).
+     - Specific things to watch for (open list, additive to top-level).
+
+Default behavior for optional overrides: show the top-level value (from Step 3) as the default; user can edit or skip with "default" to use the top-level.
+
+Collect each surface block for Step 5.
+
+### Step 5 ... Write `DEVOUR.md`
+
+Compose the file from gathered content. Use this exact structure, skipping the `## Per-surface overrides` section entirely if the project is single-surface:
+
+```markdown
+# DEVOUR
+
+<!-- Devour's review context for this project. Written by /devour-teach. -->
+<!-- Devour reads this file before every review. -->
+
+## Register
+
+<top-level register, one word: brand or product>
+
+## Project
+
+<description from Step 3 question 2>
+
+## Audience
+
+<audience paragraph from Step 3 question 3>
+
+## Brand voice
+
+<brand voice paragraph from Step 3 question 4>
+
+## Anti-references
+
+<bullet list from Step 3 question 5>
+
+## Principle weighting (default)
+
+- **High:** <principles with names>
+- **Medium:** <principles with names>
+- **Low / N/A:** <principles with names and one-sentence reasons>
+
+## Motion appetite
+
+<paragraph from Step 3 question 7>
+
+## Density target
+
+<paragraph from Step 3 question 8>
+
+## Reference exemplars
+
+<bullet list from Step 3 question 9>
+
+## Specific things to watch for
+
+<open list from Step 3 question 10>
+```
+
+**If multi-surface, append this section after the top-level sections above:**
+
+```markdown
+
+## Per-surface overrides
+
+For projects with multiple surfaces (e.g., marketing landing + product app), these declarations override the top-level defaults when a target path matches the surface prefix. First match wins; prefixes are checked in declaration order.
+
+### <first surface, e.g., homepage/>
+
+- **Register:** <brand|product>
+- **Principle weighting:** <overrides, optional... if absent, inherits top-level>
+- **Motion appetite:** <overrides, optional>
+- **Density target:** <overrides, optional>
+- **Specific things to watch for:** <additions, optional>
+
+### <second surface, e.g., frontend/>
+
+- **Register:** <brand|product>
+- **Principle weighting:** ...
+- ...
+```
+
+Write the composed content to `$REPO/DEVOUR.md`. Never overwrite without confirmation (already handled in Step 0b).
+
+### Step 6 ... Git / version-control decision
+
+Ask: "Commit `DEVOUR.md` to version control? [Y/n]" (default yes; recommend yes).
+
+If yes: nothing to do. User commits on their own schedule.
+
+If no: offer to add `DEVOUR.md` to `.gitignore`. "Add `DEVOUR.md` to `.gitignore`? [y/N]"
+
+### Step 7 ... Wrap-up
+
+Summarize what was written:
+
+- `DEVOUR.md` at `$REPO/DEVOUR.md`.
+- Register: `<value>`.
+- Surfaces: `<list of path prefixes if multi-surface, else "none (single surface)">`.
+- `PRODUCT.md` read opportunistically: [yes / no].
+- `DESIGN.md` read opportunistically: [yes / no].
+
+Tell the user: "Devour is now ready. Run `/devour` or a focused review (`/devour-motion`, `/devour-micro`, `/devour-state`) to start. Use `/devour --register <value>` for a one-off register override; pass `--force` to `/devour-teach` to regenerate this file."
 
 ---
 
-### Step 2 ... Ask the seven questions
+## Principle weighting guide by register
 
-After reading, ask the user a focused set of seven questions. Do not ask questions you can already answer from the code.
+This is a starting point for Step 3 question 6. Adjust based on the specific answers to other questions.
 
-**Default mode: progressive.** Ask one question at a time, wait for the answer, then ask the next. This lets the user reconsider an earlier answer if a later question reveals it was wrong, and avoids the "wall of questions" intimidation that hurts adoption.
+**Brand register (marketing, landing, portfolio):**
 
-**Quick mode (advanced users):** If the user invoked `/devour-teach --quick` or explicitly said "ask them all at once," present all seven in a single numbered block.
-
-**The seven questions:**
-
-**1. Product type.** What category best describes this product?
-- (A) Marketing / landing pages ... primary goal is acquisition or conversion
-- (B) Productivity tool ... users do repeated work; speed and density matter
-- (C) Creative tool ... users make things; craft and expressiveness matter
-- (D) Dashboard / analytics ... users read data; density and hierarchy matter
-- (E) Content platform ... users read or browse; typography and navigation matter
-- (F) E-commerce ... users evaluate and purchase; trust and reversibility matter
-- (G) Other (describe)
-
-**2. Target audience.** Who uses this product?
-- (A) Consumers / general public
-- (B) Developers
-- (C) Designers
-- (D) Operations / SRE / enterprise power users
-- (E) Executives / decision-makers
-- (F) Mixed (describe the primary segment)
-
-**3. Tone target.** What is the intended emotional register?
-- (A) Calm and considered (Arc, Linear, Vercel)
-- (B) Playful and expressive (NotBoring, Daylight)
-- (C) Bold and direct (Stripe, Figma)
-- (D) Minimal and receding (Things 3, Bear)
-- (E) Dense and information-first (Bloomberg, Linear in power-user mode)
-- (F) Ambient and spatial (MercuryOS direction)
-- (G) Other (describe)
-
-**4. Primary surface type.** What is the dominant UI pattern?
-- (A) Long-scroll pages (landing, editorial, docs)
-- (B) App-like multi-screen with navigation (SaaS dashboard, mobile app)
-- (C) Dense data tables or lists (issue tracker, data grid, log viewer)
-- (D) Creative canvas or editor (design tool, rich text, code editor)
-- (E) Conversational (chat, support, onboarding wizard)
-- (F) Mixed (describe the dominant one)
-
-**5. Motion appetite.** What level of animation is appropriate for this product?
-- (A) None / static (no animation except functional loading states)
-- (B) Restrained / functional (only where motion communicates state change)
-- (C) Considered (deliberate motion that adds craft without calling attention to itself)
-- (D) Expressive (motion is part of the product personality)
-
-**6. Density target.** How dense should the primary working surfaces be?
-- (A) Spacious (Notion, Craft ... generous whitespace, relaxed reading)
-- (B) Balanced (Vercel dashboard, GitHub ... functional density without oppression)
-- (C) Dense (Linear, VS Code ... maximum information per viewport)
-- (D) Very dense (Bloomberg Terminal, Datadog ... power-user specific)
-
-**7. Reference exemplars.** Name 3-5 products that represent the quality bar or aesthetic direction you want for this product. Be specific. "Apple" is too broad; "Linear" or "Arc" or "Vercel dashboard" is useful.
-
----
-
-### Step 3 ... Synthesize into a Devour Context block
-
-Take the answers, combine them with what you observed in Step 1, and write a `Devour Context` block.
-
-**Principle weighting guide by product type:**
-
-Use this table as the starting point, then adjust based on the specific answers.
-
-**Marketing / landing pages:**
 - High: #1 (honest motion), #9 (reduce decoration), #12 (type system)
 - Medium: #8 (affordances), #11 (metaphor), #5 (sequence)
 - Low: #4 (reversibility), #7 (state preservation)
 - N/A: rarely #6 on desktop-only sites
 
-**Productivity tools:**
-- High: #3 (intent commit), #4 (reversibility), #6 (ergonomics), #7 (state preservation)
-- Medium: #9 (decoration), #10 (density), #8 (affordances)
-- Low: #1 (motion ... functional only), #12 (type rarely breaks)
-- Adjust if mobile: raise #6 significantly
+**Product register (app UI, admin, dashboard, productivity tool):**
 
-**Creative tools:**
-- High: #2 (physics), #5 (sequence), #11 (metaphor), #4 (reversibility)
-- Medium: #8 (affordances), #6 (ergonomics), #1 (honest motion)
-- Low: #12 (type system, unless typography is core to the product), #10 (density)
+- High: #3 (intent commit), #4 (reversibility), #6 (ergonomics), #7 (state preservation), #8 (affordances)
+- Medium: #9 (decoration), #10 (density), #12 (type system)
+- Low: #1 (motion ... functional only), #2 (physics, unless gestures are central)
+- Adjust if mobile: raise #6 significantly.
 
-**Dashboards / analytics:**
-- High: #9 (decoration), #10 (density), #12 (type system), #8 (affordances)
-- Medium: #7 (state preservation), #6 (ergonomics), #3 (intent)
-- Low: #2 (physics), #5 (sequence), #1 (motion)
-
-**Content platforms:**
-- High: #12 (type system), #11 (metaphor), #9 (decoration)
-- Medium: #8 (affordances), #1 (motion), #10 (density)
-- Low: #4 (reversibility), #7 (state), #2 (physics)
-
-**E-commerce:**
-- High: #4 (reversibility), #7 (state), #6 (ergonomics), #1 (honest motion)
-- Medium: #3 (intent), #8 (affordances), #11 (metaphor)
-- Low: #2 (physics), #5 (sequence), #10 (density)
+These defaults are starting points. Real products land between them: a content-heavy product (e.g., Notion, Linear's docs) borrows from both.
 
 ---
 
-### Step 4 ... Write the context block
+## What `DEVOUR.md` enables
 
-Write the complete `Devour Context` block in this format:
+Without a `DEVOUR.md`, the review applies all twelve principles at equal weight. The result is technically correct and practically noisy: six findings about motion on a tool where the motion appetite is "none/static," and no findings about state preservation on a tool where every async operation is a potential data-loss event.
 
-```markdown
-## Devour Context
+With a `DEVOUR.md`, the review front-loads the principles that matter, calibrates severity by register, and skips (or lowers) principles that are not relevant. The findings are sharper, shorter, and more actionable.
 
-**Product type:** <type from Q1>
-**Target audience:** <audience from Q2>
-**Tone:** <tone from Q3>
-**Primary surface:** <surface from Q4>
-**Motion appetite:** <appetite from Q5>
-**Density target:** <density from Q6>
-**Reference exemplars:** <list from Q7>
-
-**Principle weighting** (which principles apply hardest to this product):
-- High: #N, #N, #N (the principles that should produce 🔴 BREAKS, not just 🟢 OPPORTUNITIES)
-- Medium: #N, #N, #N (the principles that should produce 🟡 DRIFTS if violated)
-- Low: #N, #N (violations worth noting but not worth stopping for)
-- N/A: #N (genuinely does not apply to this product's surface type)
-
-**Specific things to watch for in this codebase:**
-- <observation from reading the code in Step 1>
-- <observation from reading the code in Step 1>
-- <2-4 product-type-specific patterns based on the answers>
-```
-
-The "Specific things to watch for" section should include at least one observation derived from actually reading the code. Examples:
-- "Framer Motion is installed and used; spring config will be reviewable in detail"
-- "shadcn/ui is the component library; watch for Tooltip `delayDuration={0}` patterns"
-- "This is a mobile app; principle #6 findings should assume 44pt targets"
-- "react-hook-form is installed but localStorage persistence is not; draft preservation is worth reviewing"
-- "No toast library is installed; reversibility lifecycle relies on custom UI, which will need review"
-
----
-
-### Step 5 ... Write to a file
-
-**Default: write to `$REPO/.devour-context.md` in the project root.**
-
-This is the open-source-friendly default. `.devour-context.md` is a portable, tool-agnostic file that any AI assistant (Claude Code, Cursor, Cline, Continue, Codex, Aider, Goose, ...) can be pointed at. It also makes "this repo has run devour" a discoverable signal in the file tree.
-
-Create `$REPO/.devour-context.md` with this structure:
-
-```markdown
-# Devour Context
-
-This file is read by the devour skill family before running reviews on this project.
-Generated by `/devour-teach` on <date>. Update if the product direction changes significantly.
-
-If your AI assistant doesn't auto-load this file, you can manually include it:
-- Claude Code: append the contents below to your CLAUDE.md, or reference this file from there
-- Cursor: append to .cursorrules or reference from .cursor/rules/
-- Other tools: include via your tool's project-instructions mechanism
-
----
-
-## Devour Context
-
-...
-```
-
-Tell the user: "Created `$REPO/.devour-context.md` in the project root. Add it to version control. If you want it auto-loaded by Claude Code, append its contents to your CLAUDE.md or reference it from there."
-
-**Optional: auto-link from CLAUDE.md if it exists.**
-
-If `$REPO/.claude/CLAUDE.md` or `$REPO/CLAUDE.md` exists in the project root, ask the user: "I've created `$REPO/.devour-context.md`. Want me to add a one-line reference in your CLAUDE.md so Claude Code picks it up automatically?"
-
-If yes, append a single line to the appropriate CLAUDE.md:
-
-```markdown
-**Devour context:** see [.devour-context.md](.devour-context.md) for the design review context for this project.
-```
-
-Do not overwrite or duplicate context into CLAUDE.md. The single source of truth is `.devour-context.md`. The CLAUDE.md line is just a pointer.
-
----
-
-### Step 6 ... Confirm and hand off
-
-After writing the context, summarize in 3-5 sentences:
-- What kind of product you've set up context for
-- Which principles you've weighted high and why
-- What specific patterns to watch for in this codebase
-
-Then offer: "Run `/devour` to start a full-spine review, or `/devour-motion`, `/devour-micro`, or `/devour-state` for a focused pass."
-
----
-
-## Example output
-
-```
-I've read the project files. This looks like a B2B productivity SaaS with a React/Next.js
-stack, shadcn/ui components, TanStack Query for data fetching, and Framer Motion
-for animations.
-
-A few questions before I set up context:
-
-1. Product type: ...
-[questions 1-7 as numbered list]
-
----
-
-(After answers)
-
-Writing Devour Context to .devour-context.md ...
-
-Done. Context summary:
-- Productivity tool, targeting operations/SRE users who prioritize speed and density
-- Principles #3, #4, #6, and #7 weighted high: this audience expects intent-aware
-  hover behavior, complete error paths on every async operation, and keyboard-first ergonomics
-- Noted: shadcn Tooltip is imported in 12 components; delayDuration will be worth checking
-- Noted: several useMutation calls observed; error variants will be a specific focus
-
-Run /devour to start, or /devour-state for an immediate pass on the mutation error paths.
-```
-
----
-
-## What the context enables
-
-Without a Devour Context, the review applies all twelve principles at equal weight. The result is technically correct and practically noisy: six findings about motion on a tool where the motion appetite is "none/static," and no findings about state preservation on a tool where every async operation is a potential data-loss event.
-
-With a Devour Context, the review front-loads the principles that matter, calibrates severity, and skips (or lowers) principles that are not relevant to this product's surface. The findings are sharper, shorter, and more actionable.
+For multi-surface projects, the `## Per-surface overrides` section ensures that a marketing landing in the same repo as a product app gets brand-register findings while the app gets product-register findings, all from a single context file.
 
 ---
 
