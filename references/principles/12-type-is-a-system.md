@@ -10,6 +10,14 @@ Typography is a system of relationships: each size, weight, leading, and spacing
 
 The pre-HCI source is Josef Müller-Brockmann's *Grid Systems in Graphic Design* (1981), which established the typographic grid as an architecture... not a layout aid but the systematic structure within which every type decision becomes meaningful in relation to every other. Modular scales, baseline grids, and column structures are not style; they are the conditions under which type can form a language rather than a collection of per-element choices. Edward Tufte's information hierarchy principles extend this: visual encoding must be systematic to be readable, and inconsistent type signals inconsistent hierarchy. Christopher Alexander's pattern language makes the same structural claim: a pattern applied once is a coincidence, applied consistently it is a language. Sam Henri Gold's typography craft work translates this to the current web context. The Vercel design org's Geist type system demonstrates the production answer: every size is a role, every role has a justifiable relationship to the scale, and no element makes a type decision for itself.
 
+## Register sensitivity
+
+**`brand`** ... more tolerance for display typography with high contrast, multiple weights, and expressive character. A marketing page can have a 100px display headline in a custom face next to 16px body; a product UI cannot. Drift zone: multiple sizes or weights selected per-element instead of from a scale.
+
+**`product`** ... strict. A tight modular type scale (typically 4-6 sizes) with disciplined weight choices. Body text between 14-16px in a neutral face. Display type rarely used at all. Tabular / mono used for numbers and counts, text use for prose. Violations fire as 🔴 BREAK.
+
+**Common ground** ... absence of any typographic system fires in both (using `text-sm`, `text-md`, `text-base`, `text-lg`, `text-xl`, `text-2xl` all in one component is a 🟡 DRIFT or 🔴 BREAK in both registers). Mono face for prose or sans face for numerical counts fires in both... the principle is one voice, one system.
+
 ## Tactics
 
 - Define 3-5 semantic type roles for the product: headline, body, label, caption, micro. Each role has a size, weight, leading, and tracking. Every element maps to a role, not to a size.

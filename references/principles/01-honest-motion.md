@@ -11,6 +11,14 @@ If you animate something, the animation must communicate information the static 
 
 The pre-HCI source is Ollie Johnston and Frank Thomas's *The Illusion of Life* (1981). Their 12 animation principles were derived empirically from the problem of making motion feel physically real... not aesthetically pleasing, physically honest. The underlying claim is that motion must communicate something true about the thing it depicts. When Emil Kowalski and Rauno Freiberg write about motion, they are writing in a vocabulary Johnston and Thomas named. Rams's principle 6 extends this to design ethics: design cannot misrepresent its purpose or capabilities. Don Norman's feedback model extends it to interfaces: the system must communicate what happened, and motion is one of the strongest signals it can send. When motion is used decoratively, it occupies the same channel as meaningful feedback and degrades that channel. Emil Kowalski's essay "You Don't Need Animations" makes the modern case explicitly: each animation is a claim, and the claim must be true.
 
+## Register sensitivity
+
+**`brand`** ... motion on brand surfaces often has expressive value the static state truly couldn't carry. Scroll-driven reveals, parallax, hero transitions can be honest when they establish register ("this is editorial, this is ambitious") or when they pace reading. Decorative motion still fires when it's genuinely pure ornament (a loop animation that never stops, a "floating element" that floats for no reason), but the bar is lower.
+
+**`product`** ... motion is a state-change language. Every animation must communicate something the static state didn't. A 200ms fade on a static element is a 🔴 BREAK in product. A hover decoration that animates for its own sake is a 🔴 BREAK. The bar is high.
+
+**Common ground** ... reduced-motion preferences must be respected in both registers. Loop animations with no purpose fire in both registers. A single static element with a .5-second delay to "feel alive" fires in both.
+
 ## Tactics
 
 - For each animation in a component, state what the user learns from it. If the answer is empty, remove the animation.

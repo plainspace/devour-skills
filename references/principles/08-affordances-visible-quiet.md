@@ -11,6 +11,14 @@ Affordances should be discoverable, not declarative. A signifier that is louder 
 
 The pre-HCI source is HfG Ulm (1953-1968), whose systematic design method established that design proceeds from explicit criteria rather than individual stylistic intuition. Dieter Rams worked within the tradition Ulm established; his principle 5 ("good design is unobtrusive") is the Ulm method applied to the question of how a designed object should present itself. The same constraint maps directly to signifiers: the interface should not draw attention to itself, and a signifier that is louder than the interaction it points to violates that constraint. Don Norman's vocabulary distinguishes affordances (the possible actions) from signifiers (the cues that point to them): signifiers are communication, and communication can be over-stated. Naoto Fukasawa's "Without Thought" and "super-normal" philosophies push further: the best signifier is one that requires no conscious processing, just recognition. The macOS scrollbar demonstrates all three: thin, present when needed, invisible when not, requiring no explanation.
 
+## Register sensitivity
+
+**`brand`** ... brand surfaces tolerate more visible, declarative affordances. A labeled "GET STARTED" button in a hero is fine; Fukasawa-level invisibility would be wrong here. But still fires when decorative signifiers are shouting (drop shadows on every button, badges on everything, icons decorating nothing).
+
+**`product`** ... signifiers should recede until needed. The macOS scrollbar is the reference. Fires when product UI is loud with affordances (always-visible drag handles when only occasional, per-row action buttons instead of hover-reveal, redundant labeling).
+
+**Common ground** ... affordances that are invisible to the user who needs them (hidden tap zones with no visible hint) are 🔴 in both. Affordances that are so loud they dominate the content are 🔴 in both.
+
 ## Tactics
 
 - Show row-level actions on hover or focus, not always. Always-visible actions add visual weight to every row in the table; none of it is needed until the user attends to that row.

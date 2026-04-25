@@ -10,6 +10,14 @@ A cursor can target a 2px element precisely. A fingertip cannot. Designing touch
 
 Bill Buxton's thesis in *Sketching User Experiences* is that input is more important than output in interaction design. The history of UI improvement is largely a history of better input modeling. Bruce Tognazzini's First Principles encode Fitts's law directly: the time to acquire a target is a function of its size and distance. Apple's original iPhone team established 44pt as the minimum touch target based on average fingertip contact area, and it became the HIG standard. Rauno Freiberg's "Ergonomic Interactions" chapter in Devouring Details extends this to hit box expansion patterns on the web.
 
+## Register sensitivity
+
+**`brand`** ... mobile tap targets on CTAs matter. A 16px close button on a modal dialog is 🔴 BREAK regardless of register. Beyond CTAs, brand surfaces with complex touch interaction are rare; defer findings to #8 where affordance clarity is the bigger concern.
+
+**`product`** ... central. 44pt minimum hit boxes. Hover-dependent affordances on mobile are 🔴 BREAK. Touch targets smaller than thumb width (11mm) on primary actions are 🔴 BREAK. Fitts's law applications (edge-snapping menus, oversized hit zones on small visible targets) are the hunting ground.
+
+**Common ground** ... unreachable or invisible tap targets are 🔴 in both. Hover-reveals with no touch equivalent are 🔴 in both if the revealed content is load-bearing.
+
 ## Tactics
 
 - Make touch targets a minimum 44×44pt hit zone. The visual element can be smaller; the interactive area must not be.

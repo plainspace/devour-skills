@@ -10,6 +10,14 @@ When the interface updates optimistically, it makes a promise: this action will 
 
 Dieter Rams's principle 6 ("good design is honest") applies to error states as much as success states: the interface must not misrepresent what is happening. Don Norman's gulf of evaluation names the problem precisely: without feedback, the user cannot assess the system's state. Bret Victor's "Magic Ink" argues for state visibility as a first-class design constraint. Emil Kowalski's Sonner API encodes the principle structurally: `toast.promise()` requires all three lifecycle states. The error path is not optional; it is a required parameter.
 
+## Register sensitivity
+
+**`brand`** ... narrow scope. Applies to email capture, plan selection on pricing, any form that bounces users into the product. "You've been subscribed!" with no unsubscribe path is 🟡 DRIFT. On most brand surfaces, this principle is 🟢 opportunity at most.
+
+**`product`** ... everywhere. Optimistic UI without error path is 🔴 BREAK. Form submission without draft preservation is 🔴 BREAK on long forms. Toast "Saved" without an undo affordance is 🟡 DRIFT at minimum, 🔴 for destructive operations. Subscription/purchase flows without reversibility at each stage are 🔴 BREAK.
+
+**Common ground** ... silent rollback (the app quietly undoes your optimistic action without telling you) is 🔴 BREAK in both registers. A "permanent" action like delete without confirmation or undo is 🔴 in both.
+
 ## Tactics
 
 - Use `toast.promise()` rather than separate `toast.success()` calls. The API structure forces you to define the error path before you can ship.
