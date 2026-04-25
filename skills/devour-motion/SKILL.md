@@ -36,9 +36,8 @@ Before reviewing anything, devour requires project context. Different products l
 **If `$REPO/DEVOUR.md` is missing:**
 
 1. STOP. Do not proceed with review.
-2. Tell the user: "Devour needs project context first. Running `/devour-teach` to set up `$REPO/DEVOUR.md`."
-3. Invoke `devour-teach`. Follow it through to completion.
-4. Then return to this skill.
+2. Tell the user: "Devour needs project context first. Run `/devour-teach` to write `$REPO/DEVOUR.md`, then re-run this command."
+3. Do NOT auto-invoke `/devour-teach`. The user runs it themselves so they're in control of when context is gathered.
 
 **If `$REPO/DEVOUR.md` exists:** Step 0b (below) reads it, applies `--register` overrides, matches per-surface path prefixes, and establishes the working context for the review.
 
@@ -71,7 +70,14 @@ If `$REPO` is not a git repository (no `.git/` directory inside), warn the user 
 `Note: $REPO is not a git repo. Skipping diff-based default. Provide a target file or pattern.`
 Then proceed with code review, but do not attempt `git diff` defaults.
 
-Known flags stripped from `$ARGUMENTS` in this step and downstream: `--repo <path>`, `--terse`, `--resume`, `--register <value>`.
+**Flag extraction in Step 0a (also strip them from `$ARGUMENTS` before later steps see them):**
+
+- `--repo <path>` ... extract value, validate path exists, set `$REPO` (handled above).
+- `--register <value>` ... extract value. Must be exactly `brand` or `product` (case-insensitive). If invalid, fail with `--register must be 'brand' or 'product', got '<value>'. Aborting.` Store as `$CLI_REGISTER` for use in Step 0c.
+- `--terse` ... note as a boolean flag. Step 0 (below) consumes it.
+- `--resume` ... note as a boolean flag. Step 0d consumes it.
+
+After all flags are extracted and stripped, `$ARGUMENTS` contains only the non-flag remainder (the target file/path/prose, or empty).
 
 ### Step 0b ... Resolve project context from `DEVOUR.md`
 
@@ -107,12 +113,14 @@ Devour NEVER writes to `PRODUCT.md` or `DESIGN.md`.
 Register drives principle ceilings in Step 2. It's resolved in this order:
 
 1. **`--register <value>` CLI flag if present.** This wins. `<value>` must be exactly `brand` or `product` (case-insensitive). Invalid values fail with a clear message.
-2. **`## Per-surface overrides` path-prefix match.** If `$TARGET` is declared, take its `Register` field (required within any surface override block). The first matching prefix wins; prefixes are checked in declaration order.
+2. **`## Per-surface overrides` path-prefix match.** If the non-flag remainder of `$ARGUMENTS` (the target hint, before Step 1 establishes `$TARGET`) starts with one of the prefixes declared in `## Per-surface overrides`, that surface's block applies. The first matching prefix wins; prefixes are checked in declaration order. If `$ARGUMENTS` is empty (diff-based default), per-surface match is skipped entirely... only the top-level `## Register` applies.
 3. **Top-level `## Register` section in DEVOUR.md.** The project default.
 
 When a per-surface override matches, merge the surface's other declared fields (principle-weighting, motion-appetite, density-target, specific-things-to-watch-for) with the top-level defaults. Surface-declared fields win for their section; unset fields fall back to top-level.
 
 When `--register` is applied, still use per-surface principle-weighting and motion-appetite if a surface matches. Only the register itself is overridden by the CLI flag.
+
+**Note on hybrid register + per-surface weighting.** When `--register` overrides the register but the target matches a per-surface block, the working context is hybrid: register comes from CLI, but principle weighting / motion appetite / density / specific-things-to-watch-for come from the matched surface. This is intentional but non-obvious. If the matched surface declares a register that disagrees with the CLI override (e.g., surface is `frontend/` with `register: product` but `--register brand` is set), warn the user once: `Note: --register brand overrides the surface's product register, but principle weighting from frontend/ still applies. Pass --register without a per-surface match to use top-level defaults.`
 
 Log the resolved register once at run start: `Register: brand` or `Register: product`. If a per-surface override matched, say so: `Register: product (matched per-surface override for 'frontend/')`.
 

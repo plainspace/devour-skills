@@ -147,6 +147,9 @@ If `N`, skip to Step 5.
 If `y`:
 
 1. Ask: "Name the surfaces as path prefixes. Example: `homepage/, frontend/, admin/`. What are they?"
+   - If user names zero surfaces (empty answer): tell them `--surfaces requires at least one named surface. If this is a single-surface project, run /devour-teach without --surfaces.` and stop.
+   - If user names exactly one surface: ask `Only one surface named. Multi-surface mode adds a Per-surface overrides section to DEVOUR.md. For a single surface, the top-level register and weighting are usually enough. Proceed with one-surface override anyway, or skip the Per-surface section?` Let user pick. If skip, treat the same as `--surfaces` not having been passed.
+   - If user names two or more: proceed normally to per-surface declaration loop.
 2. For each named surface, ask:
    - **Register for this surface.** `brand` or `product`. Required.
    - Optional overrides for:
@@ -239,11 +242,11 @@ Write the composed content to `$REPO/DEVOUR.md`. Never overwrite without confirm
 
 ### Step 6 ... Git / version-control decision
 
-Ask: "Commit `DEVOUR.md` to version control? [Y/n]" (default yes; recommend yes).
+Ask: "Track `DEVOUR.md` in version control? [Y/n]" (default yes; recommend yes).
 
-If yes: nothing to do. User commits on their own schedule.
+If yes: tell the user `DEVOUR.md is ready to be staged and committed when you're ready. devour-teach does not run git commands automatically.` Do not stage or commit on the user's behalf.
 
-If no: offer to add `DEVOUR.md` to `.gitignore`. "Add `DEVOUR.md` to `.gitignore`? [y/N]"
+If no: offer to add `DEVOUR.md` to `.gitignore`. "Add `DEVOUR.md` to `.gitignore`? [y/N]" If yes, append `DEVOUR.md` as a new line to `$REPO/.gitignore`, creating the file if it doesn't exist.
 
 ### Step 7 ... Wrap-up
 
