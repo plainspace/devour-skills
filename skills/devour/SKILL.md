@@ -150,6 +150,33 @@ Scan `$REPO/.devour/runs/` for any `.md` file with a YAML frontmatter field `sta
 
 This step runs once per invocation, before Step 1 (establish target). If resume is chosen, Step 1 and Step 1a may be skipped or truncated depending on what the in-progress file already has.
 
+### Step 0e ... Route by keyword (natural-language routing)
+
+Devour has specialized sub-skills (`devour-motion`, `devour-micro`, `devour-state`). If the user's input is prose (not a file path, not just flags), check for keywords that route to a specialized skill.
+
+**After flags have been stripped** (Steps 0a + 0c: `--repo`, `--register`, `--terse`, `--resume`), inspect remaining `$ARGUMENTS`:
+
+1. **Empty or path-like** (starts with `/`, `.`, `src/`, `components/`, ends in `.tsx` / `.jsx` / `.vue` / `.svelte` / `.css` / `.astro`, or any other obvious file/directory shape): do NOT route. Proceed with the current skill as full-spine review.
+
+2. **Prose with routing keywords:**
+
+   - **Motion keywords:** animation, transition, easing, spring, stagger, motion, duration, frame, keyframe, timing, bounce, choreography, velocity → dispatch to `/devour-motion`.
+   - **Micro keywords:** hover, tooltip, touch, cursor, intent, Fitts, tap, hit, ergonomic, mobile, metaphor, modal, inline, paginate, popover, drawer → dispatch to `/devour-micro`.
+   - **State keywords:** optimistic, error, loading, reversib, undo, form, draft, scroll, state, navigate, preserve, refresh, restore, session → dispatch to `/devour-state`.
+   - **Multiple categories match or ambiguous:** do NOT route. Proceed as full-spine.
+
+3. **Announce routing** (if routing occurred): print one line:
+
+   ```
+   Routed to /devour-<skill> based on keyword '<matched keyword>' in request. Proceed, or type a different target?
+   ```
+
+   If user responds with a file path or other target, use that. Otherwise proceed.
+
+Do NOT apply LLM-based intent classification. Keyword matching is predictable and debuggable.
+
+This step only runs in the main `/devour` skill. Specialized skills (`devour-motion`, `devour-micro`, `devour-state`) do not route.
+
 ### Step 0 ... Check for --terse flag
 
 Read `$ARGUMENTS`. If `--terse` is present, set output mode to **terse**. Strip `--terse` from the arguments before passing them to Step 1. Terse mode keeps the same rigor and the same spine but strips teaching prose from each finding. The APPLY? prompt and INTERACTIONS BETWEEN FINDINGS block are unchanged in both modes.
