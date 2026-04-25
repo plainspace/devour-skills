@@ -10,6 +10,14 @@ Decoration is any element that occupies visual space without communicating infor
 
 The pre-HCI source is Jacques Bertin's *Semiology of Graphics* (1967), which established that visual variables (position, size, shape, value, color, orientation, texture) are a grammar with rules... not an aesthetic palette to fill arbitrarily. Decoration, in Bertin's terms, is the occupation of a visual variable without communicating the information that variable is capable of carrying. Edward Tufte's data-ink ratio is the practice-manual extension of Bertin's grammar: maximize the proportion of ink (or pixels) devoted to displaying data, minimize the proportion used for everything else. Dieter Rams's principle 10 ("good design is as little design as possible") makes the same claim from the product design direction. Naoto Fukasawa's super-normal applies it to the everyday object: the thing that does its job without drawing attention to itself. The Linear issue list is the current software production example: high information density, near-zero chartjunk, every visible element communicating state.
 
+## Register sensitivity
+
+**`brand`** ... decoration earns more room. Editorial layouts, custom illustration, display typography, and decorative motion on hero surfaces all fit. A landing page with a bespoke hero is not a #9 finding. Drift zone: "generic dark SaaS" decoration that doesn't come from the brand's language (random gradients, placeholder-style icons, cards stacked on cards).
+
+**`product`** ... decoration is #9's primary hunting ground. Decorative gradients, icon-for-icon's-sake, card-on-card nesting, ornamented headers all fire. Tool UI earns decoration only when it carries information (state indicators, progress, severity). Chartjunk in the dashboard sense.
+
+**Common ground** ... decoration that doesn't come from the design system fires in both. Chartjunk (Tufte) fires in both. Unearned visual weight fires in both. Icons with no semantic link to the text they accompany fire in both.
+
 ## Tactics
 
 - On functional surfaces (dashboards, data tables, editors), treat each decorative element as a proposal that requires justification. The gradient header needs to earn its pixels.

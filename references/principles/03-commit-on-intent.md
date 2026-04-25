@@ -10,6 +10,14 @@ The cursor moves across many elements while traveling to its target. Triggering 
 
 Bruce Tognazzini's First Principles of Interaction Design establish prediction as a core principle: the system should model what the user intends, not just what the user contacts. Rauno Freiberg's "Inferring Intent" chapter in Devouring Details applies this directly to hover states and commit timing. The Linear team made it production-visible: their sidebar hover state has a brief commit delay so the nav can be traversed without triggering a cascade of active states.
 
+## Register sensitivity
+
+**`brand`** ... on marketing pages, "commit on intent" mostly applies to tooltips and decorative hover states. Instant-fire tooltips on brand pages are noise (🟡 DRIFT). Rare cases where a hover-intent is load-bearing (e.g., a nav disclosure that reveals a submenu) still need commit timing.
+
+**`product`** ... central. Keyboard nav, command menus (cmdk), multi-select, drag-start, and hover-reveals are the hunting ground. 0ms hover = 🔴 BREAK. Linear/Vercel-style ~80ms hover commit is the reference. Tooltip stacking or flicker on cursor travel is 🔴 BREAK.
+
+**Common ground** ... accidental commit on touch (where hover doesn't exist) fires in both. Irreversible actions on hover/focus (never click) fire in both.
+
 ## Tactics
 
 - Use a minimum 80-100ms intent timer before activating hover states on navigation items and small elements.

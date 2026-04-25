@@ -10,6 +10,14 @@ Density is not a scale from bad to good. It is a dimension that must be calibrat
 
 The pre-HCI source is Josef Müller-Brockmann's *Grid Systems in Graphic Design* (1981): systematic grids are the architecture that makes density decisions legible rather than arbitrary. A dense layout without an underlying grid is not designed density... it is compressed layout. Müller-Brockmann's argument is that the grid is not a constraint applied from the outside; it is the logic that makes every element's position meaningful in relation to every other. Edward Tufte extends this: well-designed density is more usable, not less... small multiples and dense data displays allow comparison and pattern recognition that spacious layouts prevent. Bret Victor's "Magic Ink" makes the case for information software as a graphic design problem where density in service of comprehension is a virtue. The Linear team made density a named product principle: "speed as a feature" and "density as a craft choice" are in the Linear Method. The Vercel dashboard is the contemporary web example: high density, but every space is intentional.
 
+## Register sensitivity
+
+**`brand`** ... density is more often spacious. Marketing pages use whitespace to create rhythm and pace reading. Cramped brand pages feel desperate or bureaucratic. Fires when a brand surface tries to be dense without the system to support it (jammed pricing tables, cramped feature grids).
+
+**`product`** ... density is more often dense. Linear, the Vercel dashboard, Notion, Bloomberg Terminal are references at different points on the density spectrum. Fires when product UI is spacious for no reason ("dashboard" with 80% whitespace and three KPIs). Also fires when density is unsystematic (random per-element spacing tokens).
+
+**Common ground** ... density without systematic backing (grid, type scale, spacing tokens) fires in both. Default density (the design system's default used everywhere, without intent) is 🟡 DRIFT in both.
+
 ## Tactics
 
 - Make an explicit density decision for each surface type in the product: working surface vs. reading surface vs. marketing surface. Document it in Devour Context.

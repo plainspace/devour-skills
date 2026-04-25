@@ -44,13 +44,15 @@ Devour is opinionated about what it does and doesn't do. Here's how it differs f
 
 ### Impeccable (Paul Bakaus)
 
-[Impeccable](https://impeccable.style) is a generalist design toolkit: one skill with 23 commands spanning creation, critique, refinement, simplification, and hardening. It teaches your AI design vocabulary across seven dimensions, writes PRODUCT.md and DESIGN.md to your project root, and has a Live Mode for browser iteration. Use impeccable when you want to *make* design.
+[Impeccable](https://impeccable.style) is a generalist design toolkit: one skill with 23 commands. Twenty-one of those commands MAKE design (`craft`, `shape`, `animate`, `delight`, `polish`, `distill`, and so on). Two of them EVALUATE design: `critique` and `audit`.
 
-Devour is a specialist: twelve principles, citation-heavy, narrow. Every finding cites a named source from the five-layer lineage. Use devour when you want to *judge* design.
+Devour overlaps specifically with `/impeccable critique`, not with the makers. Where we differ from `critique`: citation discipline. `critique` scores UX heuristics (hierarchy, clarity, emotional resonance). Devour traces every finding to a named source in a five-layer lineage (Rams, Tufte, Norman, Victor, Buxton, Brichter, Matuschak, Rauno, Kowalski, Johnston & Thomas, Müller-Brockmann, HfG Ulm). When a stakeholder asks "why," devour hands you a citation; `critique` hands you a score.
 
-The two compose. Run devour to identify principle violations. Pick a matching `/impeccable` subcommand to apply the fix. A devour finding that says "#9 reduce decoration, citing Tufte" becomes `/impeccable distill` as the tactical pass. Devour names the principle; impeccable executes the change.
+Where we differ from `audit`: scope. `audit` does accessibility + performance + responsive design. Devour defers those... use `chrome-devtools-mcp:a11y-debugging`, `web-design-guidelines`, or `/impeccable audit` for that work.
 
-If you install one, install the other too. They're designed for different jobs.
+The two tools compose. Run devour to identify principle violations with citations. Pick a matching `/impeccable <subcommand>` to apply the fix (see the principle-to-impeccable map below). Devour names the principle; impeccable executes the change.
+
+If you install one, consider the other. They're designed for different jobs.
 
 ### Principle → impeccable command map
 
@@ -129,16 +131,18 @@ If you only use devour in one repo, per-project install (symlink into that repo'
 ## Usage
 
 ```
-/devour                              Review the current changes against the full spine
-/devour <file or pattern>            Review a specific target in the current repo
+/devour                              Full-spine review of current changes
+/devour <file or pattern>            Full-spine review of a specific target
+/devour <prose description>          Routes to the right sub-skill by keyword
 /devour --repo <path>                Review the target repo from anywhere
-/devour --repo <path> <target>       Review a specific target in a specific repo
+/devour --register <brand|product>   Override register for this run
 /devour --terse                      Compact output, same rigor, less teaching prose
-/devour-teach                        Set up devour for this project (run once per repo)
-/devour-teach --repo <path>          Set up devour for a specific repo from anywhere
-/devour-motion                       Deep review of motion principles
-/devour-micro                        Deep review of micro-interaction principles
-/devour-state                        Deep review of state-handling principles
+/devour-teach                        Write DEVOUR.md at repo root (run once per repo)
+/devour-teach --force                Overwrite existing DEVOUR.md
+/devour-teach --surfaces             Prompt for multi-surface overrides
+/devour-motion                       Deep review of motion principles (#1, #2, #5)
+/devour-micro                        Deep review of micro-interaction principles (#3, #6, #11)
+/devour-state                        Deep review of state-handling principles (#4, #7)
 ```
 
 The first time you run devour in a repo, you will be prompted to invoke `/devour-teach` to establish project context. Different products live in different parts of the spine; a marketing page values different principles than a productivity app.
@@ -162,6 +166,14 @@ Devour is not tied to any specific browser MCP. It works with whichever you have
 Install any one of these per the project's instructions, then restart Claude Code. Devour will detect it automatically and use it to verify motion timing, hover behavior, state transitions, and other findings that need to be observed at runtime, not just in code.
 
 If no browser MCP is available, devour proceeds with code-only review and tells you what it couldn't verify. Code-only is still useful; it just produces fewer browser-confirmed findings on motion-heavy surfaces.
+
+### Project context: `DEVOUR.md`
+
+Devour reads `DEVOUR.md` at your repo root before every review. It's a single file that holds the register (brand or product), principle weighting, motion appetite, density target, and optional per-surface overrides. Run `/devour-teach` once per repo to generate it.
+
+If you use impeccable in the same project, devour opportunistically reads `PRODUCT.md` and `DESIGN.md` to pre-fill audience, brand voice, and design-system tokens during teach. Devour never writes to those files... they belong to impeccable. `DEVOUR.md` is devour's source of truth and works standalone.
+
+For multi-surface projects (e.g., a repo with both a marketing site and a product app), `DEVOUR.md` has an optional `## Per-surface overrides` section that declares per-path-prefix register and weighting. Matches by path prefix; first match wins. Use `--register <brand|product>` at runtime to force a specific register for a single run.
 
 ### Verbosity as a feature
 
@@ -229,6 +241,12 @@ To add an exemplar to `references/exemplars.md`:
 2. Cite the principle it demonstrates.
 3. Link to a public artifact (live URL, screenshot, source code).
 4. Keep it under 100 words.
+
+---
+
+### Upgrading from v0.3 or earlier
+
+v0.4 uses `DEVOUR.md` at repo root instead of `.devour-context.md`. If you have an existing `.devour-context.md`, it's not automatically migrated. Run `/devour-teach` once to write the new `DEVOUR.md`. The old file can be deleted manually.
 
 ---
 

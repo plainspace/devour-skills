@@ -48,17 +48,22 @@ This entry was added after a real debugging session in which the reviewer applie
 
 ## Composing devour with impeccable
 
-Devour is a specialist review. [Impeccable](https://impeccable.style) is a generalist toolkit. Together they cover make-and-judge cleanly... devour names principle violations; impeccable's subcommands execute the fixes.
+Devour and [impeccable](https://impeccable.style) are designed for different jobs. Impeccable has 23 commands: 21 MAKE design, 2 EVALUATE (`critique` and `audit`). Devour does design review with citations... it competes with `/impeccable critique` on the citation axis, not with the makers.
+
+Use `/impeccable critique` for heuristic-scored UX review. Use devour when you want every finding to trace to a named source from the design lineage.
+
+The two compose on the execution side: run devour to identify principle violations, pick a matching `/impeccable <subcommand>` to apply the fix. Devour names the principle; impeccable executes the change.
 
 Recommended flow for a serious craft pass:
 
 1. **Set up project context once per repo:**
-   - Run `/impeccable teach` to create `PRODUCT.md` and `DESIGN.md` (audience, register, brand voice, anti-references, design system tokens).
-   - Run `/devour-teach` to create `.devour-context.md` (principle weighting, motion appetite, density preference).
+   - Run `/devour-teach` to create `DEVOUR.md` at repo root. devour-teach opportunistically reads `PRODUCT.md` and `DESIGN.md` if they exist (impeccable's files), and pre-fills register, audience, and brand voice from them. For multi-surface projects (e.g., marketing site + product app in one repo), pass `--surfaces` to declare per-path-prefix overrides.
 
 2. **Review with devour:**
    - `/devour` for a full-spine review.
+   - `/devour <prose description>` to route by keyword.
    - `/devour-motion`, `/devour-micro`, `/devour-state` for focused depth.
+   - `--register brand` or `--register product` to override the project default for a single run.
    - Every finding cites a principle and a source. Devour writes a run file to `.devour/runs/`.
 
 3. **For findings you decide to apply, pick the matching `/impeccable` subcommand:**

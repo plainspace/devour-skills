@@ -10,6 +10,14 @@ When multiple elements animate in sequence, the sequence communicates causality 
 
 The canonical source is Ollie Johnston and Frank Thomas, *The Illusion of Life: Disney Animation* (1981). Of Disney's 12 principles of animation, four are specifically about sequence: anticipation, staging, timing, and follow-through / overlapping action. Each treats ordering as informational work, not flourish. Edward Tufte's data-ink ratio principle extends the same logic to motion: every animated choice signifies, and a stagger is a choice that says "order matters here." Bill Verplank's do/feel/know model requires that when a user takes an action, the interface answers what was caused and in what order. Rauno Freiberg's "Motion Choreography" chapter in Devouring Details makes this operational for web work: choreography is not decoration, it is the causal story told through sequence.
 
+## Register sensitivity
+
+**`brand`** ... narrative motion (scroll-driven reveals, section entry sequencing) is often honest on brand surfaces. Reveal-in-order on a hero sequence establishes causality. Drift zone: decorative stagger where order is arbitrary (a fade-in list of logos that could enter in any order).
+
+**`product`** ... stagger implies order. Arbitrary stagger on a data list (alphabetical table rows, unordered chip list) is 🟡 DRIFT. Motion choreography in modals and multi-step flows is where this principle fires hardest... mount/unmount sequences that imply causality (input → result) are honest; those that are just "everything fades together" miss the opportunity.
+
+**Common ground** ... staggered animation with a wrong or reversed order is 🔴 BREAK in both (implies false causality). Simultaneous animation when sequence genuinely carries meaning is 🟡 DRIFT.
+
 ## Tactics
 
 - Before adding a stagger, ask whether the items have a natural order the user should understand. If no, use simultaneous entrance.

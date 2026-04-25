@@ -10,6 +10,14 @@ Every UI pattern carries an implicit contract with the user about what kind of i
 
 Bill Buxton's medium-shapes-the-message thesis in *Sketching User Experiences* is the foundation: the choice of input and output modality changes the meaning of the interaction, not just its delivery. Don Norman's mapping principle establishes that the relationship between controls and effects must be legible. Rauno Freiberg's "Interaction Metaphors" chapter in Devouring Details catalogs the current production vocabulary: when to use each pattern, and what each pattern communicates implicitly. Loren Brichter's pull-to-refresh is the Layer 3 canonical example of a metaphor so well matched to the medium that it requires no instruction.
 
+## Register sensitivity
+
+**`brand`** ... metaphor mostly about message architecture. Long-form scroll vs. pagination, inline expansion vs. modal, hero video vs. static image. Brand pages that paginate content that should scroll (or vice versa) fire. "Modal for a one-line text edit" is less common on brand surfaces but still wrong.
+
+**`product`** ... central. Modal-for-inline-edit, paginate-what-should-scroll, toast-for-persistent, command-palette-vs-keyboard-shortcut are the hunting ground. The Notion slash menu, Sonner/cmdk singleton patterns, Linear's keyboard-first register are references.
+
+**Common ground** ... metaphors that contradict the medium (video player controls inside a written article) fire in both. Metaphor mismatch at transaction moments (subscribe flow with celebration-theater confetti where Stripe-quiet-utility is appropriate) is 🔴 in both.
+
 ## Tactics
 
 - Use inline editing for single-field edits. Double-click or click to edit, in place. The modal says "this is important enough to interrupt everything"; renaming a file is not.

@@ -1,7 +1,7 @@
 ---
 name: devour-micro
 description: "Deep micro-interaction review against principles #3 (commit on intent, not on contact), #6 (the fingertip and the cursor are not the same), and #11 (match the metaphor to the medium). Use when hover behavior feels jittery, touch targets feel wrong, or UI components are using the wrong interaction pattern for their context. Traces findings back to Rauno Freiberg, Bruce Tognazzini, Bill Buxton, Don Norman, the original iPhone team."
-argument-hint: "[--repo <absolute-path>] [target] [--terse]"
+argument-hint: "[--repo <absolute-path>] [--register <brand|product>] [target] [--terse]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -28,18 +28,17 @@ For motion-specific review (spring physics, honest animation, sequence), use [`d
 
 ## MANDATORY PREPARATION
 
-This skill requires project context established by `/devour-teach`.
+Before reviewing anything, devour requires project context. Different products live in different parts of the spine ... a marketing page values principles 9 and 12 most; a productivity app values 3, 4, and 7 most; a creative tool values 2 and 5 most. Without context, devour produces generic findings.
 
-**If the project has not run `/devour-teach` yet:**
+**Devour's context lives in `$REPO/DEVOUR.md`** ... a single file at the repo root, written by `/devour-teach`. It contains register (brand | product), principle weighting, motion appetite, density target, reference exemplars, and optional per-surface overrides.
 
-1. STOP. Do not proceed.
-2. Tell the user: "Devour needs project context first. Running `/devour-teach` to set up."
-3. Invoke `devour-teach`. Follow it through to completion.
-4. Return here.
+**If `$REPO/DEVOUR.md` is missing:**
 
-**If context exists:**
+1. STOP. Do not proceed with review.
+2. Tell the user: "Devour needs project context first. Run `/devour-teach` to write `$REPO/DEVOUR.md`, then re-run this command."
+3. Do NOT auto-invoke `/devour-teach`. The user runs it themselves so they're in control of when context is gathered.
 
-Read the `Devour Context` block. Check **Primary surface** and **Principle weighting**. For a productivity tool, #3 and #6 weight highest. For a mobile-first app, #6 is most critical. For a content platform, #11 is most likely to surface mismatches.
+**If `$REPO/DEVOUR.md` exists:** Step 0b (below) reads it, applies `--register` overrides, matches per-surface path prefixes, and establishes the working context for the review.
 
 ---
 
@@ -61,7 +60,7 @@ If `--repo` is not present: set `$REPO` = current working directory.
 For the rest of this skill:
 - All file reads, relative-path resolutions, and project-local lookups use `$REPO` as the root.
 - Git commands run with `git -C $REPO ...`.
-- `.devour-context.md` reads from `$REPO/.devour-context.md`.
+- `DEVOUR.md` reads from `$REPO/DEVOUR.md`.
 - `.devour/runs/` writes to `$REPO/.devour/runs/`.
 - `package.json` reads from `$REPO/package.json`.
 - If a target argument is a relative path, resolve it against `$REPO`. If absolute, use as-is.
@@ -70,7 +69,61 @@ If `$REPO` is not a git repository (no `.git/` directory inside), warn the user 
 `Note: $REPO is not a git repo. Skipping diff-based default. Provide a target file or pattern.`
 Then proceed with code review, but do not attempt `git diff` defaults.
 
-### Step 0b ... Check for in-progress run (resume)
+**Flag extraction in Step 0a (also strip them from `$ARGUMENTS` before later steps see them):**
+
+- `--repo <path>` ... extract value, validate path exists, set `$REPO` (handled above).
+- `--register <value>` ... extract value. Must be exactly `brand` or `product` (case-insensitive). If invalid, fail with `--register must be 'brand' or 'product', got '<value>'. Aborting.` Store as `$CLI_REGISTER` for use in Step 0c.
+- `--terse` ... note as a boolean flag. Step 0 (below) consumes it.
+- `--resume` ... note as a boolean flag. Step 0d consumes it.
+
+After all flags are extracted and stripped, `$ARGUMENTS` contains only the non-flag remainder (the target file/path/prose, or empty).
+
+### Step 0b ... Resolve project context from `DEVOUR.md`
+
+After `$REPO` is resolved (Step 0a), read `$REPO/DEVOUR.md`. This file is the source of truth for devour's review calibration.
+
+**If `$REPO/DEVOUR.md` does not exist:** block with the MANDATORY PREPARATION message. Do not proceed.
+
+**If `$REPO/DEVOUR.md` exists:** parse its sections:
+
+- `## Register` ... the default register for this project (`brand` or `product`, one word).
+- `## Project` ... one-paragraph description.
+- `## Audience` ... optional. If missing, check `$REPO/PRODUCT.md` (opportunistic, below).
+- `## Brand voice` ... optional. If missing, check `$REPO/PRODUCT.md`.
+- `## Anti-references` ... optional. If missing, check `$REPO/PRODUCT.md`.
+- `## Principle weighting (default)` ... three-band list (High / Medium / Low / N/A) of principles by number.
+- `## Motion appetite` ... one paragraph.
+- `## Density target` ... one paragraph.
+- `## Reference exemplars` ... bullet list.
+- `## Specific things to watch for` ... open list.
+- `## Per-surface overrides` ... optional. Declares per-path-prefix overrides for multi-surface projects.
+
+Store these as the working context for this review.
+
+**Opportunistic reads:**
+
+- If `$REPO/PRODUCT.md` exists, read it best-effort. If it has `## Users`, `## Brand Personality`, or `## Anti-references` sections, use them to fill in any DEVOUR.md fields that were optional and missing. Never override DEVOUR.md fields that exist. If PRODUCT.md does not parse cleanly, warn once ("PRODUCT.md present but could not parse cleanly; proceeding from DEVOUR.md alone") and continue.
+- If `$REPO/DESIGN.md` exists, read it best-effort. If it declares tokens (`colors`, `typography`, `spacing`, `components`), store them. Tactic suggestions in Step 3 can reference tokens by name.
+
+Devour NEVER writes to `PRODUCT.md` or `DESIGN.md`.
+
+### Step 0c ... Resolve register for this review
+
+Register drives principle ceilings in Step 2. It's resolved in this order:
+
+1. **`--register <value>` CLI flag if present.** This wins. `<value>` must be exactly `brand` or `product` (case-insensitive). Invalid values fail with a clear message.
+2. **`## Per-surface overrides` path-prefix match.** If the non-flag remainder of `$ARGUMENTS` (the target hint, before Step 1 establishes `$TARGET`) starts with one of the prefixes declared in `## Per-surface overrides`, that surface's block applies. The first matching prefix wins; prefixes are checked in declaration order. If `$ARGUMENTS` is empty (diff-based default), per-surface match is skipped entirely... only the top-level `## Register` applies.
+3. **Top-level `## Register` section in DEVOUR.md.** The project default.
+
+When a per-surface override matches, merge the surface's other declared fields (principle-weighting, motion-appetite, density-target, specific-things-to-watch-for) with the top-level defaults. Surface-declared fields win for their section; unset fields fall back to top-level.
+
+When `--register` is applied, still use per-surface principle-weighting and motion-appetite if a surface matches. Only the register itself is overridden by the CLI flag.
+
+**Note on hybrid register + per-surface weighting.** When `--register` overrides the register but the target matches a per-surface block, the working context is hybrid: register comes from CLI, but principle weighting / motion appetite / density / specific-things-to-watch-for come from the matched surface. This is intentional but non-obvious. If the matched surface declares a register that disagrees with the CLI override (e.g., surface is `frontend/` with `register: product` but `--register brand` is set), warn the user once: `Note: --register brand overrides the surface's product register, but principle weighting from frontend/ still applies. Pass --register without a per-surface match to use top-level defaults.`
+
+Log the resolved register once at run start: `Register: brand` or `Register: product`. If a per-surface override matched, say so: `Register: product (matched per-surface override for 'frontend/')`.
+
+### Step 0d ... Check for in-progress run (resume)
 
 Scan `$REPO/.devour/runs/` for any `.md` file with a YAML frontmatter field `status: in-progress`. Filter to files where BOTH:
 
@@ -174,6 +227,14 @@ Ask the user once: "I have browser MCP access but no dev server. Should I try to
 ---
 
 ### Step 2 ... Apply principles #3, #6, and #11
+
+**Register sensitivity.** Each principle's deep-dive file (`references/principles/<principle>.md`) includes a `## Register sensitivity` section. When applying a principle, read that section and calibrate severity by the current register:
+
+- **`brand`** ... uses brand-register ceilings. Some patterns fire harder, some softer. Typography, decoration, and motion have more room; transaction principles have less urgency.
+- **`product`** ... uses product-register ceilings. Tighter on decoration, tighter on type-system discipline, stricter on reversibility and state preservation.
+- **Absolute bans** fire 🔴 BREAK in both registers regardless (see `references/anti-patterns.md` for the absolute list: bounce/elastic easing, missing error paths, side-stripe borders, gradient text, glassmorphism as default).
+
+A finding's severity may differ between registers for the same code pattern. When a finding is register-specific, say so in the finding body ("This would be 🟡 DRIFT on brand, but on product it's 🔴 BREAK because...").
 
 ---
 
@@ -519,10 +580,11 @@ When applying:
 - **Apply 🔴 BREAKS without further confirmation** if the user picked option 1, 2, or 3.
 - **Ask once per 🟡 DRIFT or 🟢 OPPORTUNITY** that involves a real taste call. Skip the ask if the fix is mechanical.
 - **After all fixes are applied, ask if the user wants to commit.** Do not auto-commit.
+- **If the user asks devour to commit:** use an imperative-mood, capitalized-first-letter message. NEVER add `Co-Authored-By:` lines (devour is a tool, not a co-author). NEVER prefix the message with `feat:` / `fix:` / `chore:` unless the user has asked for that style explicitly.
 
 ### Step 4 ... Save the run to file (streaming, compaction-safe)
 
-Devour-micro writes each invocation's output as a "run" file under `$REPO/.devour/runs/`. The file is written incrementally as the review proceeds, not just at the end. This makes runs durable against session compaction or abort, and makes them resumable. See Step 0b for resume behavior.
+Devour-micro writes each invocation's output as a "run" file under `$REPO/.devour/runs/`. The file is written incrementally as the review proceeds, not just at the end. This makes runs durable against session compaction or abort, and makes them resumable. See Step 0d for resume behavior.
 
 **Location:** `$REPO/.devour/runs/<YYYY-MM-DDTHHMMSS>-devour-micro-<target-slug>.md` relative to the target repo root.
 
@@ -543,7 +605,7 @@ completed: null
 skill: devour-micro
 target: <human-readable target description>
 repo: <$REPO absolute path>
-context-file: <path to .devour-context.md if read, else null>
+context-file: <path to DEVOUR.md if read, else null>
 browser-mcp: <detected MCP short name if any, else null>
 terse: <true|false>
 ---
