@@ -1,7 +1,7 @@
 ---
 name: devour-state
 description: "Deep review of state-handling principles #4 (reversibility is craft) and #7 (preserve user state across boundaries). Use when optimistic UI feels unsafe, when users lose work on navigation, when error paths are missing or silent, or when a feature involving async operations needs a state lifecycle audit. Traces findings back to Emil Kowalski (Sonner), the Linear team, Loren Brichter, Andy Matuschak, Bret Victor, Don Norman."
-argument-hint: "[--repo <absolute-path>] [target] [--terse]"
+argument-hint: "[--repo <absolute-path>] [--register <brand|product>] [target] [--terse]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -30,18 +30,18 @@ For motion review (spring physics, animation honesty), use [`devour-motion`](../
 
 ## MANDATORY PREPARATION
 
-This skill requires project context established by `/devour-teach`.
+Before reviewing anything, devour requires project context. Different products live in different parts of the spine ... a marketing page values principles 9 and 12 most; a productivity app values 3, 4, and 7 most; a creative tool values 2 and 5 most. Without context, devour produces generic findings.
 
-**If the project has not run `/devour-teach` yet:**
+**Devour's context lives in `$REPO/DEVOUR.md`** ... a single file at the repo root, written by `/devour-teach`. It contains register (brand | product), principle weighting, motion appetite, density target, reference exemplars, and optional per-surface overrides.
 
-1. STOP. Do not proceed.
-2. Tell the user: "Devour needs project context first. Running `/devour-teach` to set up."
+**If `$REPO/DEVOUR.md` is missing:**
+
+1. STOP. Do not proceed with review.
+2. Tell the user: "Devour needs project context first. Running `/devour-teach` to set up `$REPO/DEVOUR.md`."
 3. Invoke `devour-teach`. Follow it through to completion.
-4. Return here.
+4. Then return to this skill.
 
-**If context exists:**
-
-Read the `Devour Context` block. Check **Principle weighting**. For a productivity tool, e-commerce, or any tool where users create or modify data, principles #4 and #7 should be high. For a marketing site or content browser, they may be low. Weight the findings accordingly.
+**If `$REPO/DEVOUR.md` exists:** Step 0b (below) reads it, applies `--register` overrides, matches per-surface path prefixes, and establishes the working context for the review.
 
 ---
 
@@ -63,7 +63,7 @@ If `--repo` is not present: set `$REPO` = current working directory.
 For the rest of this skill:
 - All file reads, relative-path resolutions, and project-local lookups use `$REPO` as the root.
 - Git commands run with `git -C $REPO ...`.
-- `.devour-context.md` reads from `$REPO/.devour-context.md`.
+- `DEVOUR.md` reads from `$REPO/DEVOUR.md`.
 - `.devour/runs/` writes to `$REPO/.devour/runs/`.
 - `package.json` reads from `$REPO/package.json`.
 - If a target argument is a relative path, resolve it against `$REPO`. If absolute, use as-is.
@@ -72,7 +72,52 @@ If `$REPO` is not a git repository (no `.git/` directory inside), warn the user 
 `Note: $REPO is not a git repo. Skipping diff-based default. Provide a target file or pattern.`
 Then proceed with code review, but do not attempt `git diff` defaults.
 
-### Step 0b ... Check for in-progress run (resume)
+Known flags stripped from `$ARGUMENTS` in this step and downstream: `--repo <path>`, `--terse`, `--resume`, `--register <value>`.
+
+### Step 0b ... Resolve project context from `DEVOUR.md`
+
+After `$REPO` is resolved (Step 0a), read `$REPO/DEVOUR.md`. This file is the source of truth for devour's review calibration.
+
+**If `$REPO/DEVOUR.md` does not exist:** block with the MANDATORY PREPARATION message. Do not proceed.
+
+**If `$REPO/DEVOUR.md` exists:** parse its sections:
+
+- `## Register` ... the default register for this project (`brand` or `product`, one word).
+- `## Project` ... one-paragraph description.
+- `## Audience` ... optional. If missing, check `$REPO/PRODUCT.md` (opportunistic, below).
+- `## Brand voice` ... optional. If missing, check `$REPO/PRODUCT.md`.
+- `## Anti-references` ... optional. If missing, check `$REPO/PRODUCT.md`.
+- `## Principle weighting (default)` ... three-band list (High / Medium / Low / N/A) of principles by number.
+- `## Motion appetite` ... one paragraph.
+- `## Density target` ... one paragraph.
+- `## Reference exemplars` ... bullet list.
+- `## Specific things to watch for` ... open list.
+- `## Per-surface overrides` ... optional. Declares per-path-prefix overrides for multi-surface projects.
+
+Store these as the working context for this review.
+
+**Opportunistic reads:**
+
+- If `$REPO/PRODUCT.md` exists, read it best-effort. If it has `## Users`, `## Brand Personality`, or `## Anti-references` sections, use them to fill in any DEVOUR.md fields that were optional and missing. Never override DEVOUR.md fields that exist. If PRODUCT.md does not parse cleanly, warn once ("PRODUCT.md present but could not parse cleanly; proceeding from DEVOUR.md alone") and continue.
+- If `$REPO/DESIGN.md` exists, read it best-effort. If it declares tokens (`colors`, `typography`, `spacing`, `components`), store them. Tactic suggestions in Step 3 can reference tokens by name.
+
+Devour NEVER writes to `PRODUCT.md` or `DESIGN.md`.
+
+### Step 0c ... Resolve register for this review
+
+Register drives principle ceilings in Step 2. It's resolved in this order:
+
+1. **`--register <value>` CLI flag if present.** This wins. `<value>` must be exactly `brand` or `product` (case-insensitive). Invalid values fail with a clear message.
+2. **`## Per-surface overrides` path-prefix match.** If `$TARGET` is declared, take its `Register` field (required within any surface override block). The first matching prefix wins; prefixes are checked in declaration order.
+3. **Top-level `## Register` section in DEVOUR.md.** The project default.
+
+When a per-surface override matches, merge the surface's other declared fields (principle-weighting, motion-appetite, density-target, specific-things-to-watch-for) with the top-level defaults. Surface-declared fields win for their section; unset fields fall back to top-level.
+
+When `--register` is applied, still use per-surface principle-weighting and motion-appetite if a surface matches. Only the register itself is overridden by the CLI flag.
+
+Log the resolved register once at run start: `Register: brand` or `Register: product`. If a per-surface override matched, say so: `Register: product (matched per-surface override for 'frontend/')`.
+
+### Step 0d ... Check for in-progress run (resume)
 
 Scan `$REPO/.devour/runs/` for any `.md` file with a YAML frontmatter field `status: in-progress`. Filter to files where BOTH:
 
@@ -182,6 +227,14 @@ Ask the user once: "I have browser MCP access but no dev server. Should I try to
 ---
 
 ### Step 2 ... Apply principles #4 and #7
+
+**Register sensitivity.** Each principle's deep-dive file (`references/principles/<principle>.md`) includes a `## Register sensitivity` section. When applying a principle, read that section and calibrate severity by the current register:
+
+- **`brand`** ... uses brand-register ceilings. Some patterns fire harder, some softer. Typography, decoration, and motion have more room; transaction principles have less urgency.
+- **`product`** ... uses product-register ceilings. Tighter on decoration, tighter on type-system discipline, stricter on reversibility and state preservation.
+- **Absolute bans** fire 🔴 BREAK in both registers regardless (see `references/anti-patterns.md` for the absolute list: bounce/elastic easing, missing error paths, side-stripe borders, gradient text, glassmorphism as default).
+
+A finding's severity may differ between registers for the same code pattern. When a finding is register-specific, say so in the finding body ("This would be 🟡 DRIFT on brand, but on product it's 🔴 BREAK because...").
 
 ---
 
@@ -528,7 +581,7 @@ When applying:
 
 ### Step 4 ... Save the run to file (streaming, compaction-safe)
 
-Devour-state writes each invocation's output as a "run" file under `$REPO/.devour/runs/`. The file is written incrementally as the review proceeds, not just at the end. This makes runs durable against session compaction or abort, and makes them resumable. See Step 0b for resume behavior.
+Devour-state writes each invocation's output as a "run" file under `$REPO/.devour/runs/`. The file is written incrementally as the review proceeds, not just at the end. This makes runs durable against session compaction or abort, and makes them resumable. See Step 0d for resume behavior.
 
 **Location:** `$REPO/.devour/runs/<YYYY-MM-DDTHHMMSS>-devour-state-<target-slug>.md` relative to the target repo root.
 
@@ -549,7 +602,7 @@ completed: null
 skill: devour-state
 target: <human-readable target description>
 repo: <$REPO absolute path>
-context-file: <path to .devour-context.md if read, else null>
+context-file: <path to DEVOUR.md if read, else null>
 browser-mcp: <detected MCP short name if any, else null>
 terse: <true|false>
 ---
