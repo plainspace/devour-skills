@@ -66,6 +66,18 @@ For the theory behind each principle, see [`principles-map.md`](principles-map.m
 
 ---
 
+### Decorative scroll-driven fade-in
+
+**What it is:** Sections, images, or text blocks on a marketing or content page that fade, slide, or scale in via `animation-timeline: view()` (or an IntersectionObserver equivalent) as the user scrolls past them. Applied uniformly to every block on the page, with no informational distinction between elements.
+
+**Why it fails:** The motion communicates nothing the static page didn't. The content was always going to be there; the user is the one who moved. Worse, the animation introduces a perceptual lag between "I scrolled to this section" and "this section is readable" ... a tax the user pays on every section, on every visit. Reduced-motion users get the static page; motion users get a slower static page. The native CSS API (`animation-timeline`, `animation-range: entry`) makes this trivially easy to ship, which is precisely why it shows up everywhere now.
+
+**Fix direction:** Reserve scroll-driven animation for cases where scroll progress is the information: data visualizations that reveal in scroll order, narrative scrollytelling where each section is a beat, parallax that establishes spatial relationship between layers, or progress through a long-form artifact where the choreography is the argument. For ordinary content sections, ship the static page. If the page feels flat without motion, the layout is doing too little work, not the animation too little.
+
+**Source:** Emil Kowalski, "You Don't Need Animations" (emilkowal.ski). Principle: Dieter Rams #6 ("Good design is honest").
+
+---
+
 ## Principle #2 ... Physics over duration
 
 > Real movement has mass, springs, and damping. Eased durations betray themselves as animation.
