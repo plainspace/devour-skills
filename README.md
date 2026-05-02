@@ -137,9 +137,13 @@ If you only use devour in one repo, per-project install (symlink into that repo'
 /devour --repo <path>                Review the target repo from anywhere
 /devour --register <brand|product>   Override register for this run
 /devour --terse                      Compact output, same rigor, less teaching prose
+/devour --brief <path>               Load a per-target brief into the review
 /devour-teach                        Write DEVOUR.md at repo root (run once per repo)
 /devour-teach --force                Overwrite existing DEVOUR.md
 /devour-teach --surfaces             Prompt for multi-surface overrides
+/devour-brief                        Write a per-target brief (run before designing or before review)
+/devour-brief <target>               Brief for a specific file, surface, or prose intent
+/devour-brief --force                Overwrite an existing brief from the same UTC day
 /devour-motion                       Deep review of motion principles (#1, #2, #5)
 /devour-micro                        Deep review of micro-interaction principles (#3, #6, #11)
 /devour-state                        Deep review of state-handling principles (#4, #7)
@@ -174,6 +178,121 @@ Devour reads `DEVOUR.md` at your repo root before every review. It's a single fi
 If you use impeccable in the same project, devour opportunistically reads `PRODUCT.md` and `DESIGN.md` to pre-fill audience, brand voice, and design-system tokens during teach. Devour never writes to those files... they belong to impeccable. `DEVOUR.md` is devour's source of truth and works standalone.
 
 For multi-surface projects (e.g., a repo with both a marketing site and a product app), `DEVOUR.md` has an optional `## Per-surface overrides` section that declares per-path-prefix register and weighting. Matches by path prefix; first match wins. Use `--register <brand|product>` at runtime to force a specific register for a single run.
+
+### Per-target context: briefs
+
+`DEVOUR.md` is project-wide. A **brief** is per-target. Run `/devour-brief` when the surface you're designing or reviewing is unusual for the project, when you're working in a register you don't usually work in, or when "the design isn't quite right" but you can't articulate why.
+
+A brief is 4-6 questions and produces two things: a **Target line** (one line, machine-parseable, quotable) and a **Rationale** (three sentences, prose). The Target line lives in `.devour/briefs/<timestamp>-<slug>.md` and can be loaded into any review with `--brief <path>`. When loaded, the Target line shows in the review header and each finding gets a `Why this matters here:` line that quotes the relevant fragment.
+
+Briefs are optional. Use them when the target deserves an articulated target. Skip them when `DEVOUR.md` already calibrates the project well and the target sits inside the project's normal register.
+
+---
+
+## How to use devour (and how people actually do)
+
+Devour is a small family of skills that compose. The right entry point depends on what you're doing.
+
+### The minimum loop
+
+```
+/devour-teach                       (once per repo)
+/devour                             (each time you want a review)
+```
+
+That's it. `devour-teach` writes `DEVOUR.md` once. Every subsequent `/devour` call reads it. You can run `/devour` for years without doing anything else.
+
+### Five workflows people actually run
+
+Pick the one closest to what you're doing. The rest of this section is example prompts you can copy.
+
+**1. Routine craft pass on something you just shipped.**
+
+You finished a feature, you want a second pair of eyes, you trust the project's `DEVOUR.md` to calibrate the review.
+
+```
+/devour
+```
+
+(No arguments. Defaults to changed files in your branch.)
+
+**2. Targeted review of a specific component or page.**
+
+You have a hunch one surface needs work.
+
+```
+/devour app/components/Search.tsx
+/devour app/routes/dashboard.tsx
+/devour the new pricing page
+```
+
+(File path or prose. If prose, devour routes to a sub-skill if it matches a keyword, or asks you to disambiguate.)
+
+**3. Deep review of one principle axis.**
+
+The full spine surfaced findings on one axis and you want depth, or you already know the issue is motion / interaction / state.
+
+```
+/devour-motion                      (after a /devour run flagged motion issues)
+/devour-micro Search.tsx            (interaction-heavy component)
+/devour-state app/routes/checkout   (data-loss-sensitive flow)
+```
+
+**4. Designing or reviewing a target that's unusual for this project.**
+
+You're building a marketing landing in a product-register repo, or a kids' app onboarding in your usual B2B SaaS workspace. The project's `DEVOUR.md` doesn't calibrate this target well.
+
+```
+/devour-brief the kids-app onboarding flow
+```
+
+(Answer 4-6 questions. The brief writes to `.devour/briefs/<timestamp>-<slug>.md`. Use the Target line and Rationale to design with, or pass it into a review:)
+
+```
+/devour --brief .devour/briefs/2026-05-02T143000-kids-app-onboarding.md app/onboarding/
+```
+
+**5. Articulating a target before designing (no review).**
+
+You haven't designed anything yet. You want to lock the target before you commit pixels.
+
+```
+/devour-brief
+```
+
+(Tell it the target. Get a Target line and a 3-sentence Rationale. Paste them into impeccable, into a Figma file's brief field, into a prompt you're sending to an AI design tool, or into a contractor handoff. The brief is the artifact; no review follows unless you want one.)
+
+### Compose with impeccable
+
+Devour identifies principle violations with citations. [Impeccable](https://impeccable.style) executes the tactical fix. They compose:
+
+```
+/devour                             (review)
+/impeccable distill                 (apply the #9 finding)
+/impeccable harden                  (apply the #4 finding)
+/impeccable typeset                 (apply the #12 finding)
+```
+
+Every devour finding has an optional `Downstream:` line naming the matching impeccable subcommand. Use it as the bridge between principled review and tactical application.
+
+### How devour fits into a real design week
+
+A working pattern from the author's practice across five codebases:
+
+- **Once per repo:** `/devour-teach`. Five minutes. Updates only when the project changes direction.
+- **Per feature, before designing something unusual:** `/devour-brief`. 4-6 questions. The Target line is the design brief; the Rationale is the why.
+- **Per pull request, before opening it:** `/devour` on the changed files. Read the findings; apply what you agree with via `APPLY?` prompt or via impeccable.
+- **Per quarter, on a surface that hasn't been reviewed in a while:** `/devour --brief <new-brief>` to re-articulate the target and review against it. Targets drift; the brief is what catches that drift before users do.
+
+You will not run all of these every week. The point is that every devour invocation is small, the artifacts (`DEVOUR.md`, briefs, runs) accumulate as a written record of how the design has been reviewed, and the next session ... yours, a teammate's, an AI tool's ... starts from where the last one left off.
+
+### What devour will not do for you
+
+A principle without judgment is a religion. Devour names the principle and the tactic. The designer makes the call. If a finding feels wrong for this target, that's information ... either the target isn't articulated well (run `/devour-brief`), or the finding is wrong (note it and move on; the spine evolves slowly and on purpose).
+
+Devour will also not generate design. For *making* design, use [impeccable](https://impeccable.style) or whatever AI design tool you prefer. Devour reviews; impeccable makes. The two compose.
+
+---
 
 ### Verbosity as a feature
 
