@@ -1,7 +1,7 @@
 ---
 name: devour-motion
 description: "Deep motion review against principles #1 (honest motion), #2 (physics over duration), and #5 (sequence carries meaning). Use when the user wants an animation pass, a motion-specific craft review, or when motion in a component feels wrong but the reason isn't named. Traces findings back to the lineage: Emil Kowalski, Rauno Freiberg, Loren Brichter, Chaudhri/Ording at Apple, Dieter Rams."
-argument-hint: "[--repo <absolute-path>] [--register <brand|product>] [target] [--terse]"
+argument-hint: "[--repo <absolute-path>] [--register <brand|product>] [--brief <path>] [target] [--terse]"
 user-invocable: true
 license: Apache 2.0. See NOTICE.md for full attribution to the design lineage this skill stands on.
 ---
@@ -74,6 +74,7 @@ Then proceed with code review, but do not attempt `git diff` defaults.
 
 - `--repo <path>` ... extract value, validate path exists, set `$REPO` (handled above).
 - `--register <value>` ... extract value. Must be exactly `brand` or `product` (case-insensitive). If invalid, fail with `--register must be 'brand' or 'product', got '<value>'. Aborting.` Store as `$CLI_REGISTER` for use in Step 0c.
+- `--brief <path>` ... extract value. Validate the path exists and is a readable file. If `<path>` is relative, resolve against `$REPO`. If it does not exist, fail with `--brief path does not exist: <path>. Aborting.` Store the resolved absolute path as `$BRIEF_PATH` for use in new Step 0e.
 - `--terse` ... note as a boolean flag. Step 0 (below) consumes it.
 - `--resume` ... note as a boolean flag. Step 0d consumes it.
 
@@ -156,6 +157,21 @@ Scan `$REPO/.devour/runs/` for any `.md` file with a YAML frontmatter field `sta
 - If user chooses C: stop. No new file created.
 
 This step runs once per invocation, before Step 1 (establish target). If resume is chosen, Step 1 and Step 1a may be skipped or truncated depending on what the in-progress file already has.
+
+### Step 0e ... Read the brief if --brief was passed
+
+If `$BRIEF_PATH` was set in Step 0a, read the file at `$BRIEF_PATH`. Parse:
+
+- The `## Target line` section ... a single line of text. Store as `$BRIEF_TARGET_LINE`.
+- The `## Rationale` section ... prose, 1-3 sentences. Store as `$BRIEF_RATIONALE`.
+- The frontmatter `register` field ... if present and `--register` CLI flag was NOT also passed, set `$CLI_REGISTER` to this value (treat as if it were a CLI override).
+- The frontmatter `target-path` field ... store as `$BRIEF_TARGET_PATH` for cross-checking against the review target in Step 1.
+
+If the file exists but cannot be parsed (no `## Target line` section, no `## Rationale` section), warn once: `Brief file at $BRIEF_PATH could not be parsed; proceeding without brief context.` Do not abort; continue without the brief.
+
+If `$BRIEF_PATH` was not set, `$BRIEF_TARGET_LINE` and `$BRIEF_RATIONALE` remain null. The review proceeds without brief context (DEVOUR.md context only).
+
+**Cross-check** (optional, soft warning only): if `$BRIEF_TARGET_PATH` exists in the brief frontmatter and the current review target (after Step 1 establishes it) does not match, warn once: `Note: brief was written for <brief-target-path> but this review targets <current-target>. The brief's Target line and Rationale will still be quoted in findings, but verify the brief is appropriate for this target.` Do not abort.
 
 ### Step 0 ... Check for --terse flag
 
@@ -420,7 +436,11 @@ Downstream (optional):
   <matching /impeccable subcommand, when one applies, with a brief note on what it does for this finding>
 Reference:
   <citation: lineage source + canonical exemplar>
+Why this matters here (only if --brief was loaded):
+  <one sentence connecting the principle violation to the brief's target. Quote the relevant fragment of the Target line, not the whole line. The fragment is the part that makes this specific finding load-bearing for this specific target.>
 ```
+
+**About the `Why this matters here:` line.** Emit this line only when `$BRIEF_TARGET_LINE` was loaded in Step 0e. The line should quote the most relevant fragment of the Target line (e.g., `adjacent-to The New York Times` or `success-when reader remembers lead photo`). The goal is to make the finding's relevance to THIS target explicit, not to repeat the whole brief. One sentence; if you can't write one in a sentence, the finding probably doesn't connect to the brief and the line should be omitted.
 
 **Severity scale:**
 
@@ -462,6 +482,7 @@ Mapping reference (motion principles only):
 ═══════════════════════════════════════════════════
 DEVOUR MOTION REVIEW: <target>
 Context: <motion appetite + principle weighting from Devour Context>
+Brief: <$BRIEF_TARGET_LINE if loaded, else omit this line entirely>
 ═══════════════════════════════════════════════════
 
 🔴 BREAKS (N findings)
@@ -501,6 +522,8 @@ APPLY?
 ═══════════════════════════════════════════════════
 ```
 
+If `--brief` was passed, the Brief line appears in the header. Each finding may include a `Why this matters here:` line that quotes the relevant fragment of the Target line.
+
 After printing the review, **always print the APPLY? block as the final lines of output.** Do not skip it.
 
 If code-only (no browser MCP found or no dev server), append above the APPLY? block: "Recommend re-running with a browser MCP and dev server for full verification. Spring feel and felt timing cannot be fully confirmed from code."
@@ -539,6 +562,7 @@ skill: devour-motion
 target: <human-readable target description>
 repo: <$REPO absolute path>
 context-file: <path to DEVOUR.md if read, else null>
+brief: <path to brief file if --brief was passed, else null>
 browser-mcp: <detected MCP short name if any, else null>
 terse: <true|false>
 ---
@@ -548,6 +572,10 @@ terse: <true|false>
 ## Context
 
 <empty; filled in Step 2 or equivalent>
+
+## Brief
+
+<empty if --brief was not passed; else write the Target line on its own line, then a blank line, then the Rationale paragraph>
 
 ## Findings
 
@@ -566,7 +594,7 @@ terse: <true|false>
 <empty; filled after fixes are verified>
 ```
 
-2. **After context is gathered** (end of Step 2): write the Context section atomically. Save.
+2. **After context is gathered** (end of Step 2): write the Context section atomically. Save. If `--brief` was loaded, fill the Brief section atomically right after Context is filled (write the Target line, blank line, Rationale paragraph). If not loaded, leave the `## Brief` section out of the file entirely (do not write an empty heading).
 
 3. **For each finding identified in Step 3**: append the finding to the Findings section in the file's current state. Save after each finding. The finding format in the file mirrors the screen output (verbose or terse per `$TERSE`).
 
@@ -601,6 +629,7 @@ Do not say "this looks better." Do not say "modern best practice." Do not say "f
 ## See also
 
 - [`../devour/SKILL.md`](../devour/SKILL.md) ... full-spine review
+- [`../devour-brief/SKILL.md`](../devour-brief/SKILL.md) ... per-target brief (run before this review for target-specific calibration)
 - [`../../references/principles-map.md`](../../references/principles-map.md) ... source citations for #1, #2, #5
 - [`../../references/exemplars.md`](../../references/exemplars.md) ... Sonner, Vaul, NotBoring iOS, iOS rubber-banding
 - [`../../references/anti-patterns.md`](../../references/anti-patterns.md) ... full anti-pattern catalog for motion principles
