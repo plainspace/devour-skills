@@ -67,12 +67,23 @@ For the rest of this skill:
 
 ### Step 0b ... Read `DEVOUR.md` for inheritance
 
-Check `$REPO/DEVOUR.md`. Two cases:
+Check `$REPO/DEVOUR.md`. Three cases:
 
-1. **Exists:** parse it. Extract `## Register`, `## Audience`, `## Brand voice`, `## Anti-references`, `## Principle weighting (default)`, `## Motion appetite`, `## Density target`, `## Reference exemplars`, `## Specific things to watch for`. These become **defaults** for the brief; the user can override any of them in Step 2.
-2. **Missing:** the brief proceeds without inheritance. Tell the user once: "No `DEVOUR.md` found at `$REPO/DEVOUR.md`. The brief will be self-contained. Run `/devour-teach` if you'd like project-wide context to inherit from on future briefs." Continue.
+1. **`DEVOUR.md` exists:** parse it. Extract `## Register`, `## Audience`, `## Brand voice`, `## Anti-references`, `## Principle weighting (default)`, `## Motion appetite`, `## Density target`, `## Reference exemplars`, `## Specific things to watch for`. These become **defaults** for the brief; the user can override any of them in Step 2.
+
+2. **`DEVOUR.md` is missing AND `$REPO/.devour-context.md` exists** (legacy v0.3 format): tell the user once: "Found legacy `.devour-context.md` at `$REPO/.devour-context.md`. The brief format expects `DEVOUR.md` (v0.4+). The legacy file is not read for inheritance. To migrate, run `/devour-teach --force` to write a fresh `DEVOUR.md`. Proceeding with this brief as self-contained." Continue without inheritance.
+
+3. **Both missing:** the brief proceeds without inheritance. Tell the user once: "No `DEVOUR.md` found at `$REPO/DEVOUR.md`. The brief will be self-contained. Run `/devour-teach` if you'd like project-wide context to inherit from on future briefs." Continue.
 
 A brief without an inherited `DEVOUR.md` is valid (useful for one-off work, prototypes, scratch repos). A brief that inherits from `DEVOUR.md` is sharper because the inherited fields don't need to be re-asked.
+
+**Built-in defaults when no inheritance is available** (cases 2 and 3 above):
+
+- `register` ... ask explicitly in Step 2 question 0 (added below). No silent default; the register frames every other answer and must be intentional.
+- `motion appetite` ... ask absolute value in Step 2 question 4 (instead of "delta from inherited").
+- `density target` ... ask absolute value in Step 2 question 4 (instead of "delta from inherited").
+- `audience`, `brand voice`, `anti-references`, `reference exemplars` ... no defaults; ask the user as if `DEVOUR.md` did not exist for those fields.
+- `principle weighting` ... not asked in the brief (briefs don't override weighting; that's `DEVOUR.md`'s job).
 
 ### Step 0c ... Establish target
 
@@ -104,6 +115,12 @@ If `--register <value>` was passed, it overrides whatever the inheritance produc
 ### Step 2 ... Ask brief questions
 
 Ask these questions one at a time. Show inherited defaults from `DEVOUR.md` (if present) and let the user accept or override. If a question's answer is fully determined by inheritance and the inheritance is high-confidence (e.g., register is unambiguous from per-surface match), skip the question and tell the user once that you're using the inherited value.
+
+**Question 0 ... Register (asked only when there is no inheritance and no `--register` CLI flag).**
+
+If `DEVOUR.md` is missing AND `--register` was not passed, ask: "What register is this target? `brand` (marketing, landing, portfolio, editorial) or `product` (app UI, admin, dashboard, productivity tool)?"
+
+Skip this question if register is already established via inheritance from `DEVOUR.md` or via the `--register` CLI flag. Register is the frame for every other answer; do not assume it.
 
 **Question 1 ... Target description (always asked).**
 
@@ -141,7 +158,11 @@ Inherit from `DEVOUR.md` `## Anti-references` as candidates. Ask: "Project anti-
 
 If the user can't name an anti-reference, prompt: "What's the obvious comparison everyone would reach for that you want to avoid? That's the anti-reference."
 
-**Question 4 ... Motion and density delta (always asked).**
+**Question 4 ... Motion and density (always asked).**
+
+Two cases based on whether `DEVOUR.md` is providing inheritance.
+
+**Case A ... `DEVOUR.md` provides inherited defaults.** Ask delta:
 
 Project defaults from `DEVOUR.md`: motion `<inherited>`, density `<inherited>`.
 
@@ -153,6 +174,13 @@ If different, ask the user to state the delta in one sentence each:
 - "Density: I want it to feel `<more spacious | denser | the same>` than the project default because `<reason>`."
 
 If the same, accept inheritance and continue.
+
+**Case B ... no inheritance (`DEVOUR.md` is missing).** Ask absolute values:
+
+- Motion: "How much motion does this target want? `none` (no animation except functional loading), `restrained` (motion only where it communicates state change), `considered` (deliberate motion that adds craft without calling attention to itself), or `expressive` (motion is part of the personality)?"
+- Density: "How dense should this target feel? `spacious` (Notion / Craft, generous whitespace), `balanced` (Vercel dashboard / GitHub, functional density), `dense` (Linear / VS Code, max info per viewport), or `very-dense` (Bloomberg Terminal, power users)?"
+
+In both cases, the resolved motion and density values land in the Target line in Step 3.
 
 **Question 5 ... Success criterion (always asked).**
 
