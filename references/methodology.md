@@ -133,6 +133,48 @@ This entry was added in the same Sleeve chrome rebuild review as the line-citati
 
 ---
 
+## Scope discipline: never expand scope via inference
+
+### What it is
+
+A reviewer (or an agent applying findings on the reviewer's behalf) reads a devour review, sees an opportunity to bundle a related fix that wasn't in the agreed scope ("while I'm in this file, this other finding from a different tier could land cheaply"), and applies it without surfacing the bundling option first. The diff that lands is *more* than the spec ... extra changes that the reviewer didn't authorize, even when each individual change is technically defensible.
+
+The shape: the review names a Tier 2 punch list of 4 findings to apply. The implementer finishes the Tier 2 work, notices Tier 3 finding F7 touches the same component, and applies it inline because "it's right next door." The reviewer pulls up the diff to verify Tier 2 is clean and finds an unrequested Tier 3 fix in the same commit. Now the reviewer is no longer reviewing scope ... they're auditing the implementer's judgment about what counts as "in the spirit of" the request.
+
+### Why it fails
+
+**The findings list IS the scope.** Devour reviews emit a structured list (severity, principle, tactic) and an APPLY? prompt that lets the user choose explicitly: breaks only, breaks + drifts, everything, cherry-pick, review-only. The output of that prompt is the contract. Anything applied beyond what the user picked is unauthorized scope expansion, regardless of how reasonable the additional fix looks.
+
+**Inference about "what the reviewer would obviously want" is itself a judgment call.** "Per your earlier discussion," "per your interjection," "per the spirit of the request" are not greenlights. They are inferences. The reviewer may agree that the inferred fix is correct, or may not. Either way, the inference should be surfaced before the work, not after, so the reviewer authorizes scope rather than auditing it.
+
+**Trust-cost exceeds time-saved.** Even when an inferred fix is correct, the trust-cost of "what else did the implementer expand without asking?" exceeds the time saved by bundling. The next review cycle, the reviewer reads the diff with new attention to detail, looking for unauthorized changes. That attention is expensive and recurs every cycle until trust is rebuilt. A small bundling win is not worth the recurring tax.
+
+**Bundling-as-observation is free; bundling-as-action is expensive.** Surfacing "I notice F7 touches this file too ... bundle it?" before the work costs one extra exchange. Applying F7 inline and reporting it after costs the trust-rebuilding overhead above. The economics favor the surfaced observation almost always.
+
+### Fix direction
+
+**The findings list IS the scope.** Don't pull future-tier work forward without explicit greenlight from the reviewer. If the APPLY? decision said "Tier 2 only," apply Tier 2 only. Tier 3 findings that touch the same files are bundling candidates, not authorized work.
+
+**When you see a bundling opportunity, surface it BEFORE doing the work, not after.** Phrasing: "Tier 3 F7 touches the same component as Tier 2 F3. Bundle F7 into this commit, or hold for the Tier 3 pass?" One exchange, reviewer decides, scope stays clean.
+
+**"Per your earlier discussion" / "per your interjection" / "per the spirit of the request" are not greenlights.** They are inferences. The reviewer must explicitly authorize scope expansion. If the inference is strong enough that it feels like a greenlight, surface it as a question anyway ... the cost is one exchange, the benefit is a clean scope contract.
+
+**When in doubt, narrow scope to the spec.** Surface the bundling-candidate as an observation. Let the reviewer decide. The narrower-than-asked diff is recoverable in one follow-up; the wider-than-asked diff requires a trust-rebuilding review.
+
+**This applies to BOTH the reviewer and the fix-implementer.** A devour review can over-scope just as a fix-implementer can ... if the user asked for a motion review and devour finds a state-handling drift in the same file, the right move is to flag it as out-of-scope ("noticed during this run; not part of motion scope; run `/devour-state` if you want it covered") rather than silently include it as a finding.
+
+### Related
+
+- **Speculative fixing without observation** (above) is the same trust-erosion failure mode in a different shape: there, the implementer accumulates unauthorized fixes by trying speculative tactics; here, the implementer accumulates unauthorized scope by inferring intent. Both fail because they substitute the implementer's judgment for the reviewer's authorization.
+- **The APPLY? prompt is the scope contract.** Step 5 of every review skill names the five APPLY? options explicitly so the user's authorization is unambiguous. This discipline says: honor the contract; bundling beyond it requires a new exchange.
+- **Tactic-as-candidate** (above) is the upstream version: when proposing a swap, flag as candidate rather than asserting. This entry is the downstream version: when applying authorized fixes, don't add unauthorized ones inline.
+
+### Origin
+
+This entry was added 2026-05-05 after a fix-application session where the implementer bundled a future-tier fix into a current-tier commit on the rationale that the bundle was "in the spirit" of the earlier discussion. The reviewer had to audit the diff to confirm the unauthorized fix was acceptable rather than reviewing scope cleanly. The trust-cost of that audit exceeded the time saved by the inline bundle. Surfacing the bundling option before the work would have cost one exchange and avoided the audit entirely.
+
+---
+
 ## Composing devour with impeccable
 
 Devour and [impeccable](https://impeccable.style) are designed for different jobs. Impeccable has 23 commands: 21 MAKE design, 2 EVALUATE (`critique` and `audit`). Devour does design review with citations... it competes with `/impeccable critique` on the citation axis, not with the makers.

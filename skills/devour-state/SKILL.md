@@ -590,6 +590,7 @@ When applying:
 - **Show the diff** before each file change. Brief, just the hunks.
 - **Apply 🔴 BREAKS without further confirmation** if the user picked option 1, 2, or 3. State breaks (missing error paths, lost user state) almost always need the named fix.
 - **Ask once per 🟡 DRIFT or 🟢 OPPORTUNITY** that involves a real taste call (e.g., "persisting filter state to URL ... is this navigable enough to want it deep-linkable?"). Skip the ask if the fix is mechanical.
+- **The APPLY? answer IS the scope** (see [`references/methodology.md`](../../references/methodology.md) for full treatment). Don't pull future-tier work forward without explicit greenlight from the user. If you spot a bundling opportunity ("F7 from a deferred tier touches this same component"), surface it as a question BEFORE doing the work, not after. "Per your earlier discussion" / "per your interjection" / "per the spirit of the request" are not greenlights; the user must explicitly authorize scope expansion. When in doubt, narrow to the spec and surface the bundling-candidate as an observation.
 - **After all fixes are applied, ask if the user wants to commit.** Do not auto-commit.
 - **If the user asks devour to commit:** use an imperative-mood, capitalized-first-letter message. NEVER add `Co-Authored-By:` lines (devour is a tool, not a co-author). NEVER prefix the message with `feat:` / `fix:` / `chore:` unless the user has asked for that style explicitly.
 
