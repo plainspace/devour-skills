@@ -359,6 +359,11 @@ Mapping reference:
 
 If no browser MCP is available, all findings are `[code-confirmed]`. If browser MCP is available, findings touching motion (#1, #2, #5), ergonomics (#3, #6), overlay/metaphor behavior (#11), and state transitions (#4, #7) should be `[browser-confirmed]` by actually running the check before emitting the finding.
 
+**Two finding-write disciplines apply at code-confirmed time** (see [`references/methodology.md`](../../references/methodology.md) for full treatment):
+
+- **Line-citation accuracy.** When a finding cites `file:line`, the symptom paragraph must name the actual identifier or element at that line (component name, function name, variable name, JSX element type) ... not just the apparent register or symptom. The `[code-confirmed]` tag means "I read the line AND I named what's at the line." If you can't name it, re-read or drop the citation. A misframed line citation collapses the credibility of the entire review.
+- **Tactic-as-candidate when semantic equivalence is unverified.** When proposing a tactic that involves swapping component A for component B, verify A and B share semantic intent (the same fact about the data model, conveyed for the same purpose), not just visual register. If unclear, use the explicit phrasing `Tactic candidate: ... verify semantics before applying.` REMOVE is a valid candidate when the signal is already covered elsewhere or is decorative drift.
+
 ### Step 4 ... Look for inter-finding conflicts
 
 Before writing the final output, scan the findings for interactions. Two findings can be in tension when:

@@ -502,6 +502,11 @@ Reference:
 
 If no browser MCP is available, all findings are `[code-confirmed]`. If browser MCP is available, findings touching optimistic state (#4) and route-boundary state preservation (#7) should be `[browser-confirmed]` by actually running the check before emitting the finding. State transitions cannot be confirmed from code alone; the error path that looks present in code may never surface in the UI.
 
+**Two finding-write disciplines apply at code-confirmed time** (see [`references/methodology.md`](../../references/methodology.md) for full treatment):
+
+- **Line-citation accuracy.** When a finding cites `file:line`, the symptom paragraph must name the actual identifier or element at that line (component name, function name, variable name, JSX element type) ... not just the apparent register or symptom. The `[code-confirmed]` tag means "I read the line AND I named what's at the line." If you can't name it, re-read or drop the citation. A misframed line citation collapses the credibility of the entire review.
+- **Tactic-as-candidate when semantic equivalence is unverified.** When proposing a tactic that involves swapping component A for component B, verify A and B share semantic intent (the same fact about the data model, conveyed for the same purpose), not just visual register. If unclear, use the explicit phrasing `Tactic candidate: ... verify semantics before applying.` REMOVE is a valid candidate when the signal is already covered elsewhere or is decorative drift.
+
 **Default (verbose):** Each finding includes symptom, principle explanation, tactic with code, and reference with full exemplar prose. Use this unless `--terse` was set.
 
 **Terse mode (`--terse`):** Each finding is compressed to six lines. No exemplar paragraph, no extended explanation. Same severity markers, same principle and source citations, same APPLY? and INTERACTIONS blocks.

@@ -232,6 +232,11 @@ Annotate findings with `[code-confirmed]` or `[browser-confirmed]` so the user k
 - If verification **shows no issue**: do NOT emit the finding. The code-based hypothesis was wrong; observation overrides it.
 - Do NOT emit findings that say "verify in browser first" or "test this in browser." The skill has browser access; it does that work itself.
 
+**Two finding-write disciplines apply at code-confirmed time** (see [`references/methodology.md`](../../references/methodology.md) for full treatment):
+
+- **Line-citation accuracy.** When a finding cites `file:line`, the symptom paragraph must name the actual identifier or element at that line (component name, function name, variable name, JSX element type) ... not just the apparent register or symptom. The `[code-confirmed]` tag means "I read the line AND I named what's at the line." If you can't name it, re-read or drop the citation. A misframed line citation collapses the credibility of the entire review.
+- **Tactic-as-candidate when semantic equivalence is unverified.** When proposing a tactic that involves swapping component A for component B, verify A and B share semantic intent (the same fact about the data model, conveyed for the same purpose), not just visual register. If unclear, use the explicit phrasing `Tactic candidate: ... verify semantics before applying.` REMOVE is a valid candidate when the signal is already covered elsewhere or is decorative drift.
+
 ---
 
 ### Step 2 ... Apply principles #1, #2, and #5
