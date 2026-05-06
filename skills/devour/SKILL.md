@@ -515,7 +515,14 @@ At end of run (after status flips to `complete`):
 
 > Run complete: `$REPO/.devour/runs/<filename>.md`.
 
-**Git hygiene:** if `$REPO/.devour/` is not in the project's `.gitignore` and the project uses git, tell the user once at the end of the run: "Consider adding `.devour/` to your `.gitignore`, or commit runs selectively for important ones."
+**Git hygiene:** `.devour/` contains two subdirectories with different durability:
+
+- `.devour/briefs/` ... ephemeral pre-analysis context files, regenerable, should NOT be committed.
+- `.devour/runs/` ... the actual review output with findings and citations. This is the durable artifact. Worth committing or vaulting for important reviews.
+
+If `$REPO/.devour/` is not in the project's `.gitignore` and the project uses git, tell the user once at the end of the run:
+
+> "`.devour/briefs/` is ephemeral — add it to `.gitignore` (or add `.devour/briefs/` to `~/.gitignore_global` once to cover all repos). `.devour/runs/` contains your review findings — commit the ones worth keeping, or copy them to a design vault."
 
 Do NOT auto-add to `.gitignore`. The user decides.
 

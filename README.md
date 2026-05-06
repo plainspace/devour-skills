@@ -149,7 +149,18 @@ The first time you run devour in a repo, you will be prompted to invoke `/devour
 
 Every review ends with an explicit `APPLY?` prompt: apply only breaks, breaks + drifts, everything, cherry-pick, or review-only. You stay in control of what lands.
 
-Every run is saved as a markdown file in `.devour/runs/` at your project root, updated live as the run proceeds. This makes runs durable against session compaction and resumable across sessions. The directory is created automatically on the first run. Consider adding `.devour/` to your `.gitignore` if you do not want the files tracked, or commit runs selectively for ones worth keeping.
+Every run is saved as a markdown file in `.devour/runs/` at your project root, updated live as the run proceeds. This makes runs durable against session compaction and resumable across sessions. The directory is created automatically on the first run.
+
+`.devour/` contains two subdirectories with different durability:
+
+- **`.devour/briefs/`** ... ephemeral pre-analysis context files, regenerable. Add to `.gitignore` (or `~/.gitignore_global` once to cover all repos).
+- **`.devour/runs/`** ... your review findings with citations. The durable artifact. Commit the ones worth keeping, or copy them to a design vault.
+
+Recommended one-time global setup:
+```
+echo ".devour/briefs/" >> ~/.gitignore_global
+git config --global core.excludesfile ~/.gitignore_global
+```
 
 ### Browser-driving MCP (recommended)
 
