@@ -168,6 +168,18 @@ Where Layer 1 principles get applied to the medium of screens and input devices.
 
 ---
 
+### Jon Yablonski ... *Laws of UX: Using Psychology to Design Better Products & Services*
+
+**Format:** Book. O'Reilly Media, 1st ed. 2020, 2nd ed. 2024. Companion site at [lawsofux.com](https://lawsofux.com).
+
+**Link:** [lawsofux.com/book/](https://lawsofux.com/book/)
+
+**Why it matters:** The canonical compilation of cognitive UX heuristics for working designers. 30 laws from psychology, perception research, and HCI ... Hick, Fitts, Miller, Tesler, Peak-End, Jakob, Parkinson, Zeigarnik, and the Gestalt set ... curated into a vocabulary that practitioners can actually deploy. Each law is treated with its origin, a UX framing, real-world examples, and an explicit ethical-design consideration. The site is the quick-reference; the book is the long-form treatment.
+
+**Devour use:** Jon's 30 laws live in [`laws-of-ux.md`](laws-of-ux.md) as a sibling reference to the spine, with Jon credited as the compiler on every entry and each underlying researcher cited with venue. The laws complement the 12 Devour principles ... they don't replace them. When a review touches composition density, decision load, working memory, motor accuracy, or expectation, the matching law is the cognitive evidence behind the principle.
+
+---
+
 ## Layer 3 ... Native software craft
 
 Where the principles get applied to native platforms (iOS, macOS, modern desktop and mobile apps). This layer is the bridge between theory and current web practice.

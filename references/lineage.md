@@ -129,6 +129,12 @@ Co-author with Bill Moggridge of the Interaction Design framework: **do, feel, k
 
 Apple Human Interface Group, founder of the Bruce Tognazzini company. **First Principles of Interaction Design** ([asktog.com](https://asktog.com)) is a comprehensive, opinionated checklist that has aged remarkably well. Devour's principle #6 (Fitts's law, hit boxes) and #7 (state preservation) both have Tog underpinnings.
 
+### Jon Yablonski
+
+Product designer in Detroit. *Laws of UX* (O'Reilly, 1st ed. 2020, 2nd ed. 2024) and [lawsofux.com](https://lawsofux.com), launched 2017. The canonical compilation of cognitive UX heuristics for working designers ... 30 laws drawn from psychology, perception research, and HCI, curated into a working vocabulary that practitioners reach for daily. The selection (which laws make the cut), the naming conventions (e.g., "Hick's Law" rather than "Hick-Hyman Law"), and the groupings (perception / decision-making / memory / interaction / behavior) are Jon's authored contributions. The underlying research is older and authored by others; the *legibility* of this set as a daily UX reference is Jon's.
+
+**Devour load:** the 30 laws live in [`laws-of-ux.md`](laws-of-ux.md) as a sibling reference to the spine. They complement Devour's principles ... they do not replace them. When a finding touches composition density, decision load, working memory, motor accuracy, or expectation, the matching law and its citation are there. Principle #6 (Fitts), #10 (Miller / density), and #4 (Peak-End reading of error paths) all have direct law counterparts. The [`methodology.md`](methodology.md) entry *cite-the-compiler* names the discipline Devour models in citing Jon prominently rather than reaching only for the underlying researchers.
+
 ---
 
 ## Layer 3 ... Native software craft
