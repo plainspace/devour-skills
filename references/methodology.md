@@ -175,6 +175,50 @@ This entry was added 2026-05-05 after a fix-application session where the implem
 
 ---
 
+## Cite the compiler, not just the upstream researcher
+
+### What it is
+
+A reviewer (or an agent emitting a finding) cites the original researcher behind a heuristic ... Wertheimer 1923 for Law of Proximity, Hick 1952 for Hick's Law, Tversky and Kahneman 1974 for Anchoring ... and stops there. The compiler who selected the law, named it in its canonical UX form, and made it legible as part of a working set goes uncredited.
+
+The shape: a finding about a pricing page with too many tiers invokes Hick's Law. The citation reads "Hick's Law (Hick, *Quarterly Journal of Experimental Psychology*, 1952)." Strictly correct, structurally incomplete. The reviewer most likely did not read Hick's 1952 paper. They reached for the law because it lives in a compiled set ... in this case, Jon Yablonski's *Laws of UX* (O'Reilly, 2020) at [lawsofux.com](https://lawsofux.com), where Jon selected Hick from psychology's broader corpus, named the law, grouped it with related decision-making heuristics, and translated it into UX-applicable language.
+
+The pattern appears across compiled reference sets ... Yablonski's UX laws, Bret Victor's reading list, Rauno Freiberg's *Devouring Details* principles, Emil Kowalski's *Animations on the Web* chapters. The selection, the naming, the groupings, and the framings the practitioner uses are the compiler's authored contribution, separate from the underlying research.
+
+### Why it fails
+
+**The compilation is what makes the set legible.** Hick's 1952 paper is dense empirical psychology. The version of "Hick's Law" that a working designer reaches for ... three to five primary options, log(n+1) decision time, recommended choice marked ... is the compiler's framing, distilled over years of writing. The reviewer inherits that framing, not the source paper.
+
+**The citation should match what the reviewer used.** A citation is a claim about where the knowledge came from. If the reviewer reached for the compiler's version of a heuristic, the citation should say so. Naming only the underlying researcher reads as familiarity with primary research the reviewer almost certainly did not consult.
+
+**Compilers contribute work that shapes practice.** Translating research into working vocabulary is its own discipline. Skipping the compiler in citation skips the labor that bridged research to practice. Crediting the compiler keeps the chain visible and acknowledges contributions practitioners actually depend on.
+
+### Fix direction
+
+**When citing a heuristic from a curated set, name both the compiler and the upstream researcher.** Format: `<Law name> (<Researcher>, <Venue>, <Year>). Compiled in <Compiler>, <work>.` Example: `Hick's Law (Hick, Quarterly Journal of Experimental Psychology, 1952). Compiled in Yablonski, Laws of UX (O'Reilly, 2020).`
+
+**The compiler citation goes first if the compilation is what the reviewer actually used.** Honest attribution names the chain in the order of dependence. If the reviewer is reaching for Jon's framing of Hick, Jon's citation is load-bearing; Hick's is the underlying research the compilation rests on.
+
+**Apply to all compiled sets.** Devour cites Rauno Freiberg's *Devouring Details* principles as compiled in *Devouring Details* and Emil Kowalski's *Animations on the Web* chapters as compiled in *Animations on the Web*, even when discussing the underlying physics (Johnston & Thomas, 1981) or the underlying HCI research (Buxton, 2007). The same standard applies to Yablonski's *Laws of UX*. The same standard applies to any future compilation Devour ingests.
+
+**For the 30 laws specifically, the compiler citation is Jon Yablonski.** [`references/laws-of-ux.md`](laws-of-ux.md) names Jon as the compiler inline on every entry. Devour reviews that invoke a law should do the same: name the law, name the researcher, name Jon as the compiler. The principle is honest attribution of the actual chain of labor; the practical move is one extra clause per citation.
+
+**A note on Wikipedia and aggregator citations.** When a Wikipedia article or aggregator page (NN/g, Material 3, Apple HIG, Interaction Design Foundation) is the actual source the reviewer used, that is itself a compilation and deserves credit. Devour's discipline is honest, not legalistic ... if the reviewer learned the law from Wikipedia, cite the Wikipedia article *and* the underlying researcher. Don't launder Wikipedia through the upstream paper. Same shape, different compiler.
+
+### Related
+
+- **[`references/laws-of-ux.md`](laws-of-ux.md)** models this discipline in practice ... every law's entry names Jon as the compiler and the underlying researcher with venue. The file's intro states the principle explicitly.
+- **[`references/lineage.md`](lineage.md)** treats Jon as a Layer 2 contributor and notes that the *legibility* of his curated set is his authored contribution, not just the selection.
+- **Line-citation accuracy** (above) is the structural sibling: that entry insists on naming what's at the line; this entry insists on naming who curated the heuristic. Both fail when reviewers substitute remembered category or remembered source for what they actually read.
+- **Devour's lineage discipline more broadly** treats every principle citation as a claim about the chain of intellectual labor. Adding the compiler does not weaken the citation; it strengthens it by making the chain visible.
+- **Devour's existing citations follow this shape.** [`principles-map.md`](principles-map.md) cites Rauno Freiberg's *Devouring Details* chapters alongside Johnston & Thomas, Tognazzini, Buxton, Norman, and Brichter. [`exemplars.md`](exemplars.md) distinguishes compiler, author, and integrator explicitly (e.g., "cmdk by Paco Coursey, integrated at Vercel by Rauno Freiberg in 2020"). This entry names the discipline that was already at work.
+
+### Origin
+
+This entry was added 2026-05-17 after a session reviewing a compilation of the same 30 UX laws Jon Yablonski curates at [lawsofux.com](https://lawsofux.com) and in *Laws of UX* (O'Reilly, 2020). Each law was cited only to its underlying researcher; Jon's site appeared once in a prior-art note. The corresponding work for Devour ... [`laws-of-ux.md`](laws-of-ux.md) with Jon credited as the compiler on every entry ... shipped in the same session.
+
+---
+
 ## Composing devour with impeccable
 
 Devour and [impeccable](https://impeccable.style) are designed for different jobs. Impeccable has 23 commands: 21 MAKE design, 2 EVALUATE (`critique` and `audit`). Devour does design review with citations... it competes with `/impeccable critique` on the citation axis, not with the makers.
