@@ -88,6 +88,8 @@ The failure mode this prevents: a trigger+overlay bundled into a single componen
 
 **The specific move (offline):** Open Linear and turn off your network connection. Navigate. Edit an issue. Create a new one. Reconnect. Everything syncs. The network boundary is invisible. This is the gold standard for principle #7.
 
+**Observation source:** A pre-written 22 KB reverse-engineered observation of Linear's visual system (actual hex values, OpenType features, weights, letter-spacing at display sizes, border opacity values, shadow stacks) lives at [`nexu-io/open-design/design-systems/linear-app/DESIGN.md`](https://github.com/nexu-io/open-design/blob/main/design-systems/linear-app/DESIGN.md). Paired with `tokens.css` (machine-readable) and `components.html` (rendered reference). A rendered orbit-Linear template ships at `design-templates/orbit-linear/example.html` in the same repo. See the *systems-by-observation* exemplar below for the practice this represents.
+
 **Principles:** #3 (intent: hover commit delays), #6 (ergonomics: keyboard-first), #7 (state: offline-first state preservation), #10 (density: deliberate, not default)
 
 **Links:** [linear.app](https://linear.app) · [linear.app/method](https://linear.app/method) · Authors: the Linear team
@@ -101,6 +103,8 @@ The failure mode this prevents: a trigger+overlay bundled into a single componen
 **The specific move (density):** Open the Vercel dashboard on a large screen. Count how much information is visible without scrolling. Deployments, domains, build status, runtime details, commit messages, branch names, timestamps. All coexist in a layout that is dense without being oppressive. Compare this to a generic SaaS dashboard that dedicates 80% of the viewport to three KPIs.
 
 **The specific move (type system):** Observe how few font sizes are in use. The type scale is systematic. Titles, labels, values, timestamps, and captions each have a defined role. Per-element type decisions are gone; a system makes the decisions.
+
+**Observation source:** [`nexu-io/open-design/design-systems/vercel/DESIGN.md`](https://github.com/nexu-io/open-design/blob/main/design-systems/vercel/DESIGN.md) ... a pre-written observation of Vercel's visual system with paired `tokens.css` and `components.html`. The rendered orbit-Vercel template (when present) ships at `design-templates/orbit-vercel/example.html`. See the *systems-by-observation* exemplar below.
 
 **Principles:** #9 (decoration: near-zero chartjunk), #10 (density: intentionally high, appropriate for developer tools), #12 (type: systematic, not per-element decisions)
 
@@ -198,6 +202,8 @@ Andy Allen's work is at the intersection of Layer 3 (native iOS craft) and Layer
 
 **The specific move (color):** Observe how Geist handles semantic color. Success, error, warning, info are each a role, not a hex value. The role maps to a value; the value can be themed. This is the correct model for any design system that will ever be maintained.
 
+**Observation source:** The Vercel DESIGN.md (above) captures Geist's tokens and components in reverse-engineered form ... see [`design-systems/vercel/`](https://github.com/nexu-io/open-design/tree/main/design-systems/vercel) in `nexu-io/open-design`. The official Geist docs at [vercel.com/geist](https://vercel.com/geist) remain the authoritative source.
+
 **Principles:** #9 (decoration: no chartjunk; every color token has a purpose), #12 (type: systematic, modular, auditable)
 
 **Links:** [vercel.com/geist](https://vercel.com/geist) · Authors: the Vercel design organization
@@ -231,3 +237,17 @@ Also note that Tweetie preserved tab state, scroll position, and draft text acro
 **Principles:** #2 (physics: the rubber-band drag behavior), #11 (metaphor: physical pull metaphor for a data refresh)
 
 **Links:** History well-documented in multiple interviews with Loren Brichter. Referenced in devour lineage at [`lineage.md`](lineage.md).
+
+---
+
+## Systems-by-observation (the Open Design DESIGN.md library)
+
+**What to study:** The practice of reverse-engineering a brand's visual system by inspection, then writing it down as a reusable spec.
+
+**The specific move:** Open [`nexu-io/open-design/design-systems/linear-app/DESIGN.md`](https://github.com/nexu-io/open-design/blob/main/design-systems/linear-app/DESIGN.md). Read the spec ... roughly 22 KB. Then open [linear.app](https://linear.app) with devtools and check what it captures: the marketing black at `#08090a`, Inter Variable with OpenType features `cv01` and `ss03`, weight 510 between regular and medium, aggressive negative letter-spacing at display sizes, semi-transparent white borders at 0.05 to 0.08 opacity. The numbers match. The same exercise repeats across ~150 brands in [`design-systems/`](https://github.com/nexu-io/open-design/tree/main/design-systems), each with a paired `tokens.css` and `components.html`.
+
+**Why it matters:** Most exemplars in this file name a product to observe live. The Open Design library captures the observation in a transferable format, so a Devour finding can cite the actual hex or weight rather than asking the reader to inspect the live site. Treat the files as well-sourced reference with a freshness asterisk ... brands evolve, the specs lag.
+
+**Principles:** #10 (density as captured craft choice), #12 (type system as captured lookup)
+
+**Links:** [github.com/nexu-io/open-design/tree/main/design-systems](https://github.com/nexu-io/open-design/tree/main/design-systems) · Authors: the Nexa team and contributors. Repo is Apache 2.0.
