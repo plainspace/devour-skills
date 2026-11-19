@@ -264,6 +264,18 @@ For the theory behind each principle, see [`principles-map.md`](principles-map.m
 
 ---
 
+### Stale read after a successful write
+
+**What it is:** A write succeeds on the server, but the surface that displays the value keeps showing the old one until a full page refresh. The write path never updated or invalidated the client cache (query cache, normalized GraphQL cache, store) that the surface reads from. Typical shape: a settings modal with several fields, each saving correctly, while the page behind the modal still shows the previous values after the modal closes.
+
+**Why it fails:** The user acted and the system succeeded, but the interface reports nothing changed. This is the gulf of evaluation (Norman) on the success path: feedback is the system showing the result of the action, and a surface that contradicts a successful write tells the user the action failed. They resubmit, refresh, or distrust the save. The failure is easy to repeat: when each new field invents its own write path instead of copying a working field's read-back, each one can reintroduce the stale read independently, and the bug is found one field at a time.
+
+**Fix direction:** After a write, update or invalidate the same source of truth the surface renders from (a cache update from the mutation response, or an invalidation or refetch of the affected query), so the read after the write returns the written value. New fields copy an existing working field's write and read-back pattern rather than adding a parallel one. Verify by writing a value and reading the surface, not the server: change the field, close the modal, and read what the page behind it displays without reloading.
+
+**Lineage:** Principle #4 (reversibility is craft) ... the interface keeping its promise to the user includes the success path, not only the error path. Norman's feedback and gulf of evaluation are the direct sources; the verification step is the same "drive, don't inspect" discipline as in `methodology.md`.
+
+---
+
 ## Principle #5 ... Sequence carries meaning
 
 > Stagger only when order matters. Otherwise, simultaneity.
