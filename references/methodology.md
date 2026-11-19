@@ -219,6 +219,49 @@ This entry was added 2026-05-17 after a session reviewing a compilation of the s
 
 ---
 
+## Drive, don't inspect: geometry is not behavior
+
+### What it is
+
+A reviewer verifies an interactive element by measuring it. The rect is right, the `href` the code computes is right, the route helper returns the expected path, the URL transform produces the expected string. Every check is green. The element is never activated, and in production it goes to the wrong place.
+
+The shape: a call-to-action button was "verified" with five checks ... its bounding rect, the `href` as computed in code, the return value of the route helper that built the `href`, the transform applied to the URL, and a read of the markup. Nobody clicked it. It pointed at the root of a dashboard instead of the tab the copy promised. In the same session, carousel labels and banner links were "verified" with `getBoundingClientRect()` and never clicked: the carousel never advanced, and the banner link was never followed.
+
+### Why it fails
+
+**A measurement of an element is a claim about the element. A click is an observation of what the element does.** Geometry answers "is it there, how big, does it fit." It cannot answer "what happens when I use it." Reading a rect off a carousel label tells you the label exists; it does not tell you that selecting it changes the frame.
+
+**Measurement yields a number for a table; interaction yields a yes or a no that might be no.** Inspection is the cheaper check and always produces something reportable, so it crowds out the check that could fail. A review that is entirely green because every check was a measurement has not tested behavior at all.
+
+**The evaluation has to be of the system's response to an action.** Norman's gulf of evaluation is the gap between what the system did and what the user can perceive of it. A reviewer who never acts closes that gulf only for the static page, not for the response, which is where the defect lives.
+
+### Fix direction
+
+**For behavioral findings, interact, then read the result.** This covers principles #3, #4, #7 and #11, and any link, button, tab, modal, carousel, or hover or focus state:
+
+- **Link or button that navigates:** read the `href` AND follow it. Click, then read `window.location.href`.
+- **Carousel or tabs:** click label 2, then confirm the frame changed and `aria-current` or `aria-selected` moved. Click every tab, not one.
+- **Modal, popover, drawer:** open it, confirm its content rendered, then close it and confirm the page returned to its prior state.
+- **Hover or focus state:** trigger the state, then read the computed style. A selector that exists in the stylesheet is not a state that fires.
+
+**Measurement remains correct for things with no behavior:** whether text wraps, whether content overflows, the size of an icon, a computed transition duration. Do not click what has nothing to do.
+
+**Sequence it.** Clicking mutates page state. Read every `href` first, then click the ones that matter, then navigate back to a known state. Interaction calls usually return little or no payload, so driving costs less context than a DOM dump.
+
+**If the reviewer cannot drive the surface** (auth wall, an email body that will not render, an admin toggle behind a role), say so as a blocker in the `Reviewed:` line, not as a footnote under a table of green measurements. Name who has to click it.
+
+### Related
+
+- **Speculative fixing without observation** (above) is the fix-side version: both substitute a model of the system for the system. Here the model is "the rect and the href are right, so the click works."
+- **Principle #3 (commit on intent), #4 (reversibility), #7 (preserve state), #11 (match the metaphor)** are the principles whose findings are behavioral and so require this discipline. Every review skill's DOM-first rule now splits "inspect for geometry" from "drive for behavior."
+- **Line-citation accuracy** (above) and this entry share a cause: a check that proves a proxy (the cited line, the measured rect) gets reported as proof of the thing itself.
+
+### Origin
+
+Surfaced in a production review where a CTA in a transactional email was marked verified after five inspection checks (rect, computed `href`, route helper output, URL transform, markup read) and was then found, by someone clicking it, to link to the wrong destination. The same review had verified carousel labels and banner links by measuring them. Three of the five items needing verification were clickable in a browser that was already open; all three were measured instead.
+
+---
+
 ## Composing devour with impeccable
 
 Devour and [impeccable](https://impeccable.style) are designed for different jobs. Impeccable has 23 commands: 21 MAKE design, 2 EVALUATE (`critique` and `audit`). Devour does design review with citations... it competes with `/impeccable critique` on the citation axis, not with the makers.
