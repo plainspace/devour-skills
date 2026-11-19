@@ -75,6 +75,8 @@ From `DESIGN.md` (if present), extract:
 
 - Token declarations (`colors`, `typography`, `spacing`, `components`) ... for later reference in review runs.
 
+**When `DESIGN.md` frontmatter tokens and its prose disagree, the tokens win.** Compare the frontmatter values against any value the prose states (a hex color, a font size, a spacing step, a font family). In one corpus of 152 `DESIGN.md` files in the Stitch DESIGN.md format, 60 had prose that contradicted their own tokens, and the tokens were always the sound half. Use the token value as the source of truth, and record each disagreement you find as a note in `DEVOUR.md` (see the `## Design system notes` section in Step 5) so later reviews do not cite the prose value as the standard. Do not edit `DESIGN.md`.
+
 If either file exists but does not parse cleanly, warn once ("Found `PRODUCT.md` but could not parse cleanly; proceeding as if absent") and continue.
 
 ### Step 2 ... Scan the codebase
@@ -213,6 +215,13 @@ Compose the file from gathered content. Use this exact structure, skipping the `
 ## Specific things to watch for
 
 <open list from Step 3 question 10>
+
+## Design system notes
+
+<!-- Include this section only if Step 1 found a DESIGN.md token/prose disagreement. Omit it otherwise. -->
+
+- **Tokens win over prose.** `DESIGN.md` prose disagrees with its own frontmatter tokens in the places below. Reviews cite the token value, not the prose.
+- <one bullet per disagreement: what the prose says, what the token says, which one reviews use>
 ```
 
 **If multi-surface, append this section after the top-level sections above:**
