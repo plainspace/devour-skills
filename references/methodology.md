@@ -255,6 +255,7 @@ The shape: a call-to-action button was "verified" with five checks ... its bound
 - **Speculative fixing without observation** (above) is the fix-side version: both substitute a model of the system for the system. Here the model is "the rect and the href are right, so the click works."
 - **Principle #3 (commit on intent), #4 (reversibility), #7 (preserve state), #11 (match the metaphor)** are the principles whose findings are behavioral and so require this discipline. Every review skill's DOM-first rule now splits "inspect for geometry" from "drive for behavior."
 - **Line-citation accuracy** (above) and this entry share a cause: a check that proves a proxy (the cited line, the measured rect) gets reported as proof of the thing itself.
+- **Token compliance is the same failure on the type system.** A token string in the source is a proxy for the token on the element. See "Type token present in the source but absent from the rendered element" under principle #12 in [`anti-patterns.md`](anti-patterns.md).
 
 ### Origin
 

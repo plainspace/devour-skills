@@ -744,3 +744,15 @@ The same rule applies to any portal-rendered UI invoked from a list of navigatio
 **Why it fails:** Tracking is part of the type system. Large type typically benefits from slightly tighter tracking; small caps and labels benefit from wider tracking. When tracking is applied per-element without a rule, the inconsistency reads as unfinished.
 
 **Fix direction:** Assign tracking to semantic roles, not to elements. All large headings: `tracking-tight`. All labels/caps: `tracking-wide`. Body: `tracking-normal`. No exceptions without a reason.
+
+---
+
+### Type token present in the source but absent from the rendered element
+
+**What it is:** A custom type token (a font-size, weight, or leading class from the project's own scale, for example a `text-xxs` size token) is written in the source, passes lint and typecheck, and never reaches the DOM. The usual cause is a class-merging helper (`tailwind-merge`, a `cn()` wrapper) that does not know the custom token and misclassifies it. A custom font-size class is read as a text color, then deduplicated away by a later color class on the same element. The element renders at the inherited size.
+
+**Why it fails:** The type system exists in the rendered output or it does not exist. Source, lint, and typecheck all agree the class is there, so every static check is green while the element is off-scale. Müller-Brockmann's grid is a system because every element sits on it in the finished page, not because the grid was specified; the same standard applies to a type scale. Rams's "thorough down to the last detail" is a claim about the product the user sees, not about the file the developer wrote.
+
+**Fix direction:** Read the element's live `className` and its computed `font-size`, `font-weight`, and `line-height` from the DOM, and compare them to the token's declared value. If the class is in the source but not in the live `className`, or is present but the computed value is wrong, the merge helper dropped it. Teach the helper the custom token (for `tailwind-merge`, register the custom font-size group in its config) rather than renaming the token.
+
+**Lineage:** Principle #12 (type is a system) traces to Müller-Brockmann; the rendered-output standard is Rams's principle 8. Source-level token checks are the type-system version of verifying a rect instead of a click (see the Drive, don't inspect entry in `methodology.md`).
