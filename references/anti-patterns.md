@@ -768,3 +768,15 @@ The same rule applies to any portal-rendered UI invoked from a list of navigatio
 **Fix direction:** Read the element's live `className` and its computed `font-size`, `font-weight`, and `line-height` from the DOM, and compare them to the token's declared value. If the class is in the source but not in the live `className`, or is present but the computed value is wrong, the merge helper dropped it. Teach the helper the custom token (for `tailwind-merge`, register the custom font-size group in its config) rather than renaming the token.
 
 **Lineage:** Principle #12 (type is a system) traces to Müller-Brockmann; the rendered-output standard is Rams's principle 8. Source-level token checks are the type-system version of verifying a rect instead of a click (see the Drive, don't inspect entry in `methodology.md`).
+
+---
+
+### Layout tested only with the sample content
+
+**What it is:** A user-authored slot (a name, title, tagline, bio, label) is laid out and reviewed with one tidy sample string. The slot has no length bound at the boundary where the content enters, so a long value, a long unbroken string, or many lines reaches a large type style and breaks the layout. Typical shape: an unbounded field rendered into a roughly 56px display heading, while the same mutation caps a sibling field at a sane length.
+
+**Why it fails:** The layout was only ever evaluated against content chosen to fit it. Real input is not chosen. Display type is the least forgiving case: at large sizes a single long word overflows its container, and a long sentence turns into a wall of oversized lines that pushes everything below it out of position. Müller-Brockmann's grid is an architecture for information, and an architecture is tested by the information it must carry, not by placeholder copy. Rams's "thorough down to the last detail" includes the details nobody typed into the mockup.
+
+**Fix direction:** Test every user-authored slot with four inputs: empty, one word, typical, and pathological length (a long unbroken string with no spaces, and many lines). Then constrain by design instead of hoping: a maximum length enforced at the boundary where the value is written (and consistent with sibling fields on the same mutation), a clamp or `line-clamp` where truncation is acceptable, explicit wrap rules (`overflow-wrap: anywhere` or `word-break` for unbroken strings, `min-width: 0` on flex children), and `text-wrap: balance` for headings or `text-wrap: pretty` for body so the lines that remain are well formed. Define the empty state as deliberately as the full one.
+
+**Lineage:** Principle #12 (type is a system) and principle #10 (density is a craft choice) ... a type scale and a density choice both assume content within a range, so the range has to be enforced. Sources: Müller-Brockmann (the grid as architecture for information) and Rams's principle 8 (thorough down to the last detail).
