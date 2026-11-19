@@ -262,6 +262,46 @@ Surfaced in a production review where a CTA in a transactional email was marked 
 
 ---
 
+## Blast radius of a removal: X was doing more than its stated job
+
+### What it is
+
+A fix removes an element, and the verification asks only whether the element is gone. The element was also doing something nobody wrote down, and that something disappears with it. Nothing in the verification looks at what the element was incidentally holding up, so the regression ships.
+
+The shape: a banner's dismiss button was removed to make the banner non-dismissible. The button was 28px tall and the tallest item in an `items-center` flex row, so the button, not the text, set the banner's height. With the button gone the row collapsed to the text height and the banner visibly shrank. The verification asked "is the button gone?" and never measured the banner. Separately, while removing the button, the change also collapsed a two-level flex wrapper and dropped `min-w-0 flex-1`, which no finding had asked for.
+
+### Why it fails
+
+**Removing X removes everything X happened to be doing, not just X's stated purpose.** A button is also a spacer. A wrapper `div` is also a stacking context, a containing block, or the element a selector targets. An effect is also the reason something rendered late. A `margin` is also what kept two siblings apart. None of these appear in the element's name, so none of them appear in the finding.
+
+**Devour recommends removals, so devour has this exposure by design.** Principle #9 (reduce decoration, increase information) and the REMOVE tactic candidate both end in "delete this." Tufte's data-ink argument is that ink carrying no information should go, and it is correct; it does not say that the ink was also carrying nothing structural. Rams's "as little design as possible" has the same blind spot: it names what to cut, not what the cut element was bearing.
+
+**The verification is written from the finding, so it inherits the finding's blind spot.** If the finding says "remove the dismiss button," the check says "button absent." The thing that regressed, the container's height, is not in either sentence.
+
+**Unrequested restructuring multiplies the surface.** Cleaning up adjacent structure while removing the element adds changes that have their own blast radius and no review.
+
+### Fix direction
+
+**When a finding's tactic is a removal, the finding names what the removed element might be load-bearing for.** One clause is enough: "the close button is the tallest item in the row and may set its height," or "the wrapper may establish the positioning context for the badge." If the reviewer cannot name anything, that is the cue to look at the element's computed size and its parent's layout before recommending the removal.
+
+**After APPLY, measure the container, not just the absence.** Read the parent's rect, height, and the positions of its remaining children before and after, and confirm the parent did not change in a way the finding did not intend. Removing an element from a flex row: check the row's height. Removing state: check what rendered conditionally on it. Removing a wrapper: check stacking and positioning of what it contained.
+
+**Make only the change the finding names.** Do not collapse, rename, or tidy adjacent structure in the same edit. If the cleanup looks warranted, surface it as its own candidate (see Scope discipline).
+
+**Read the diff of substantive lines before committing.** A one-line removal and a restructured subtree can sit in the same hunk; the second is the one with the hidden blast radius.
+
+### Related
+
+- **Scope discipline: never expand scope via inference** (above) is the authorization side of this entry. Scope discipline says an extra change needs the reviewer's yes; this entry says why an extra change is not free even when it looks cosmetic.
+- **Tactic-as-candidate** (above) already makes REMOVE a first-class candidate. This entry adds what a REMOVE candidate must say about what it takes with it.
+- **Principle #9** (reduce decoration) is the principle most likely to recommend a removal. **Drive, don't inspect** (above) is the verification companion: after the removal, interact with and measure the surface rather than checking that the element is gone.
+
+### Origin
+
+Surfaced in a production review where removing a dismiss button from a promotional banner shrank the banner. The removed button was the tallest item in a vertically centered flex row and had been setting the row's height. The verification brief asked whether the button was gone and did not ask how tall the banner was. In the same change, adjacent flex structure was simplified without being asked, which widened the surface that needed checking.
+
+---
+
 ## Composing devour with impeccable
 
 Devour and [impeccable](https://impeccable.style) are designed for different jobs. Impeccable has 23 commands: 21 MAKE design, 2 EVALUATE (`critique` and `audit`). Devour does design review with citations... it competes with `/impeccable critique` on the citation axis, not with the makers.
