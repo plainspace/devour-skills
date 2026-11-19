@@ -303,6 +303,39 @@ Surfaced in a production review where removing a dismiss button from a promotion
 
 ---
 
+## Responsive findings: one width in one engine is not coverage
+
+### What it is
+
+A responsive or layout fix is declared done after one check: a mobile width, in a Blink-based browser. The fix then ships and is broken at desktop width in WebKit (Safari). The same class of miss repeats, particularly for footers and other layouts that change structure across a breakpoint, because each round checks the same one cell of the width-by-engine matrix.
+
+### Why it fails
+
+**A breakpoint fix changes behavior on both sides of the breakpoint.** A rule added to repair the narrow layout can alter the wide one, and the reviewer who confirmed the narrow side has said nothing about the wide side.
+
+**Engines disagree on layout and rendering details.** Flex and grid sizing edge cases, `min-content` behavior, `position: sticky`, viewport units on mobile, and text wrapping differ between Blink and WebKit. A layout that is correct in one engine is not evidence about the other.
+
+**Coverage that is not stated is assumed.** A review that says `Reviewed: code + browser` after one Blink check at one width reads as broader than it was, so the unchecked cells are treated as checked.
+
+### Fix direction
+
+**Verify a responsive finding at a narrow width AND a desktop width.** Both sides of the breakpoint the fix touches, measured in the same pass.
+
+**Use two engines when a WebKit driver is available.** Playwright's WebKit build is the practical option for a second engine alongside a Blink-based browser.
+
+**If only one engine is available, say so.** Name the engine on the `Reviewed:` line (for example, `code + browser (chrome-devtools, Blink only)`) rather than implying cross-engine coverage. The statement of what was not covered is part of the finding's evidence.
+
+### Related
+
+- **Drive, don't inspect** (above) is the companion for behavior: it asks whether the check observed the thing or a proxy for it. This entry asks whether the check observed the thing in the places it can differ.
+- **Rams's principle 8** (thorough down to the last detail) covers the standard: the details that differ between engines and widths are details.
+
+### Origin
+
+Surfaced across several fix rounds in a production project where responsive and footer fixes were repeatedly reported as verified after a mobile-width check in a Blink-based browser, and then shipped broken at desktop width in WebKit. Each round re-verified the same one width in the same one engine.
+
+---
+
 ## Composing devour with impeccable
 
 Devour and [impeccable](https://impeccable.style) are designed for different jobs. Impeccable has 23 commands: 21 MAKE design, 2 EVALUATE (`critique` and `audit`). Devour does design review with citations... it competes with `/impeccable critique` on the citation axis, not with the makers.

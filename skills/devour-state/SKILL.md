@@ -227,6 +227,8 @@ Try the equivalent of `list_pages` first. Three cases:
 
 Mark the output `Reviewed: code + browser (<MCP name>)` once you have a live page.
 
+**Responsive findings need two widths and, where possible, two engines.** Verify a responsive finding at a narrow width AND a desktop width, and in a second engine (Playwright WebKit) when one is available. If only one engine is available, say so in the `Reviewed:` line (for example, `code + browser (chrome-devtools, Blink only)`) instead of implying cross-engine coverage. See [`references/methodology.md`](../../references/methodology.md), "Responsive findings."
+
 **When a browser MCP IS available and a dev server is running:**
 
 For any finding that depends on runtime behavior, **do the browser verification before emitting the finding**. For devour-state, this covers the core of both principles:

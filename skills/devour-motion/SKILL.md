@@ -219,6 +219,8 @@ Try the equivalent of `list_pages` first. Three cases:
 
 Mark the output `Reviewed: code + browser (<MCP name>)` once you have a live page.
 
+**Responsive findings need two widths and, where possible, two engines.** Verify a responsive finding at a narrow width AND a desktop width, and in a second engine (Playwright WebKit) when one is available. If only one engine is available, say so in the `Reviewed:` line (for example, `code + browser (chrome-devtools, Blink only)`) instead of implying cross-engine coverage. See [`references/methodology.md`](../../references/methodology.md), "Responsive findings."
+
 #### Step 1b ... Read the code
 
 After environment is established, read the target file(s) in full. Specific patterns to look for immediately:
