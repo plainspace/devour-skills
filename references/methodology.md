@@ -275,7 +275,7 @@ The shape: a banner's dismiss button was removed to make the banner non-dismissi
 
 **Removing X removes everything X happened to be doing, not just X's stated purpose.** A button is also a spacer. A wrapper `div` is also a stacking context, a containing block, or the element a selector targets. An effect is also the reason something rendered late. A `margin` is also what kept two siblings apart. None of these appear in the element's name, so none of them appear in the finding.
 
-**Devour recommends removals, so devour has this exposure by design.** Principle #9 (reduce decoration, increase information) and the REMOVE tactic candidate both end in "delete this." Tufte's data-ink argument is that ink carrying no information should go, and it is correct; it does not say that the ink was also carrying nothing structural. Rams's "as little design as possible" has the same blind spot: it names what to cut, not what the cut element was bearing.
+**Devour recommends removals, so devour has this exposure by design.** Principle #9 (reduce decoration, increase information) and the REMOVE tactic candidate both end in "delete this." Tufte's data-ink argument is that ink carrying no information should go, and it is correct; it says nothing about what else that ink was holding up. Rams's "as little design as possible" has the same blind spot: it names what to cut, not what the cut element was bearing.
 
 **The verification is written from the finding, so it inherits the finding's blind spot.** If the finding says "remove the dismiss button," the check says "button absent." The thing that regressed, the container's height, is not in either sentence.
 
